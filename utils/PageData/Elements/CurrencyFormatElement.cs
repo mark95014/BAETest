@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using Microsoft.Playwright; // Ensure this using is present for ILocator
 
-namespace TrxUITest.src.utils.PageData.Elements
+namespace BAETest.src.utils.PageData.Elements
 {
     public class CurrencyFormatElement : TextElement
     {
-
-        public CurrencyFormatElement(string selector): base(selector) {
-            TextModifiers modifiers = new TextModifiers("(\\$[\\d,]*(\\.\\d{2})|—)");
+        public CurrencyFormatElement(ILocator locator) : base(locator)
+        {
+            // If you need to set TextModifiers, assign to a field or property as appropriate
+            // Example: this._modifiers = new TextModifiers("(\\$[\\d,]*(\\.\\d{2})|—)");
         }
     }
 }

@@ -1,155 +1,99 @@
-﻿using LumenWorks.Framework.IO.Csv;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using NUnit.Framework;
-using TestContext = NUnit.Framework.TestContext;
-using OpenQA.Selenium;
+﻿using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Threading;
-using TrxUITest.src.utils;
-using TrxUITest.src.utils.PageData.Elements;
+using System.Threading.Tasks;
 
-namespace TrxUITest.src.utils.PageData.Elements
+
+namespace BAETest.src.utils.PageData.Elements
 {
-    public class CsvElement : SimpleGridElement
+    public class CsvElement : Element
     {
-        private string csvFileName = null;
-        private readonly string[] ignore = new string[0];
+        private readonly string _downloadPath;
+        private readonly string[] _columnsToIgnore;
 
-        public CsvElement(string selector, string csvFileName = "", params string[] ignore) : base(selector)
+        public CsvElement(ILocator downloadButtonLocator, string expectedFileName, string[] columnsToIgnore = null, string downloadPath = null) 
+            : base(downloadButtonLocator)
         {
-            this.csvFileName = csvFileName;
-            this.ignore = ignore;
+            _downloadPath = downloadPath ?? Path.Combine(Path.GetTempPath(), "playwright-downloads");
+            _columnsToIgnore = columnsToIgnore ?? Array.Empty<string>();
+            Data = expectedFileName;
         }
 
-        public CsvElement(string selector) : base(selector)
+        public override async Task GetAsync()
         {
-        }
-
-        public override void Get()
-        {
-            GetByWebElement(Test.driver.FindElement(By.CssSelector(selector)));
-        }
-
-        public override void GetByWebElement(IWebElement webElement)
-        {
-            if (csvFileName == null) csvFileName = webElement.Text;
-
-            if (selector.Length != 0) webElement.Click();
-            else webElement.FindElement(By.CssSelector("span > a")).Click();
-            Thread.Sleep(5000); //Wait for download
-            string csvFilePath;
-            if (Docker.RunningInContainer()) csvFilePath = "/app/downloads/" + csvFileName;
-            else csvFilePath = Environment.GetEnvironmentVariable("USERPROFILE") + @"\Downloads\" + csvFileName;
-            ParseCSV(csvFilePath);
-            Cleanup(csvFilePath);
-        }
-
-        private class Comparer : IComparer<List<object>>
-        {
-            public int Compare(List<object> x, List<object> y)
+            // Click the download button and wait for download
+            var download = await Locator.Page.RunAndWaitForDownloadAsync(async () =>
             {
-                foreach (object obj in x!)
-                {
-                    string xstr = obj!.ToString()!;
-                    string ystr = y![x.IndexOf(obj)!]!.ToString()!;
-                    int compareResult = xstr.CompareTo(ystr);
-                    if (compareResult != 0) return compareResult;
-                }
+                await Locator.ClickAsync();
+            });
 
-                return 0;
-            }
+            // Save the download
+            var filePath = Path.Combine(_downloadPath, download.SuggestedFilename);
+            await download.SaveAsAsync(filePath);
+
+            // Read CSV content
+            var csvData = await ReadCsvAsync(filePath);
+            Data = csvData;
         }
 
-        private void RemoveHeader(string fileName)
+        private async Task<List<List<string>>> ReadCsvAsync(string filePath)
         {
-            var lines = File.ReadAllLines(fileName);
-            File.WriteAllLines(fileName, new ArraySegment<string>(lines, 1, lines.Length - 1));
-        }
-
-        private void WaitForFileExists(string filePath, int waitSeconds)
-        {
-            while (waitSeconds > 0)
+            var csvData = new List<List<string>>();
+            
+            using (var reader = new StreamReader(filePath))
             {
-                try
+                while (!reader.EndOfStream)
                 {
-                    FileStream file = File.OpenRead(filePath);
-                    file.Close();
-                    TestContext.Progress.WriteLine($"{filePath} was found.");
-                    return;
-                }
-                catch (FileNotFoundException)
-                {
-                    TestContext.Progress.WriteLine($"Waiting for {filePath} to exist.");
-                    waitSeconds--;
-                    Thread.Sleep(1000);
-                }
-            }
-        }
-
-        private void ParseCSV(string csvFilePath)
-        {
-            bool hasHeaders = csvFilePath.ToUpper().Contains("PERSHING");
-            this.WaitForFileExists(csvFilePath, 60);
-            if (hasHeaders) RemoveHeader(csvFilePath);
-
-            data = new List<List<object>>();
-
-            using (CsvReader csv = new CsvReader(new StreamReader(csvFilePath), false))
-            {
-                int fieldCount = csv.FieldCount;
-
-                while (csv.ReadNextRecord())
-                {
-                    List<Object> fields = new List<Object>();
-
-                    for (int i = 0; i < fieldCount; i++)
+                    var line = await reader.ReadLineAsync();
+                    var values = line.Split(',').Select(v => v.Trim('"', ' ')).ToList();
+                    
+                    // Filter out ignored columns
+                    var filteredValues = new List<string>();
+                    for (int i = 0; i < values.Count; i++)
                     {
-                        fields.Add(csv[i]);
+                        if (!_columnsToIgnore.Contains($"* {i}"))
+                        {
+                            filteredValues.Add(values[i]);
+                        }
                     }
-
-                    ((List<List<object>>)data).Add(fields);
+                    
+                    csvData.Add(filteredValues);
                 }
             }
 
-            ((List<List<object>>)data).Sort(new Comparer());
-            TestContext.Progress.WriteLine(csvFilePath);
-            TestContext.Progress.WriteLine(data);
+            return csvData;
         }
 
-        private void Cleanup(string fileName)
+        public override async Task<Result> VerifyAsync(string name, object expected)
         {
-            TestContext.Progress.WriteLine($"Deleting {fileName}");
-            File.Delete(fileName);
-        }
+            await GetAsync();
 
-        private void EraseTrxUserName()
-        {
+            if (expected is List<List<string>> expectedCsv)
+            {
+                var actualCsv = Data as List<List<string>>;
+                
+                if (actualCsv.Count != expectedCsv.Count)
+                {
+                    return new Result(false, $"{name}: CSV row count mismatch. Expected {expectedCsv.Count}, actual {actualCsv.Count}");
+                }
 
+                for (int i = 0; i < expectedCsv.Count; i++)
+                {
+                    for (int j = 0; j < expectedCsv[i].Count; j++)
+                    {
+                        if (actualCsv[i][j] != expectedCsv[i][j])
+                        {
+                            return new Result(false, $"{name}: CSV cell mismatch at [{i},{j}]. Expected '{expectedCsv[i][j]}', actual '{actualCsv[i][j]}'");
+                        }
+                    }
+                }
+
+                return new Result(true, $"{name}: CSV data matches");
+            }
+
+            return new Result(false, $"{name}: expected data is not in the correct format");
         }
     }
 }
-//eraseTrxUserName(trxUserName: string) { //Remove the Trx user name occurences from the data because these change each time a test is run.
-//    var rownum: number = 0
-//        for (let row of this.data)
-//    {
-//        var rowstr: string = row
-//            var colnumber: number = 0
-//            for (let column of row)
-//        {
-//            var colstr: string = column
-//                if (typeof(colstr) == 'string')
-//            {
-//                if (colstr.includes(trxUserName))
-//                {
-//                    this.data[rownum][colnumber] = colstr.replace(trxUserName, '')
-//                    }
-//            }
-//            colnumber++
-//            }
-//        rownum++
-//        }
-//}

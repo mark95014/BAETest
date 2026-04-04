@@ -4,7 +4,7 @@ using System;
 using System.Collections.Generic;
 
 
-namespace TrxUITest.src.utils
+namespace BAETest.src.utils
 {
     public class Results
     {

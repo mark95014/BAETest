@@ -1,24 +1,19 @@
 ﻿using TestContext = NUnit.Framework.TestContext;
 using Assert = NUnit.Framework.Assert;
-using OpenQA.Selenium;
-using TrxUITest.src.Pages;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium.Remote;
-using TrxUITest.utils;
-
+using BAETest.utils;
 
 //Note: I wanted this class to be inherited by each test, but Nunit does not instantiate the class which contains the TestFixture until after the
 //OneTimeSetup finishes. So, the startup aspects of the Test class would not be available to the child class when we need them in OneTimeSetup.
 //Therefore, I had to make the Test class static.
 
-namespace TrxUITest.src.utils
+namespace BAETest.src.utils
 {
     public static class Test
     {
         public readonly static bool verbose;
         public readonly static string environment;
         public readonly static string databaseBackupFileName;
-        public readonly static IWebDriver driver;
+        //public readonly static IWebDriver driver;
         public readonly static Results results;
         public readonly static string webURL;
         public readonly static DBServer dbServer;
@@ -84,43 +79,6 @@ namespace TrxUITest.src.utils
 
             Test.generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"]);
             Test.delayRebalance = Boolean.Parse(TestContext.Parameters["delayRebalance"]);
-
-            Test.driver = GetWebDriver();
-            Test.driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(defaultTimeoutInSeconds);
-        }
-
-        private static IWebDriver GetWebDriver()
-        {
-            ChromeOptions options = new ChromeOptions(); 
-            options.AddArgument("no-sandbox");
-            options.AddArgument("--window-size=1600,1320");
-            options.AddArgument("--force-device-scale-factor=0.8");
-
-            var service = ChromeDriverService.CreateDefaultService();
-            service.LogPath = @"..\..\..\chromedriver.log";
-
-            if (TestContext.Parameters["headless"].ToLower().Equals("true"))
-            {
-                options.AddArgument("headless");
-            }
-
-            if (Docker.RunningInContainer())
-            {
-                return new RemoteWebDriver(new Uri("http://selenium-hub:4444/wd/hub"), options);
-            }
-            else
-            {
-                return new ChromeDriver(service, options);
-            }
-        }
-
-        private static void SetExceptionHandler()
-        {
-            AppDomain.CurrentDomain.UnhandledException += new UnhandledExceptionEventHandler((sender, e) =>
-            {//without these cleanups, test failures, chromedriver.exe and the temporary database will persist.
-                Test.driver.Quit();
-                Database.Cleanup(Test.dbServer, Test.guid);
-            });
         }
 
         public static void Startup(string testName, string databaseBackupFileName = "default.bak", string folder = "regression")
@@ -129,20 +87,20 @@ namespace TrxUITest.src.utils
             ExpectedResults.Init(testName, Test.generateExpectedResults, folder);
             //Database.Restore(Test.dbServer, Test.guid, databaseBackupFileName);   Activate this when we get UAT running again.
             Test.LogIn();
-            HomePage.WaitForPageToLoad();
-            Menu.InitializeMenu();
+            //HomePage.WaitForPageToLoad();
+            //Menu.InitializeMenu();
         }
 
         public static void LogIn()
         {
-            LoginPage.LogIn(Test.webURL, Test.trxUserName, Test.trxPassword);
+            //LoginPage.LogIn(Test.webURL, Test.trxUserName, Test.trxPassword);
         }
 
         public static void LogOut()
         {
-            var signOutLink = Test.driver.FindElement(By.CssSelector("#signOut"));
-            Thread.Sleep(1000);
-            signOutLink.Click();
+            //var signOutLink = Test.driver.FindElement(By.CssSelector("#signOut"));
+            //Thread.Sleep(1000);
+            //signOutLink.Click();
         }
 
         public static int GetTestCaseId()
@@ -176,16 +134,9 @@ namespace TrxUITest.src.utils
 
         public static void Finish()
         {
-            if (Test.driver != null)
-            {
-                Test.LogOut();
-                Test.driver.Quit();
-                if (TestContext.Parameters["environment"] != "prod")
-                {
-                    Database.Cleanup(Test.dbServer, Test.guid);
-                }
-                ExpectedResults.Close(Test.generateExpectedResults);
-            }
+            Test.LogOut();
+            Database.Cleanup(Test.dbServer, Test.guid);
+            ExpectedResults.Close(Test.generateExpectedResults);
         }
     }
 }

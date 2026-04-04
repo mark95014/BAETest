@@ -1,22 +1,60 @@
-﻿using OpenQA.Selenium;
+﻿using Microsoft.Playwright;
+using System;
+using System.Threading.Tasks;
 
-namespace TrxUITest.src.utils.PageData.Elements
+namespace BAETest.src.utils.PageData.Elements
 {
     public class ValueElement : SimpleElement
     {
-        public ValueElement(string selector) : base(selector)
+        private readonly string _attribute;
+
+        public ValueElement(ILocator locator, string attribute = "value") : base(locator)
         {
+            _attribute = attribute;
         }
 
-        public override void Get()
+        public override async Task GetAsync()
         {
-            IWebElement option = Test.driver.FindElement(By.CssSelector(this.selector));
-            data = option.GetAttribute("value");
+            if (_attribute == "value")
+            {
+                Data = await Locator.InputValueAsync();
+            }
+            else if (_attribute == "text" || _attribute == "textContent")
+            {
+                Data = await Locator.TextContentAsync();
+            }
+            else if (_attribute == "innerText")
+            {
+                Data = await Locator.InnerTextAsync();
+            }
+            else
+            {
+                Data = await Locator.GetAttributeAsync(_attribute);
+            }
         }
 
-        public override void GetByWebElement(IWebElement webElement)
+        public override async Task<Result> VerifyAsync(string name, object expected)
         {
-            data = webElement.Text;
+            await GetAsync();
+            string actualValue = Data?.ToString() ?? "";
+            string expectedValue = expected?.ToString() ?? "";
+            
+            var message = $"{name}: {_attribute}='{actualValue}', expected='{expectedValue}'";
+            return new Result(actualValue == expectedValue, message);
+        }
+
+        public async Task<Result> VerifyAttributeAsync(string name, string expectedValue)
+        {
+            try
+            {
+                await Assertions.Expect(Locator).ToHaveAttributeAsync(_attribute, expectedValue);
+                return new Result(true, $"{name}: {_attribute} matches '{expectedValue}'");
+            }
+            catch (Exception ex)
+            {
+                var actual = await Locator.GetAttributeAsync(_attribute);
+                return new Result(false, $"{name}: expected '{expectedValue}', actual '{actual}'. {ex.Message}");
+            }
         }
     }
 }

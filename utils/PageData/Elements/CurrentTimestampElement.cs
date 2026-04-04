@@ -1,33 +1,54 @@
-﻿using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
+﻿using Microsoft.Playwright;
 using System;
-using TrxUITest.src.utils;
-using TrxUITest.src.utils.PageData.Elements;
+using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-public class CurrentTimestampElement : Element
+namespace BAETest.src.utils.PageData.Elements
 {
-    public CurrentTimestampElement(string selector) : base(selector)
+    public class CurrentTimestampElement : TextElement
     {
-    }
+        public CurrentTimestampElement(ILocator locator) : base(locator)
+        {
+        }
 
-    public override void Get()
-    {
-        data = Test.driver.FindElement(By.CssSelector(selector)).Text;
-    }
+        public override async Task<Result> VerifyAsync(string name, object expected)
+        {
+            await GetAsync();
+            
+            string actualTimestamp = Data?.ToString() ?? "";
+            
+            // Extract date components (assuming format like "12/25/2023 10:30 AM" or similar)
+            var timestampRegex = new Regex(@"(\d{1,2})/(\d{1,2})/(\d{4})");
+            var match = timestampRegex.Match(actualTimestamp);
+            
+            if (!match.Success)
+            {
+                return new Result(false, $"{name}: timestamp format invalid - '{actualTimestamp}'");
+            }
 
-    public override void GetByWebElement(IWebElement webElement)
-    {
-        data = webElement.Text;
-    }
-
-    public override Result Verify(string name, Object expected)
-    {
-        DateTime discard;
-        string dateTime = data.ToString();
-
-        if (DateTime.TryParse(dateTime, out discard) == true)
-            return new Result (true, $"{dateTime} is a valid date/time");
-        else
-            return new Result (false, $"{dateTime} is an invalid date/time");
+            // Verify it's within a reasonable time range (e.g., within last 24 hours)
+            var today = DateTime.Today;
+            
+            try
+            {
+                int month = int.Parse(match.Groups[1].Value);
+                int day = int.Parse(match.Groups[2].Value);
+                int year = int.Parse(match.Groups[3].Value);
+                
+                var timestampDate = new DateTime(year, month, day);
+                var daysDifference = (today - timestampDate).TotalDays;
+                
+                if (daysDifference < 0 || daysDifference > 1)
+                {
+                    return new Result(false, $"{name}: timestamp date '{timestampDate:d}' is not recent (today is {today:d})");
+                }
+                
+                return new Result(true, $"{name}: timestamp is current - '{actualTimestamp}'");
+            }
+            catch (Exception ex)
+            {
+                return new Result(false, $"{name}: error parsing timestamp '{actualTimestamp}': {ex.Message}");
+            }
+        }
     }
 }

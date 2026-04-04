@@ -1,20 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using System;
+﻿using Microsoft.Playwright;
 
-namespace TrxUITest.src.utils.PageData.Elements
+namespace BAETest.src.utils.PageData.Elements
 {
     public abstract class SimpleElement : Element
     {
-        public SimpleElement(string selector) : base(selector) { }
-
-        public override abstract void GetByWebElement(IWebElement element);
-
-        public override Result Verify(string name, Object expected)
+        protected SimpleElement(ILocator locator) : base(locator)
         {
-            var message = name + ": " + "actual=" + data + " expected=" + expected.ToString();
-            Result result = new Result (data.Equals(expected.ToString()), message);
-            return result;
         }
     }
 }

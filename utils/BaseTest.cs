@@ -1,7 +1,7 @@
 ﻿using NUnit.Framework;
 using TestContext = NUnit.Framework.TestContext;
 
-namespace TrxUITest.src.utils
+namespace BAETest.src.utils
 {
     [TestFixture]
 

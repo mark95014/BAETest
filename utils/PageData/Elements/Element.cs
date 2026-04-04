@@ -1,25 +1,20 @@
-﻿using Newtonsoft.Json;
-using OpenQA.Selenium;
+﻿using Microsoft.Playwright;
 using System;
+using System.Threading.Tasks;
 
-namespace TrxUITest.src.utils.PageData.Elements
+namespace BAETest.src.utils.PageData.Elements
 {
     public abstract class Element
     {
-        public Object data;
+        protected ILocator Locator { get; }
+        public object Data { get; set; }
 
-        [JsonIgnore]
-        public string selector;
-
-        public Element(string selector = "")
+        protected Element(ILocator locator)
         {
-            this.selector = selector;
+            Locator = locator ?? throw new ArgumentNullException(nameof(locator));
         }
 
-        public abstract void Get();
-
-        public abstract void GetByWebElement(IWebElement webElement);
-
-        public abstract Result Verify(string name, Object expected);
+        public abstract Task GetAsync();
+        public abstract Task<Result> VerifyAsync(string name, object expected);
     }
 }

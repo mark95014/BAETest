@@ -1,57 +1,66 @@
-﻿using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
-using TrxUITest.src.utils;
-using TrxUITest.src.utils.PageData.Elements;
+﻿using Microsoft.Playwright;
+using BAETest.src.utils;
+using BAETest.src.utils.PageData.Elements;
 
-public class CheckboxElement : SimpleElement
+namespace BAETest.src.utils.PageData.Elements
 {
-
-    public CheckboxElement(string selector) : base(selector)
+    public class CheckboxElement : SimpleElement
     {
-    }
-
-    public void Check()
-    {
-        IWebElement checkboxElement = SeleniumHelpers.FindElement(selector);
-
-        if (!checkboxElement.Selected)
+        public CheckboxElement(ILocator locator) : base(locator)
         {
-            //checkboxElement.Click();
-            JavaScriptExec.Click(selector);
         }
-    }
 
-    public void UnCheck()
-    {
-        IWebElement checkboxElement = SeleniumHelpers.FindElement(selector);
-
-        if (checkboxElement.Selected)
+        public async Task CheckAsync()
         {
-            //checkboxElement.Click();
-            JavaScriptExec.Click(selector);
+            await Locator.CheckAsync();
         }
-    }
 
-    public override void Get()
-    {
-        IWebElement checkboxElement = SeleniumHelpers.FindElement(selector);
-        string checkedAttribute = checkboxElement.GetAttribute("checked");
-        data = checkedAttribute != null && checkedAttribute.Equals("true");
-    }
+        public async Task UncheckAsync()
+        {
+            await Locator.UncheckAsync();
+        }
 
-    public override void GetByWebElement(IWebElement element)
-    {
-        data = element.GetAttribute("checked");
-    }
+        public async Task SetCheckedAsync(bool shouldBeChecked)
+        {
+            await Locator.SetCheckedAsync(shouldBeChecked);
+        }
 
-    public override Result Verify(string name, object expected)
-    {
-        var message = name + ": " + "actual=" + data.ToString() + " expected=" + expected.ToString();
+        public async Task ToggleAsync()
+        {
+            bool isChecked = await Locator.IsCheckedAsync();
+            await SetCheckedAsync(!isChecked);
+        }
 
-        bool actualValue = (bool)data;
+        public override async Task GetAsync()
+        {
+            Data = await Locator.IsCheckedAsync();
+        }
 
-        bool expectedValue = (bool) ((JValue)expected).Value;
+        public override async Task<Result> VerifyAsync(string name, object expected)
+        {
+            bool expectedChecked = Convert.ToBoolean(expected);
+            bool actualChecked = await Locator.IsCheckedAsync();
+            
+            var message = $"{name}: checked={actualChecked}, expected={expectedChecked}";
+            return new Result(actualChecked == expectedChecked, message);
+        }
 
-        return new Result ((actualValue == expectedValue), message);
+        public async Task<Result> VerifyCheckedAsync(string name, bool shouldBeChecked = true)
+        {
+            try
+            {
+                if (shouldBeChecked)
+                    await Assertions.Expect(Locator).ToBeCheckedAsync();
+                else
+                    await Assertions.Expect(Locator).Not.ToBeCheckedAsync();
+                
+                return new Result(true, $"{name}: checked state is correct");
+            }
+            catch (Exception ex)
+            {
+                var actual = await Locator.IsCheckedAsync();
+                return new Result(false, $"{name}: expected checked={shouldBeChecked}, actual={actual}. {ex.Message}");
+            }
+        }
     }
 }

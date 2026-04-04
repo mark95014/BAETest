@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace TrxUITest.src.utils
+namespace BAETest.src.utils
 {
     public static class Docker
     {

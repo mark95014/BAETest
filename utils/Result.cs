@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace TrxUITest.src.utils
+namespace BAETest.src.utils
 {
     public class Result
     {

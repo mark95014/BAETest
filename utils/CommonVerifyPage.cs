@@ -1,7 +1,7 @@
 ﻿using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.IO;
-using TrxUITest.src.utils;
+using BAETest.src.utils.PageData;
+using BAETest.src.utils;
 
 public class CommonVerifyPage
 {

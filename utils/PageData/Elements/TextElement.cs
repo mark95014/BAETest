@@ -1,75 +1,96 @@
-﻿using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
+﻿using Microsoft.Playwright;
 using System;
 using System.Text.RegularExpressions;
+using System.Threading.Tasks;
 
-namespace TrxUITest.src.utils.PageData.Elements
+namespace BAETest.src.utils.PageData.Elements
 {
     public class TextElement : SimpleElement
     {
-        readonly TextModifiers modifiers = null;
+        private readonly TextModifiers _modifiers;
 
         public class TextModifiers
         {
-            readonly public int? start = null;
-            readonly public int? length = null;
-            readonly public string regex = null;
+            public int? Start { get; }
+            public int? Length { get; }
+            public string Regex { get; }
 
             public TextModifiers(int start, int length)
             {
-                this.start = start;
-                this.length = length;
-                this.regex = null;
+                Start = start;
+                Length = length;
             }
 
-            public TextModifiers(string regex = null)
+            public TextModifiers(string regex)
             {
-                this.regex = regex;
+                Regex = regex;
             }
         }
 
-        public TextElement(string selector, TextModifiers modifiers = null) : base(selector)
+        public TextElement(ILocator locator, TextModifiers modifiers = null) 
+            : base(locator)
         {
-            this.modifiers = modifiers;
+            _modifiers = modifiers;
         }
 
-        public TextElement(string selector) : base(selector)
+        public override async Task GetAsync()
         {
-        }
+            string rawValue = await Locator.TextContentAsync();
 
-        public override void Get()
-        {
-            string rawValue = Test.driver.FindElement(By.CssSelector(selector)).Text;
-
-            if (modifiers?.start != null && modifiers.length != null)
+            if (_modifiers?.Start != null && _modifiers.Length != null)
             {
-                data = rawValue.Substring((int)modifiers.start, (int)(modifiers.start + modifiers.length));
-
+                Data = rawValue.Substring((int)_modifiers.Start, (int)_modifiers.Length);
             }
             else
             {
-                data = rawValue;
+                Data = rawValue;
             }
         }
 
-        public override void GetByWebElement(IWebElement webElement)
+        public override async Task<Result> VerifyAsync(string name, object expected)
         {
-            data = webElement.Text;
-        }
+            await GetAsync();
+            
+            var message = $"{name}: actual={Data} expected={expected}";
 
-        public override Result Verify(string name, Object expected)
-        {
-            var message = name + ": " + "actual=" + data + " expected=" + expected.ToString();
-
-            if (modifiers != null && modifiers.regex != null)
+            if (_modifiers?.Regex != null)
             {
-                string datastr = data?.ToString()?.Trim() ?? "";
-                Regex regex = new Regex(modifiers.regex);
-                return new Result (regex.IsMatch(datastr), message);
+                string dataStr = Data?.ToString()?.Trim() ?? "";
+                var regex = new Regex(_modifiers.Regex);
+                return new Result(regex.IsMatch(dataStr), message);
             }
             else
             {
-                return new Result (data.Equals(expected.ToString()), message);
+                bool matches = Data?.ToString() == expected?.ToString();
+                return new Result(matches, message);
+            }
+        }
+
+        // Direct Playwright assertions without Get
+        public async Task<Result> VerifyTextAsync(string name, string expected)
+        {
+            try
+            {
+                await Assertions.Expect(Locator).ToHaveTextAsync(expected);
+                return new Result(true, $"{name}: text matches '{expected}'");
+            }
+            catch (Exception ex)
+            {
+                var actual = await Locator.TextContentAsync();
+                return new Result(false, $"{name}: expected '{expected}', actual '{actual}'. {ex.Message}");
+            }
+        }
+
+        public async Task<Result> VerifyVisibleAsync(string name)
+        {
+            try
+            {
+                await Assertions.Expect(Locator).ToBeVisibleAsync();
+                return new Result(true, $"{name}: element is visible");
+            }
+            catch (Exception ex)
+            {
+                return new Result(false, $"{name}: element not visible. {ex.Message}");
             }
         }
     }

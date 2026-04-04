@@ -1,66 +1,112 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
+﻿using Microsoft.Playwright;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Linq;
-using TrxUITest.src.utils;
-using TrxUITest.src.utils.PageData.Elements;
+using System.Threading.Tasks;
 
-namespace TrxUITest.src.tests.utils
+namespace BAETest.src.utils.PageData.Elements
 {
     public class LegendElement : Element
     {
-        public LegendElement(string selector) : base(selector)
+        public LegendElement(ILocator locator) : base(locator)
         {
         }
 
-        public override void GetByWebElement(IWebElement webElement)
+        public override async Task GetAsync()
         {
-            Get();
-        }
+            // Get all legend items (typically a list of items with labels and colors)
+            var items = Locator.Locator(".legend-item, .legend > li, [class*='legend'] > *");
+            var itemCount = await items.CountAsync();
 
-        public override void Get()
-        {
-            ReadOnlyCollection<IWebElement> elements = Test.driver.FindElements(By.CssSelector(selector));
-            string[] values = new string[elements.Count];
-            int ix = 0;
-            foreach(IWebElement element in elements)
+            var legendData = new Dictionary<string, string>();
+
+            for (int i = 0; i < itemCount; i++)
             {
-                values[ix++] = element.Text;
-            }
-
-            data = values;
-        }
-
-        public override Result Verify(string name, object expectedResult)
-        {
-            string[] dataArray = (string[])data;
-            JArray jArray = (JArray)expectedResult;
-            string[] expectedArray = jArray.Select(j => (string)j).ToArray();
-
-            int actualCellCount = (data == null) ? 0 : dataArray.Length;
-            int expectedCellCount = (expectedResult == null) ? 0 : expectedArray.Length;
-
-            if (actualCellCount != expectedCellCount)
-            {
-                string prefix = "Number of actual and expected cells are not the same. Actual: ";
-                string message = prefix + JsonConvert.SerializeObject(data) + " Expected: " + JsonConvert.SerializeObject(expectedResult);//???error inject
-                Test.results.Add(new Result (false, message));
-            }
-            else
-            {
-                foreach(Object cell in expectedArray)
+                var item = items.Nth(i);
+                var label = await item.TextContentAsync();
+                
+                // Get color/style (e.g., background-color, border-color)
+                var colorIndicator = item.Locator(".color, .swatch, [class*='indicator']");
+                string color = "";
+                
+                if (await colorIndicator.CountAsync() > 0)
                 {
-                    int cellnum = Array.IndexOf(expectedArray, cell);
-                    string message = name + ": " + "actual=" + dataArray[cellnum].ToString() + " expected=" + cell;
-                    if (dataArray[cellnum].Equals(cell)) Test.results.Add(new Result(true, message));
-                    else Test.results.Add(new Result(false, message));
+                    color = await colorIndicator.First.GetAttributeAsync("style") ?? "";
+                }
+                
+                legendData[label?.Trim()] = color;
+            }
+
+            Data = legendData;
+        }
+
+        public async Task<string> GetLegendItemColorAsync(string label)
+        {
+            var items = Locator.Locator(".legend-item, .legend > li");
+            var itemCount = await items.CountAsync();
+
+            for (int i = 0; i < itemCount; i++)
+            {
+                var item = items.Nth(i);
+                var itemLabel = await item.TextContentAsync();
+                
+                if (itemLabel?.Trim() == label)
+                {
+                    var colorIndicator = item.Locator(".color, .swatch, [class*='indicator']");
+                    if (await colorIndicator.CountAsync() > 0)
+                    {
+                        return await colorIndicator.First.GetAttributeAsync("style") ?? "";
+                    }
                 }
             }
 
-            return new Result (!Test.results.HasFailures(), ""); //??? what happens to this Result?
+            return null;
+        }
+
+        public override async Task<Result> VerifyAsync(string name, object expected)
+        {
+            await GetAsync();
+
+            if (expected is Dictionary<string, string> expectedLegend)
+            {
+                var actualLegend = Data as Dictionary<string, string>;
+
+                if (actualLegend.Count != expectedLegend.Count)
+                {
+                    return new Result(false, $"{name}: legend item count mismatch. Expected {expectedLegend.Count}, actual {actualLegend.Count}");
+                }
+
+                foreach (var kvp in expectedLegend)
+                {
+                    if (!actualLegend.ContainsKey(kvp.Key))
+                    {
+                        return new Result(false, $"{name}: legend item '{kvp.Key}' not found");
+                    }
+
+                    if (actualLegend[kvp.Key] != kvp.Value)
+                    {
+                        return new Result(false, $"{name}: legend item '{kvp.Key}' color mismatch. Expected '{kvp.Value}', actual '{actualLegend[kvp.Key]}'");
+                    }
+                }
+
+                return new Result(true, $"{name}: legend matches");
+            }
+
+            return new Result(false, $"{name}: expected data is not in the correct format (Dictionary<string, string>)");
+        }
+
+        public async Task<Result> VerifyLegendItemExistsAsync(string name, string label)
+        {
+            await GetAsync();
+            var legendData = Data as Dictionary<string, string>;
+
+            if (legendData.ContainsKey(label))
+            {
+                return new Result(true, $"{name}: legend item '{label}' exists");
+            }
+            else
+            {
+                return new Result(false, $"{name}: legend item '{label}' not found. Available items: {string.Join(", ", legendData.Keys)}");
+            }
         }
     }
 }

@@ -4,7 +4,7 @@ using TestContext = NUnit.Framework.TestContext;
 
 
 
-namespace TrxUITest.utils
+namespace BAETest.utils
 {
     public class TestRail
     {

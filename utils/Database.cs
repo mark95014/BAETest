@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
-using TrxUITest.src.utils;
+using BAETest.src.utils;
 using TestContext = NUnit.Framework.TestContext;
 
 public static class Database

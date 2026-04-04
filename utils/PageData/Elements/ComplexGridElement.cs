@@ -1,71 +1,78 @@
-﻿using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
-using OpenQA.Selenium;
+using Microsoft.Playwright;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.Reflection;
-using TrxUITest.src.utils;
-using TrxUITest.src.utils.PageData.Elements;
+using System.Threading.Tasks;
 
-
-public class ComplexGridElement : GridElement
+namespace BAETest.src.utils.PageData.Elements
 {
-    [JsonIgnore]
-    public Type[] columnTypes;
-
-    public ComplexGridElement(string selector, Type[] columnTypes) :base(selector)
+    public class ComplexGridElement : GridElement
     {
-        this.columnTypes = columnTypes;
-    }
+        [JsonIgnore]
+        public Type[] ColumnTypes { get; }
 
-    //The CSS selector of each cell in a grid is unknown, because the selectors are dynamically created.
-    //Therefore, we get the data from the cells using an IWebElement. Then we add it to the row of data being collected.
-    public override void GetCell(IWebElement webElement, List<Object> row, int columnNumber)
-    {
-        Type[] types = new Type[1];
-        types[0] = typeof(string);
-        Type type = columnTypes[columnNumber];
-
-        if (type != null)
+        public ComplexGridElement(ILocator locator, Type[] columnTypes) : base(locator)
         {
-            ConstructorInfo constructor = type.GetConstructor(types);
+            ColumnTypes = columnTypes;
+        }
 
-            //we don't need to pass the selector parameter because we already have the IWebElement for this element.
-            Element element = (Element)constructor.Invoke(new object[] { "" });
+        public override async Task GetCellAsync(ILocator cellLocator, List<object> row, int columnNumber)
+        {
+            if (columnNumber >= ColumnTypes.Length)
+            {
+                row.Add(null);
+                return;
+            }
 
-            element.GetByWebElement(webElement);
-            row.Add(element.data);
+            Type cellType = ColumnTypes[columnNumber];
+
+            if (cellType != null)
+            {
+                // Create instance of the element type (e.g., TextElement, ButtonElement)
+                var constructor = cellType.GetConstructor(new[] { typeof(ILocator) });
+                
+                if (constructor != null)
+                {
+                    var element = (Element)constructor.Invoke(new object[] { cellLocator });
+                    await element.GetAsync();
+                    row.Add(element.Data);
+                }
+                else
+                {
+                    row.Add(null);
+                }
+            }
+            else
+            {
+                row.Add(null);
+            }
+        }
+
+        public override async Task<Result> VerifyCellAsync(object actualData, object expectedResult, string msg, int columnNumber)
+        {
+            if (columnNumber >= ColumnTypes.Length)
+            {
+                return new Result(true, $"{msg} - No type defined for column {columnNumber}");
+            }
+
+            Type cellType = ColumnTypes[columnNumber];
+
+            if (cellType != null)
+            {
+                var constructor = cellType.GetConstructor(new[] { typeof(ILocator) });
+                
+                if (constructor != null)
+                {
+                    // Create a dummy locator for verification purposes
+                    var dummyLocator = Locator.Page.Locator("body"); // Placeholder
+                    var element = (Element)constructor.Invoke(new object[] { dummyLocator });
+                    element.Data = actualData;
+                    return await element.VerifyAsync(msg, expectedResult);
+                }
+            }
+
+            return new Result(true, msg);
         }
     }
-
-    public override Result VerifyCell(Object data, Object expectedResult, string msg, int columnNumber)
-    {
-        Type[] types = new Type[1];
-        types[0] = typeof(string);
-        Type type = columnTypes[columnNumber];
-
-        if (type != null)
-        {
-            ConstructorInfo constructor = type.GetConstructor(types);
-            Element element = (Element)constructor.Invoke(new object[] { "" });
-            element.data = data;
-            return element.Verify("", expectedResult);
-        }
-        else
-        {
-            return new Result (true);
-        }
-    }
-
-    //verifyCell(page: EnhancedPageObject, data: any, expectedResult: any, message: string, colnumber: number)
-    //{
-    //    if (this.columnTypes[colnumber] != undefined)
-    //    {
-    //        var element: element = new this.columnTypes[colnumber]('')
-    //        element.data = data
-    //        element.verify(page, expectedResult, message)
-    //    }
-    //    return page
-    //}
-
 }

@@ -15,6 +15,11 @@
 
     <!-- Path to Test Adapters -->
     <!--<TestAdaptersPaths>%SystemDrive%\Temp\foo;%SystemDrive%\Temp\bar</TestAdaptersPaths>-->
+
+    <!-- Add environment variables section -->
+    <EnvironmentVariables>
+      <HEADED>1</HEADED>
+    </EnvironmentVariables>
   </RunConfiguration>
 
   <!-- Configurations for data collectors -->
