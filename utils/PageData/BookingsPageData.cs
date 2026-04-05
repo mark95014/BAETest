@@ -6,13 +6,13 @@ namespace BAETest.utils.PageData
 {
     internal class BookingsPageData : BasePageData
     {
-        internal TextElement Title;
-        internal SimpleGridElement BookingsTable;
+        public TextElement Title;
+        public TableElement BookingsTable;
 
         protected override void InitializeElements()
         {
             Title = new TextElement(Page.GetByRole(AriaRole.Heading, new() { Name = "All Bookings" }));
-            BookingsTable = new SimpleGridElement(Page.Locator("[data-testid='bookingsTable']"));
+            BookingsTable = new TableElement(Page.Locator("[id='bookingsTable']"));
         }
 
         public override System.Threading.Tasks.Task GetAsync()

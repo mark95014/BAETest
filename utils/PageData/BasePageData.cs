@@ -22,31 +22,41 @@ namespace BAETest.src.utils.PageData
         public abstract Task GetAsync();
         public abstract Task VerifyAsync();
 
-        public void Get()
+        public async Task Get()
         {
-            foreach (FieldInfo field in GetType().GetFields())
+            FieldInfo[] fields = GetType().GetFields();  // Simple - gets public fields
+
+            foreach (FieldInfo field in fields)
             {
-                //if (field != null && field.FieldType == typeof(Element))
                 if (field != null)
+                {
+                    MethodInfo method = field.FieldType.GetMethod("GetAsync");
+                    if (method != null)
                     {
-                    MethodInfo method = field.FieldType.GetMethod("Get");
-                    method.Invoke(field.GetValue(this), new object[] { });
+                        var task = (Task)method.Invoke(field.GetValue(this), new object[] { });
+                        await task;
+                    }
                 }
             }
         }
 
         public void Verify(JObject expectedResult, string dataLabel)
         {
-            foreach (FieldInfo field in GetType().GetFields())
+            FieldInfo[] fields = GetType().GetFields();  // Simple - gets public fields
+
+            foreach (FieldInfo field in fields)
             {
-                if (field != null)
+                if (field != null && expectedResult[field.Name] != null)
                 {
                     JObject expectedObject = (JObject)expectedResult[field.Name];
                     Object expected = expectedObject["data"];
-                    MethodInfo VerifyMethod = field.FieldType.GetMethod("Verify");
-                    string dataName = dataLabel + "." + field.Name;
-                    Result result = (Result)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected });
-                    BaseTest.results.Add(result);
+                    MethodInfo VerifyMethod = field.FieldType.GetMethod("VerifyAsync");
+                    if (VerifyMethod != null)
+                    {
+                        string dataName = dataLabel + "." + field.Name;
+                        Result result = (Result)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected });
+                        BaseTest.results.Add(result);
+                    }
                 }
             }
         }

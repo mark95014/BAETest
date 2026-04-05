@@ -1,35 +1,37 @@
 using BAETest.pages;
 using BAETest.src.utils;
-using BAETest.utils.PageData;
+using Microsoft.Playwright;
+using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
+using BookingsData = BAETest.utils.PageData.BookingsPageData;
 
 namespace BAETest.tests.regression
 {
     [TestFixture]
     public class BookingsPageTest : BaseTest
     {
-        private BookingsPageData _pageData;
+        private BookingsData _bookingsPageData;
 
         [SetUp]
         public async Task Setup()
         {
-            await Page.GotoAsync(BookingsPage.url);
+            await Page.GotoAsync("https://localhost:7031/bookings");
 
-            _pageData = new BookingsPageData();
-            _pageData.Initialize(Page);
+            _bookingsPageData = new BookingsData();
+            _bookingsPageData.Initialize(Page);
         }
 
         [TestCase(1, Description = "Verify all data on Bookings page")]
-        public void VerifyBookingsPage(int testCaseId)
+        public async Task VerifyBookingsPage(int testCaseId)
         {
-            BookingsPage.VerifyPage();
+            await BookingsPage.VerifyPage(Page);
         }
 
         [TestCase(2, Description = "Verify filter functionality on Bookings page")]
         public async Task VerifyBookingsFilter(int testCaseId)
         {
             await BookingsPage.FilterBookings(Page, "7");
-            BookingsPage.VerifyPage();
+            await BookingsPage.VerifyPage(Page);
         }
     }
 }

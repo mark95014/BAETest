@@ -2,16 +2,17 @@
 using Newtonsoft.Json.Linq;
 using BAETest.src.utils.PageData;
 using BAETest.src.utils;
+using System.Threading.Tasks;
 
 public class CommonVerifyPage
 {
-    public static void Verify(BasePageData data)
+    public static async Task Verify(BasePageData data)
     {
-        data.Get();
+        await data.Get();
 
         string dataLabel = ExpectedResults.MakeDataLabel(data, BaseTest.GetTestCaseId());
 
-        if (BaseTest.generateExpectedResults)
+        if (Test.generateExpectedResults)
         {
             ExpectedResults.Append(data, dataLabel);
         }
