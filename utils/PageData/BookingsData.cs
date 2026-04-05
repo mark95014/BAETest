@@ -2,7 +2,6 @@
 using BAETest.src.utils.PageData;
 using BAETest.src.utils.PageData.Elements;
 using Microsoft.Playwright;
-using System.Threading.Tasks;
 
 namespace BAETest.utils
 {
