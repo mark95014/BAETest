@@ -83,10 +83,10 @@ namespace BAETest.src.utils
 
         public static void Startup(string testName, string databaseBackupFileName = "default.bak", string folder = "regression")
         {
-            TestRail.InitTestRail();
+            //TestRail.InitTestRail();
             ExpectedResults.Init(testName, Test.generateExpectedResults, folder);
             //Database.Restore(Test.dbServer, Test.guid, databaseBackupFileName);   Activate this when we get UAT running again.
-            Test.LogIn();
+            //Test.LogIn();
             //HomePage.WaitForPageToLoad();
             //Menu.InitializeMenu();
         }

@@ -136,13 +136,13 @@ namespace BAETest.src.utils.PageData.Elements
                                 if (colNum >= actualData[rowNum].Count || actualData[rowNum][colNum] == null)
                                 {
                                     string msg = $"{name}: Missing actual result for column expected result: {expectedCell}";
-                                    Test.results.Add(new Result(false, msg));
+                                    BaseTest.results.Add(new Result(false, msg));
                                 }
                                 else
                                 {
                                     string msg = $"{name}: actual= {actualData[rowNum][colNum]} expected= {expectedCell}";
                                     var result = await VerifyCellAsync(actualData[rowNum][colNum], expectedCell, msg, colNum);
-                                    Test.results.Add(result);
+                                    BaseTest.results.Add(result);
                                 }
                             }
                         }

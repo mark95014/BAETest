@@ -8,10 +8,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="**\ClientPage*.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Folder Include="data\expectedResults\multithreaded\" />
     <Folder Include="data\expectedResults\regression\multiRebalanceTest\cwm\" />
     <Folder Include="inputData\" />
-    <Folder Include="pages\" />
     <Folder Include="sandbox\" />
     <Folder Include="TestResults\" />
     <Folder Include="tests\disabled\" />

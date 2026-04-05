@@ -79,7 +79,7 @@
     <Parameter name="databasePassword" value="Password4you"/>
     <Parameter name="databaseRootName" value="TRX_TRX_0000_QATEMPLATE"/>
     <Parameter name="trxPassword" value="Password4you"/>
-    <Parameter name="generateExpectedResults" value="false"/>
+    <Parameter name="generateExpectedResults" value="true"/>
     <Parameter name="testRailRunId" value="285348"/> <!-- Put the test run id from a previous run here and your test will add results to it.-->
     <Parameter name="milestoneId" value="2533"/>
     <Parameter name="projectId" value="51"/>

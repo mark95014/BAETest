@@ -24,11 +24,11 @@ namespace BAETest.src.utils
 
         public void Display()
         {
-            int testCaseId = Test.GetTestCaseId();
+            int testCaseId = BaseTest.GetTestCaseId();
             Console.WriteLine();
             Console.WriteLine("Summary");
             string passFail = HasFailures() ? "Failed" : "Passed";
-            Console.WriteLine($"\tTest Case {TestContext.CurrentContext.Test.FullName} TestRail test case id: {Test.GetTestCaseId()} {passFail}");
+            Console.WriteLine($"\tTest Case {TestContext.CurrentContext.Test.FullName} TestRail test case id: {BaseTest.GetTestCaseId()} {passFail}");
             Console.WriteLine($"\tTotal Assertions {this.all.Count}");
             Console.WriteLine($"\tPassed Assertions {this.passed.Count}");
             Console.WriteLine($"\tFailed Assertions {this.failed.Count}");
@@ -47,7 +47,7 @@ namespace BAETest.src.utils
                     if (result.testCaseId == testCaseId)
                     {
                         Console.WriteLine($"\t{result.message}");
-                        if (Test.verbose)
+                        if (BaseTest.verbose)
                         {
                             Console.WriteLine("\t\tStack Trace");
 
@@ -61,7 +61,7 @@ namespace BAETest.src.utils
                 }
             }
 
-            if (Test.verbose)
+            if (BaseTest.verbose)
             {
                 foreach (Result result in all)
                 {

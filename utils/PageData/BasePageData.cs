@@ -1,4 +1,4 @@
-﻿using Microsoft.Playwright;
+using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Reflection;
@@ -7,7 +7,7 @@ using BAETest.src.utils;
 
 namespace BAETest.src.utils.PageData
 {
-    public abstract class PageData
+    public abstract class BasePageData
     {
         protected IPage Page { get; private set; }
 
@@ -46,7 +46,7 @@ namespace BAETest.src.utils.PageData
                     MethodInfo VerifyMethod = field.FieldType.GetMethod("Verify");
                     string dataName = dataLabel + "." + field.Name;
                     Result result = (Result)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected });
-                    Test.results.Add(result);
+                    BaseTest.results.Add(result);
                 }
             }
         }

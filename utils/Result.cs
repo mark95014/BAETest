@@ -14,7 +14,7 @@ namespace BAETest.src.utils
         {
             this.passed = passed;
             this.message = message;
-            this.testCaseId = Test.GetTestCaseId();
+            this.testCaseId = BaseTest.GetTestCaseId();
 
             if (!passed)
             {

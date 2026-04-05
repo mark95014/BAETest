@@ -5,13 +5,13 @@ using BAETest.src.utils;
 
 public class CommonVerifyPage
 {
-    public static void Verify(PageData data)
+    public static void Verify(BasePageData data)
     {
         data.Get();
 
-        string dataLabel = ExpectedResults.MakeDataLabel(data, Test.GetTestCaseId());
+        string dataLabel = ExpectedResults.MakeDataLabel(data, BaseTest.GetTestCaseId());
 
-        if (Test.generateExpectedResults)
+        if (BaseTest.generateExpectedResults)
         {
             ExpectedResults.Append(data, dataLabel);
         }
