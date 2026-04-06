@@ -1,8 +1,8 @@
 ﻿using Microsoft.Playwright;
-using BAETest.src.utils;
-using BAETest.src.utils.PageData.Elements;
+using LDSTest.src.utils;
+using LDSTest.src.utils.PageData.Elements;
 
-namespace BAETest.src.utils.PageData.Elements
+namespace LDSTest.src.utils.PageData.Elements
 {
     public class CheckboxElement : SimpleElement
     {

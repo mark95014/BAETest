@@ -4,7 +4,7 @@ using TestContext = NUnit.Framework.TestContext;
 
 
 
-namespace BAETest.utils
+namespace LDSTest.utils
 {
     public class TestRail
     {

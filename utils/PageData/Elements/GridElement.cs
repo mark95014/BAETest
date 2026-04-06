@@ -1,7 +1,7 @@
 ﻿using Microsoft.Playwright;
 using Newtonsoft.Json;
 
-namespace BAETest.src.utils.PageData.Elements
+namespace LDSTest.src.utils.PageData.Elements
 {
     public abstract class GridElement : Element
     {

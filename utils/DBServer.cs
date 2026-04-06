@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace BAETest.src.utils
+namespace LDSTest.src.utils
 {
     public class DBServer
     {

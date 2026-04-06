@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace BAETest.src.utils.PageData.Elements
+namespace LDSTest.src.utils.PageData.Elements
 {
     public abstract class SimpleElement : Element
     {

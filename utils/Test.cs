@@ -1,12 +1,12 @@
 ﻿using TestContext = NUnit.Framework.TestContext;
 using Assert = NUnit.Framework.Assert;
-using BAETest.utils;
+using LDSTest.utils;
 
 //Note: I wanted this class to be inherited by each test, but Nunit does not instantiate the class which contains the TestFixture until after the
 //OneTimeSetup finishes. So, the startup aspects of the Test class would not be available to the child class when we need them in OneTimeSetup.
 //Therefore, I had to make the Test class static.
 
-namespace BAETest.src.utils
+namespace LDSTest.src.utils
 {
     public static class Test
     {

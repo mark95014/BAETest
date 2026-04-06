@@ -1,6 +1,6 @@
 ﻿using System.Data;
 using Microsoft.Data.SqlClient;
-using BAETest.src.utils;
+using LDSTest.src.utils;
 using TestContext = NUnit.Framework.TestContext;
 
 public static class Database

@@ -3,9 +3,9 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Reflection;
 using System.Threading.Tasks;
-using BAETest.src.utils;
+using LDSTest.src.utils;
 
-namespace BAETest.src.utils.PageData
+namespace LDSTest.src.utils.PageData
 {
     public abstract class BasePageData
     {

@@ -1,8 +1,8 @@
-using BAETest.src.utils.PageData;
-using BAETest.src.utils.PageData.Elements;
+using LDSTest.src.utils.PageData;
+using LDSTest.src.utils.PageData.Elements;
 using Microsoft.Playwright;
 
-namespace BAETest.utils.PageData
+namespace LDSTest.utils.PageData
 {
     internal class BookingsPageData : BasePageData
     {

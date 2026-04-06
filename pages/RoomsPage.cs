@@ -1,10 +1,10 @@
-using BAETest.src.utils;
-using BAETest.utils;
-using BAETest.src.utils.PageData;
+using LDSTest.src.utils;
+using LDSTest.utils;
+using LDSTest.src.utils.PageData;
 using Microsoft.Playwright;
-using BAETest.utils.PageData;
+using LDSTest.utils.PageData;
 
-namespace BAETest.pages
+namespace LDSTest.pages
 {
     internal static class RoomsPage
     {

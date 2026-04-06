@@ -1,11 +1,11 @@
-using BAETest.pages;
-using BAETest.src.utils;
+using LDSTest.pages;
+using LDSTest.src.utils;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
-using BookingsData = BAETest.utils.PageData.BookingsPageData;
+using BookingsData = LDSTest.utils.PageData.BookingsPageData;
 
-namespace BAETest.tests.regression
+namespace LDSTest.tests.regression
 {
     [TestFixture]
     public class BookingsPageTest : BaseTest

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using Microsoft.Playwright; // Ensure this using is present for ILocator
 
-namespace BAETest.src.utils.PageData.Elements
+namespace LDSTest.src.utils.PageData.Elements
 {
     public class CurrencyFormatElement : TextElement
     {

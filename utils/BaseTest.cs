@@ -1,11 +1,11 @@
-﻿using BAETest.utils;
+﻿using LDSTest.utils;
 using iText.Layout.Borders;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using System;
 using TestContext = NUnit.Framework.TestContext;
 
-namespace BAETest.src.utils
+namespace LDSTest.src.utils
 {
     [TestFixture]
 

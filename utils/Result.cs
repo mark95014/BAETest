@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace BAETest.src.utils
+namespace LDSTest.src.utils
 {
     public class Result
     {
