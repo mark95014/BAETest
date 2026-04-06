@@ -9,26 +9,97 @@ namespace BAETest.src.utils.PageData.Elements
 {
     public class TableElement : Element
     {
-        public TableElement(ILocator locator) : base(locator)
+        private readonly bool _supportsPagination;
+        private readonly string _nextButtonSelector;
+        private readonly string _firstButtonSelector;
+
+        public TableElement(ILocator locator, bool supportsPagination = false) : base(locator)
         {
+            _supportsPagination = supportsPagination;
+            _nextButtonSelector = "[id='btnNext']";
+            _firstButtonSelector = "[id='btnFirst']";
         }
 
         public override async Task GetAsync()
         {
             var gridData = new List<List<string>>();
 
-            // Get headers if they exist
+            // Get headers if they exist (only once)
             var headers = await GetHeadersAsync();
             if (headers.Count > 0)
             {
                 gridData.Add(headers);
             }
 
-            // Get body rows
-            var bodyRows = await GetBodyRowsAsync();
-            gridData.AddRange(bodyRows);
+            if (_supportsPagination)
+            {
+                // Navigate to first page
+                await GoToFirstPageAsync();
+
+                // Get all pages
+                var allBodyRows = await GetAllPaginatedRowsAsync();
+                gridData.AddRange(allBodyRows);
+            }
+            else
+            {
+                // Get single page
+                var bodyRows = await GetBodyRowsAsync();
+                gridData.AddRange(bodyRows);
+            }
 
             Data = gridData;
+        }
+
+        private async Task GoToFirstPageAsync()
+        {
+            var page = Locator.Page;
+            var firstButton = page.Locator(_firstButtonSelector);
+            
+            // Check if first button exists and is enabled
+            var count = await firstButton.CountAsync();
+            if (count > 0)
+            {
+                var isDisabled = await firstButton.IsDisabledAsync();
+                if (!isDisabled)
+                {
+                    await firstButton.ClickAsync();
+                    // Wait for table to reload
+                    await Task.Delay(500);
+                }
+            }
+        }
+
+        private async Task<List<List<string>>> GetAllPaginatedRowsAsync()
+        {
+            var allRows = new List<List<string>>();
+            var page = Locator.Page;
+            var nextButton = page.Locator(_nextButtonSelector);
+
+            while (true)
+            {
+                // Get rows from current page
+                var pageRows = await GetBodyRowsAsync();
+                allRows.AddRange(pageRows);
+
+                // Check if Next button exists and is enabled
+                var nextCount = await nextButton.CountAsync();
+                if (nextCount == 0)
+                {
+                    break; // No next button, we're done
+                }
+
+                var isDisabled = await nextButton.IsDisabledAsync();
+                if (isDisabled)
+                {
+                    break; // Next button disabled, we're on last page
+                }
+
+                // Click next and wait for table to reload
+                await nextButton.ClickAsync();
+                await Task.Delay(500); // Wait for page to load
+            }
+
+            return allRows;
         }
 
         public async Task<List<string>> GetHeadersAsync()
@@ -181,8 +252,7 @@ namespace BAETest.src.utils.PageData.Elements
 
         public override async Task<Result> VerifyAsync(string name, object expected)
         {
-            await GetAsync();
-
+            // Data already loaded by BasePageData.Get() - no need to call GetAsync() again
             var actualGrid = Data as List<List<string>>;
             var expectedGrid = ((JArray)expected).ToObject<List<List<string>>>();
 

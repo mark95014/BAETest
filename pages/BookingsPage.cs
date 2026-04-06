@@ -15,6 +15,7 @@ namespace BAETest.pages
             internal static string pageTitle = "h1:has-text('All Bookings')";
             internal static string bookingsTable = "[id='bookingsTable']";
             internal static string filterCustomerIdInput = "[id='filterCustomerId']";
+            internal static string filterCustomerNameInput = "[id='filterCustomerName']";
             internal static string applyFiltersButton = "button:has-text('Apply Filters')";
         }
 
@@ -33,6 +34,13 @@ namespace BAETest.pages
         internal static async Task FilterBookings(IPage page, string filterValue)
         {
             await page.Locator(Selectors.filterCustomerIdInput).FillAsync(filterValue);
+            await page.ClickAsync(Selectors.applyFiltersButton);
+            await WaitForPageToLoad(page);
+        }
+
+        internal static async Task FilterBookingsByCustomerName(IPage page, string filterValue)
+        {
+            await page.Locator(Selectors.filterCustomerNameInput).FillAsync(filterValue);
             await page.ClickAsync(Selectors.applyFiltersButton);
             await WaitForPageToLoad(page);
         }

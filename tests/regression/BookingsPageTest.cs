@@ -33,5 +33,12 @@ namespace BAETest.tests.regression
             await BookingsPage.FilterBookings(Page, "7");
             await BookingsPage.VerifyPage(Page);
         }
+
+        [TestCase(3, Description = "Verify filter by customer name containing 'son'")]
+        public async Task VerifyBookingsFilterByCustomerName(int testCaseId)
+        {
+            await BookingsPage.FilterBookingsByCustomerName(Page, "son");
+            await BookingsPage.VerifyPage(Page);
+        }
     }
 }

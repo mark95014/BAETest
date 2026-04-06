@@ -47,22 +47,21 @@ namespace BAETest.src.utils.PageData.Elements
             }
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Task<Result> VerifyAsync(string name, object expected)
         {
-            await GetAsync();
-            
+            // Data already loaded by BasePageData.Get() - no need to call GetAsync() again
             var message = $"{name}: actual={Data} expected={expected}";
 
             if (_modifiers?.Regex != null)
             {
                 string dataStr = Data?.ToString()?.Trim() ?? "";
                 var regex = new Regex(_modifiers.Regex);
-                return new Result(regex.IsMatch(dataStr), message);
+                return Task.FromResult(new Result(regex.IsMatch(dataStr), message));
             }
             else
             {
                 bool matches = Data?.ToString() == expected?.ToString();
-                return new Result(matches, message);
+                return Task.FromResult(new Result(matches, message));
             }
         }
 

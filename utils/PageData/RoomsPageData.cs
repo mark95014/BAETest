@@ -4,15 +4,15 @@ using Microsoft.Playwright;
 
 namespace BAETest.utils.PageData
 {
-    internal class BookingsPageData : BasePageData
+    internal class RoomsPageData : BasePageData
     {
         public TextElement Title;
-        public TableElement BookingsTable;
+        public TableElement RoomsTable;
 
         protected override void InitializeElements()
         {
-            Title = new TextElement(Page.GetByRole(AriaRole.Heading, new() { Name = "All Bookings" }));
-            BookingsTable = new TableElement(Page.Locator("[id='bookingsTable']"), supportsPagination: true);
+            Title = new TextElement(Page.GetByRole(AriaRole.Heading, new() { Name = "All Rooms" }));
+            RoomsTable = new TableElement(Page.Locator("[id='roomsTable']"), supportsPagination: true);
         }
 
         public override System.Threading.Tasks.Task GetAsync()
