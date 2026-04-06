@@ -31,6 +31,7 @@ namespace LDSTest.tests.regression
         public async Task VerifyEditRoomFunctionality(int testCaseId)
         {
             // Define the rooms to edit (row indices) and new prices
+            // But, we will cancel the changes after editing to ensure the test is non-destructive
             var roomsToEdit = new[]
             {
                 new { RowIndex = 1, NewPrice = "150" },
@@ -51,7 +52,7 @@ namespace LDSTest.tests.regression
                 await Page.Locator("[id='price']").FillAsync(room.NewPrice);
 
                 // Save the changes
-                await Page.Locator(".btn-save").ClickAsync();
+                await Page.Locator(".btn-cancel").ClickAsync();
 
                 // Wait for the dialog to close and page to update
                 await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);

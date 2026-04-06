@@ -86,7 +86,6 @@
     <Parameter name="webURL" value="https://trx-environment.morningstar.com/" /> <!-- environment will be substituted by the test, e.g., trx-qa.morningstar.com-->
     <Parameter name="localWebURL" value="http://localhost:56786/#/" />
     <Parameter name="delayRebalance" value="false"/>
-    <Parameter name="headless" value="false"/>
     
     <!-- The test will use the database server which corresponds to the environment setting above.-->
     <Parameter name="local.databaseServer" value="." />
