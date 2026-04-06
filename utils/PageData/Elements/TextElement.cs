@@ -1,7 +1,5 @@
 ﻿using Microsoft.Playwright;
-using System;
 using System.Text.RegularExpressions;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -27,7 +25,7 @@ namespace LDSTest.src.utils.PageData.Elements
             }
         }
 
-        public TextElement(ILocator locator, TextModifiers modifiers = null) 
+        public TextElement(ILocator locator, TextModifiers modifiers = null)
             : base(locator)
         {
             _modifiers = modifiers;

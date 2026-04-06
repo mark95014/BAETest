@@ -1,9 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Threading.Tasks;
 
 
 namespace LDSTest.src.utils.PageData.Elements
@@ -13,7 +8,7 @@ namespace LDSTest.src.utils.PageData.Elements
         private readonly string _downloadPath;
         private readonly string[] _columnsToIgnore;
 
-        public CsvElement(ILocator downloadButtonLocator, string expectedFileName, string[] columnsToIgnore = null, string downloadPath = null) 
+        public CsvElement(ILocator downloadButtonLocator, string expectedFileName, string[] columnsToIgnore = null, string downloadPath = null)
             : base(downloadButtonLocator)
         {
             _downloadPath = downloadPath ?? Path.Combine(Path.GetTempPath(), "playwright-downloads");
@@ -41,14 +36,14 @@ namespace LDSTest.src.utils.PageData.Elements
         private async Task<List<List<string>>> ReadCsvAsync(string filePath)
         {
             var csvData = new List<List<string>>();
-            
+
             using (var reader = new StreamReader(filePath))
             {
                 while (!reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
                     var values = line.Split(',').Select(v => v.Trim('"', ' ')).ToList();
-                    
+
                     // Filter out ignored columns
                     var filteredValues = new List<string>();
                     for (int i = 0; i < values.Count; i++)
@@ -58,7 +53,7 @@ namespace LDSTest.src.utils.PageData.Elements
                             filteredValues.Add(values[i]);
                         }
                     }
-                    
+
                     csvData.Add(filteredValues);
                 }
             }
@@ -73,7 +68,7 @@ namespace LDSTest.src.utils.PageData.Elements
             if (expected is List<List<string>> expectedCsv)
             {
                 var actualCsv = Data as List<List<string>>;
-                
+
                 if (actualCsv.Count != expectedCsv.Count)
                 {
                     return new Result(false, $"{name}: CSV row count mismatch. Expected {expectedCsv.Count}, actual {actualCsv.Count}");

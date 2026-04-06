@@ -1,7 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -23,16 +20,16 @@ namespace LDSTest.src.utils.PageData.Elements
             {
                 var item = items.Nth(i);
                 var label = await item.TextContentAsync();
-                
+
                 // Get color/style (e.g., background-color, border-color)
                 var colorIndicator = item.Locator(".color, .swatch, [class*='indicator']");
                 string color = "";
-                
+
                 if (await colorIndicator.CountAsync() > 0)
                 {
                     color = await colorIndicator.First.GetAttributeAsync("style") ?? "";
                 }
-                
+
                 legendData[label?.Trim()] = color;
             }
 
@@ -48,7 +45,7 @@ namespace LDSTest.src.utils.PageData.Elements
             {
                 var item = items.Nth(i);
                 var itemLabel = await item.TextContentAsync();
-                
+
                 if (itemLabel?.Trim() == label)
                 {
                     var colorIndicator = item.Locator(".color, .swatch, [class*='indicator']");

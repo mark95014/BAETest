@@ -1,7 +1,6 @@
 using LDSTest.pages;
 using LDSTest.src.utils;
 using Microsoft.Playwright;
-using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using RoomsData = LDSTest.utils.PageData.RoomsPageData;
 

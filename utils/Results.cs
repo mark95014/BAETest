@@ -1,7 +1,4 @@
-﻿using NUnit.Framework;
-using TestContext = NUnit.Framework.TestContext;
-using System;
-using System.Collections.Generic;
+﻿using TestContext = NUnit.Framework.TestContext;
 
 
 namespace LDSTest.src.utils
@@ -90,7 +87,7 @@ namespace LDSTest.src.utils
         {
             string errorMessages = "";
 
-            foreach(Result error in failed)
+            foreach (Result error in failed)
             {
                 errorMessages += error.message + "\n";
             }

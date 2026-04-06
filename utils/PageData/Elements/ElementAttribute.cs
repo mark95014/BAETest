@@ -1,6 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -21,10 +19,10 @@ namespace LDSTest.src.utils.PageData.Elements
         public override async Task<Result> VerifyAsync(string name, object expected)
         {
             await GetAsync();
-            
+
             string actualValue = Data?.ToString() ?? "";
             string expectedValue = expected?.ToString() ?? "";
-            
+
             var message = $"{name}: attribute '{_attributeName}'='{actualValue}', expected='{expectedValue}'";
             return new Result(actualValue == expectedValue, message);
         }
@@ -48,7 +46,7 @@ namespace LDSTest.src.utils.PageData.Elements
             await GetAsync();
             string actualValue = Data?.ToString() ?? "";
             bool contains = actualValue.Contains(expectedSubstring);
-            
+
             var message = $"{name}: attribute '{_attributeName}'='{actualValue}' {(contains ? "contains" : "does not contain")} '{expectedSubstring}'";
             return new Result(contains, message);
         }

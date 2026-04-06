@@ -1,8 +1,4 @@
 using Microsoft.Playwright;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
 
 namespace LDSTest.src.utils.PageData.Elements
@@ -54,7 +50,7 @@ namespace LDSTest.src.utils.PageData.Elements
         {
             var page = Locator.Page;
             var firstButton = page.Locator(_firstButtonSelector);
-            
+
             // Check if first button exists and is enabled
             var count = await firstButton.CountAsync();
             if (count > 0)
@@ -146,14 +142,14 @@ namespace LDSTest.src.utils.PageData.Elements
         {
             var rows = Locator.Locator("tbody tr");
             var bodyRowCount = await rows.CountAsync();
-            
+
             if (includeHeader)
             {
                 var headers = Locator.Locator("thead th");
                 var hasHeaders = await headers.CountAsync() > 0;
                 return hasHeaders ? bodyRowCount + 1 : bodyRowCount;
             }
-            
+
             return bodyRowCount;
         }
 
@@ -162,7 +158,7 @@ namespace LDSTest.src.utils.PageData.Elements
             // Try to get column count from headers first
             var headers = Locator.Locator("thead th");
             var headerCount = await headers.CountAsync();
-            
+
             if (headerCount > 0)
             {
                 return headerCount;
@@ -225,7 +221,7 @@ namespace LDSTest.src.utils.PageData.Elements
                 var row = rows.Nth(i);
                 var cells = row.Locator("td");
                 var cellCount = await cells.CountAsync();
-                
+
                 if (columnIndex < cellCount)
                 {
                     var cellText = await cells.Nth(columnIndex).TextContentAsync();

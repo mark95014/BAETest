@@ -1,6 +1,4 @@
 ﻿using Microsoft.Playwright;
-using LDSTest.src.utils;
-using LDSTest.src.utils.PageData.Elements;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -40,7 +38,7 @@ namespace LDSTest.src.utils.PageData.Elements
         {
             bool expectedChecked = Convert.ToBoolean(expected);
             bool actualChecked = await Locator.IsCheckedAsync();
-            
+
             var message = $"{name}: checked={actualChecked}, expected={expectedChecked}";
             return new Result(actualChecked == expectedChecked, message);
         }
@@ -53,7 +51,7 @@ namespace LDSTest.src.utils.PageData.Elements
                     await Assertions.Expect(Locator).ToBeCheckedAsync();
                 else
                     await Assertions.Expect(Locator).Not.ToBeCheckedAsync();
-                
+
                 return new Result(true, $"{name}: checked state is correct");
             }
             catch (Exception ex)

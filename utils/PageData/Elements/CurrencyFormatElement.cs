@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using Microsoft.Playwright; // Ensure this using is present for ILocator
+﻿using Microsoft.Playwright; // Ensure this using is present for ILocator
 
 namespace LDSTest.src.utils.PageData.Elements
 {

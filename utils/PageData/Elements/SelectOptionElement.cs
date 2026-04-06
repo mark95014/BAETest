@@ -1,6 +1,4 @@
 ﻿using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -43,7 +41,7 @@ namespace LDSTest.src.utils.PageData.Elements
             await GetAsync();
             string actualValue = Data?.ToString() ?? "";
             string expectedValue = expected?.ToString() ?? "";
-            
+
             var message = $"{name}: selected value='{actualValue}', expected='{expectedValue}'";
             return new Result(actualValue == expectedValue, message);
         }

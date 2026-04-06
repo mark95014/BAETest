@@ -1,6 +1,4 @@
 using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -29,7 +27,7 @@ namespace LDSTest.src.utils.PageData.Elements
         {
             string actualSrc = await GetSrcAsync();
             string expectedSrc = expected?.ToString() ?? "";
-            
+
             var message = $"{name}: src='{actualSrc}', expected='{expectedSrc}'";
             return new Result(actualSrc == expectedSrc, message);
         }

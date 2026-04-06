@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace LDSTest.src.utils
 {
@@ -32,7 +31,7 @@ namespace LDSTest.src.utils
                         stackTrace.Add(frame.ToString());
                     }
                 }
-             }
+            }
         }
     }
 }

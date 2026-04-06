@@ -1,6 +1,6 @@
-﻿using System.Data;
+﻿using LDSTest.src.utils;
 using Microsoft.Data.SqlClient;
-using LDSTest.src.utils;
+using System.Data;
 using TestContext = NUnit.Framework.TestContext;
 
 public static class Database
@@ -16,7 +16,7 @@ public static class Database
         {
             command.CommandType = CommandType.StoredProcedure;
 
-            
+
             string localBackupPath = "C:\\testautomation\\backup";
             string localDataPath = "C:\\Program Files\\Microsoft SQL Server\\MSSQL15.MSSQLSERVER\\MSSQL\\DATA";
             string localLogPath = localDataPath;

@@ -1,9 +1,5 @@
 using Microsoft.Playwright;
 using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Reflection;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -31,7 +27,7 @@ namespace LDSTest.src.utils.PageData.Elements
             {
                 // Create instance of the element type (e.g., TextElement, ButtonElement)
                 var constructor = cellType.GetConstructor(new[] { typeof(ILocator) });
-                
+
                 if (constructor != null)
                 {
                     var element = (Element)constructor.Invoke(new object[] { cellLocator });
@@ -61,7 +57,7 @@ namespace LDSTest.src.utils.PageData.Elements
             if (cellType != null)
             {
                 var constructor = cellType.GetConstructor(new[] { typeof(ILocator) });
-                
+
                 if (constructor != null)
                 {
                     // Create a dummy locator for verification purposes

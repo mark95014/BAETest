@@ -37,7 +37,7 @@ namespace LDSTest.src.utils.PageData.Elements
                 for (int i = 0; i < pageCount; i++)
                 {
                     await GetPageAsync(gridData);
-                    
+
                     if (i < pageCount - 1)
                     {
                         await nextPageButton.ClickAsync();

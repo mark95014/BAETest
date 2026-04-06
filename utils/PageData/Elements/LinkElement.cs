@@ -1,6 +1,4 @@
 using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -35,7 +33,7 @@ namespace LDSTest.src.utils.PageData.Elements
         {
             string actualText = await Locator.TextContentAsync();
             string expectedText = expected?.ToString() ?? "";
-            
+
             var message = $"{name}: text='{actualText}', expected='{expectedText}'";
             return new Result(actualText?.Trim() == expectedText?.Trim(), message);
         }

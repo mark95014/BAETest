@@ -1,8 +1,6 @@
 ﻿using LDSTest.utils;
-using iText.Layout.Borders;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
-using System;
 using TestContext = NUnit.Framework.TestContext;
 
 namespace LDSTest.src.utils

@@ -1,6 +1,4 @@
 using Microsoft.Playwright;
-using System;
-using System.Threading.Tasks;
 
 namespace LDSTest.src.utils.PageData.Elements
 {
@@ -40,7 +38,7 @@ namespace LDSTest.src.utils.PageData.Elements
         {
             bool expectedEnabled = Convert.ToBoolean(expected);
             bool actualEnabled = await Locator.IsEnabledAsync();
-            
+
             var message = $"{name}: enabled={actualEnabled}, expected={expectedEnabled}";
             return new Result(actualEnabled == expectedEnabled, message);
         }
@@ -53,7 +51,7 @@ namespace LDSTest.src.utils.PageData.Elements
                     await Assertions.Expect(Locator).ToBeEnabledAsync();
                 else
                     await Assertions.Expect(Locator).ToBeDisabledAsync();
-                
+
                 return new Result(true, $"{name}: enabled state is correct");
             }
             catch (Exception ex)

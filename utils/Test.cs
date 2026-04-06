@@ -1,6 +1,6 @@
-﻿using TestContext = NUnit.Framework.TestContext;
+﻿using LDSTest.utils;
 using Assert = NUnit.Framework.Assert;
-using LDSTest.utils;
+using TestContext = NUnit.Framework.TestContext;
 
 //Note: I wanted this class to be inherited by each test, but Nunit does not instantiate the class which contains the TestFixture until after the
 //OneTimeSetup finishes. So, the startup aspects of the Test class would not be available to the child class when we need them in OneTimeSetup.
@@ -47,7 +47,7 @@ namespace LDSTest.src.utils
             Test.environment = TestContext.Parameters["environment"].ToString();
 
             Test.dbServer = new DBServer(TestContext.Parameters[$"{Test.environment}.databaseServer"].ToString(),
-                                         TestContext.Parameters["databaseUserName"].ToString(), 
+                                         TestContext.Parameters["databaseUserName"].ToString(),
                                          TestContext.Parameters["databasePassword"].ToString());
 
             if (Test.environment == "prod")
@@ -109,7 +109,7 @@ namespace LDSTest.src.utils
             return testCaseId;
         }
 
-        public static void SetTestCaseId(string  testCaseId)
+        public static void SetTestCaseId(string testCaseId)
         {
             TestContext.CurrentContext.Test.Arguments[0] = testCaseId;
         }

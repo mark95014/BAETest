@@ -1,8 +1,5 @@
-using LDSTest.src.utils;
-using LDSTest.utils;
-using LDSTest.src.utils.PageData;
-using Microsoft.Playwright;
 using LDSTest.utils.PageData;
+using Microsoft.Playwright;
 
 namespace LDSTest.pages
 {

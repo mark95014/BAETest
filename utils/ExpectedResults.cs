@@ -1,8 +1,4 @@
-﻿using System;
-using Newtonsoft.Json;
-using System.Collections.Generic;
-using System.IO;
-using Newtonsoft.Json.Linq;
+﻿using Newtonsoft.Json;
 
 public abstract class ExpectedResults
 {
@@ -14,21 +10,24 @@ public abstract class ExpectedResults
 
     public static void Init(string testName, Boolean generateExpectedResults, string folder)
     {
-        fileName = expectedResultsFolder +"/" + folder + "/" + testName + ".json";
+        fileName = expectedResultsFolder + "/" + folder + "/" + testName + ".json";
         if (generateExpectedResults) File.WriteAllText(fileName, "{\n");
     }
 
-    public static int Occurrences(string searchfor) {
+    public static int Occurrences(string searchfor)
+    {
         var count = 0;
 
-        foreach (string label in labels) {
+        foreach (string label in labels)
+        {
             if (label.StartsWith(searchfor)) count++;
         }
 
         return count;
     }
 
-    public static string MakeDataLabel(object data, int testCaseId) {
+    public static string MakeDataLabel(object data, int testCaseId)
+    {
         string prefix = data.GetType().Name + "." + testCaseId;
         string label;
 
@@ -41,16 +40,16 @@ public abstract class ExpectedResults
         return label;
     }
 
-    public static void Append(Object data, string dataLabel) 
+    public static void Append(Object data, string dataLabel)
     {
         var json = "";
 
         if (!first) json = ",\n";
 
         json += JsonConvert.SerializeObject(dataLabel) + ": ";
-        
+
         json += JsonConvert.SerializeObject(data, Formatting.Indented);
-        
+
         //    replacer: (k: string, v: any) => {
         //    if (k == "selector") return undefined
         //    if (k == "columnTypes") return undefined

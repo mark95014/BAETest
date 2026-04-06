@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace LDSTest.src.utils
+﻿namespace LDSTest.src.utils
 {
     public class DBServer
     {
         public string serverName;
         public string userName;
         public string password;
-        
+
         public DBServer(string serverName, string userName, string password)
         {
             this.serverName = serverName;
