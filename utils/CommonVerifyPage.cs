@@ -20,7 +20,7 @@ public class CommonVerifyPage
         {
             JObject expectedResults = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(ExpectedResults.fileName));
             JObject expectedResult = (JObject)expectedResults[dataLabel];
-            data.Verify(expectedResult, dataLabel);
+            await data.Verify(expectedResult, dataLabel);
         }
     }
 }

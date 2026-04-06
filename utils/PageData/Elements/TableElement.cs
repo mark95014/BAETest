@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Newtonsoft.Json.Linq;
 
 namespace BAETest.src.utils.PageData.Elements
 {
@@ -182,35 +183,31 @@ namespace BAETest.src.utils.PageData.Elements
         {
             await GetAsync();
 
-            if (expected is List<List<string>> expectedGrid)
+            var actualGrid = Data as List<List<string>>;
+            var expectedGrid = ((JArray)expected).ToObject<List<List<string>>>();
+
+            if (actualGrid.Count != expectedGrid.Count)
             {
-                var actualGrid = Data as List<List<string>>;
-
-                if (actualGrid.Count != expectedGrid.Count)
-                {
-                    return new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}");
-                }
-
-                for (int i = 0; i < expectedGrid.Count; i++)
-                {
-                    if (actualGrid[i].Count != expectedGrid[i].Count)
-                    {
-                        return new Result(false, $"{name}: column count mismatch in row {i}. Expected {expectedGrid[i].Count}, actual {actualGrid[i].Count}");
-                    }
-
-                    for (int j = 0; j < expectedGrid[i].Count; j++)
-                    {
-                        if (actualGrid[i][j] != expectedGrid[i][j])
-                        {
-                            return new Result(false, $"{name}: cell mismatch at [{i},{j}]. Expected '{expectedGrid[i][j]}', actual '{actualGrid[i][j]}'");
-                        }
-                    }
-                }
-
-                return new Result(true, $"{name}: grid data matches");
+                return new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}");
             }
 
-            return new Result(false, $"{name}: expected data is not in the correct format (List<List<string>>)");
+            for (int i = 0; i < expectedGrid.Count; i++)
+            {
+                if (actualGrid[i].Count != expectedGrid[i].Count)
+                {
+                    return new Result(false, $"{name}: column count mismatch in row {i}. Expected {expectedGrid[i].Count}, actual {actualGrid[i].Count}");
+                }
+
+                for (int j = 0; j < expectedGrid[i].Count; j++)
+                {
+                    if (actualGrid[i][j] != expectedGrid[i][j])
+                    {
+                        return new Result(false, $"{name}: cell mismatch at [{i},{j}]. Expected '{expectedGrid[i][j]}', actual '{actualGrid[i][j]}'");
+                    }
+                }
+            }
+
+            return new Result(true, $"{name}: grid data matches");
         }
 
         public async Task<Result> VerifyRowCountAsync(string name, int expectedCount, bool includeHeader = false)

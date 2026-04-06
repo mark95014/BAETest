@@ -40,7 +40,7 @@ namespace BAETest.src.utils.PageData
             }
         }
 
-        public void Verify(JObject expectedResult, string dataLabel)
+        public async Task Verify(JObject expectedResult, string dataLabel)
         {
             FieldInfo[] fields = GetType().GetFields();  // Simple - gets public fields
 
@@ -49,12 +49,13 @@ namespace BAETest.src.utils.PageData
                 if (field != null && expectedResult[field.Name] != null)
                 {
                     JObject expectedObject = (JObject)expectedResult[field.Name];
-                    Object expected = expectedObject["data"];
+                    Object expected = expectedObject["Data"];
                     MethodInfo VerifyMethod = field.FieldType.GetMethod("VerifyAsync");
                     if (VerifyMethod != null)
                     {
                         string dataName = dataLabel + "." + field.Name;
-                        Result result = (Result)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected });
+                        var task = (Task<Result>)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected });
+                        Result result = await task;
                         BaseTest.results.Add(result);
                     }
                 }
