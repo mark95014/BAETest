@@ -22,6 +22,7 @@
     <Folder Include="tests\highVolume\" />
     <Folder Include="tests\multithreaded\" />
     <Folder Include="tests\utils\" />
+	  
   </ItemGroup>
 
   <ItemGroup>
