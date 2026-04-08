@@ -1,4 +1,5 @@
 ﻿using LDSUITest.src.utils;
+using LDSTest.Shared.Utils;
 using LDSUITest.src.utils.PageData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
@@ -11,7 +12,7 @@ public class CommonVerifyPage
 
         string dataLabel = ExpectedResults.MakeDataLabel(data, BaseTest.GetTestCaseId());
 
-        if (Test.generateExpectedResults)
+        if (BaseTest.generateExpectedResults)
         {
             ExpectedResults.Append(data, dataLabel);
         }

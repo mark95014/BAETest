@@ -11,11 +11,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 	ProjectSection(SolutionItems) = preProject
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
-		.runsettings = .runsettings
 		App.config = App.config
 		Directory.Build.props = Directory.Build.props
 		README.md = README.md
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDSTest.Shared", "LDSTest.Shared\LDSTest.Shared.csproj", "{7FEB53E0-F312-48F4-BB6F-9DDEC2615134}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -31,6 +32,10 @@ Global
 		{AA518FA4-CDD0-9458-4221-62DD207CEF0C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{AA518FA4-CDD0-9458-4221-62DD207CEF0C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{AA518FA4-CDD0-9458-4221-62DD207CEF0C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7FEB53E0-F312-48F4-BB6F-9DDEC2615134}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7FEB53E0-F312-48F4-BB6F-9DDEC2615134}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7FEB53E0-F312-48F4-BB6F-9DDEC2615134}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7FEB53E0-F312-48F4-BB6F-9DDEC2615134}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

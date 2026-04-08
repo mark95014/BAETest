@@ -2,100 +2,65 @@
 <RunSettings>
   <!-- Configurations that affect the Test Framework -->
   <RunConfiguration>
-    <!--<MaxCpuCount>1</MaxCpuCount>-->
-    <!-- Path relative to solution directory -->
     <ResultsDirectory>.\TestResults</ResultsDirectory>
-
-    <!-- [x86] | x64
-      - You can also change it from menu Test, Test Settings, Default Processor Architecture -->
-    <!--<TargetPlatform>x86</TargetPlatform>-->
-
-    <!-- Framework35 | [Framework40] | Framework45 -->
-    <!--<TargetFrameworkVersion>Framework40</TargetFrameworkVersion>-->
-
-    <!-- Path to Test Adapters -->
-    <!--<TestAdaptersPaths>%SystemDrive%\Temp\foo;%SystemDrive%\Temp\bar</TestAdaptersPaths>-->
-
-    <!-- Add environment variables section -->
     <EnvironmentVariables>
-      <HEADED>1</HEADED>
+      <!-- Set to 0 for API tests (no browser needed) -->
+      <HEADED>0</HEADED>
     </EnvironmentVariables>
   </RunConfiguration>
-
-  <!-- Configurations for data collectors -->
-  <!--<DataCollectionRunSettings>
-    <DataCollectors>
-      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-        <Configuration>
-          <CodeCoverage>
-            <ModulePaths>
-              <Exclude>
-                <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
-              </Exclude>
-            </ModulePaths>
-
-            --><!-- We recommend you do not change the following values: --><!--
-            <UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
-            <AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
-            <CollectFromChildProcesses>True</CollectFromChildProcesses>
-            <CollectAspDotNet>False</CollectAspDotNet>
-
-          </CodeCoverage>
-        </Configuration>
-      </DataCollector>
-
-    </DataCollectors>
-  </DataCollectionRunSettings>-->
-
-  <LoggerRunSettings>
-    <Loggers>
-      <!--<Logger friendlyName="console" enabled="True">
-        <Configuration>
-          <Verbosity>quiet</Verbosity>
-        </Configuration>
-      </Logger>-->
-      <Logger friendlyName="trx" enabled="True">
-        <!--<Configuration>
-          <LogFileName>trx.log</LogFileName>
-          <Verbosity>quiet</Verbosity>
-        </Configuration>-->
-      </Logger>
-      <!--<Logger friendlyName="html" enabled="True">
-        <Configuration>
-          <LogFileName>foo.html</LogFileName>
-        </Configuration>
-      </Logger>
-      <Logger friendlyName="blame" enabled="True" />-->
-    </Loggers>
-  </LoggerRunSettings>
-
+	
   <!-- Parameters used by tests at runtime -->
   <TestRunParameters>
 
+    <!-- Common test parameters -->
     <Parameter name="verbose" value="true"/>
     <Parameter name="enableTestRail" value="false"/>
-    <Parameter name="environment" value="prod"/> <!--qa,dev,stg,uat,prod,local-->
-    <Parameter name="databaseUserName" value="TrxAutomation"/>
-    <Parameter name="databasePassword" value="Password4you"/>
-    <Parameter name="databaseRootName" value="TRX_TRX_0000_QATEMPLATE"/>
-    <Parameter name="trxPassword" value="Password4you"/>
-    <Parameter name="generateExpectedResults" value="false"/>
-    <Parameter name="testRailRunId" value="285348"/> <!-- Put the test run id from a previous run here and your test will add results to it.-->
+    <Parameter name="environment" value="local"/> <!--qa,dev,stg,uat,prod,local-->
+    <Parameter name="testRailRunId" value="285348"/>
     <Parameter name="milestoneId" value="2533"/>
     <Parameter name="projectId" value="51"/>
-    <Parameter name="webURL" value="https://trx-environment.morningstar.com/" /> <!-- environment will be substituted by the test, e.g., trx-qa.morningstar.com-->
-    <Parameter name="localWebURL" value="http://localhost:56786/#/" />
-    <Parameter name="delayRebalance" value="false"/>
+	<Parameter name="generateExpectedResults" value="false"/>
     
-    <!-- The test will use the database server which corresponds to the environment setting above.-->
+    <!-- Database parameters (shared with UI tests if needed) -->
+    <Parameter name="databaseUserName" value="QAUser"/>
+    <Parameter name="databasePassword" value="QAPassword"/>
+    <Parameter name="databaseRootName" value="QADatabase"/>
+    
+    <!-- Database servers -->
     <Parameter name="local.databaseServer" value="." />
-    <Parameter name="qa.databaseServer" value="trsqlqadb8002.ias04bd6.easn.morningstar.com" />
-    <Parameter name="uat.databaseServer" value="trsqluatdb6002" />
-    <Parameter name="stg.databaseServer" value="trsqlstgdb8002.ias04bd6.easn.morningstar.com" />
-    <Parameter name="prod.databaseServer" value="trsqlprddb6002.morningstar.com" />
+    <Parameter name="qa.databaseServer" value="qadb.bae.com" />
+    <Parameter name="uat.databaseServer" value="uatdb.bae.com" />
+    <Parameter name="stg.databaseServer" value="stgdb.bae.com" />
+    <Parameter name="prod.databaseServer" value="db.bae.com" />
     
-  
+    <!-- API Test specific parameters -->
+    <!-- TODO: Update these URLs to match your actual API endpoints -->
+    <Parameter name="apiBaseURL" value="https://api-{environment}.bae.com/api/" />
     
-  </TestRunParameters>
+    <Parameter name="local.apiBaseURL" value="https://localhost:7031/api/HotelBooking/" />
+    <Parameter name="qa.apiBaseURL" value="https://api-qa.bae.com/api/" />
+    <Parameter name="dev.apiBaseURL" value="https://api-dev.bae.com/api/" />
+    <Parameter name="uat.apiBaseURL" value="https://api-uat.bae.com/api/" />
+    <Parameter name="stg.apiBaseURL" value="https://api-stg.bae.com/api/" />
+    <Parameter name="prod.apiBaseURL" value="https://api-prod.bae.com/api/" />
+    
+    <!-- API Configuration -->
+    <Parameter name="apiTimeout" value="30"/> <!-- API request timeout in seconds -->
+    <Parameter name="apiRetryCount" value="3"/> <!-- Number of retries for failed requests -->
+    <Parameter name="apiRetryDelayMs" value="1000"/> <!-- Delay between retries in milliseconds -->
+    
+    <!-- API Authentication -->
+    <Parameter name="apiUsername" value="BAEQAAutomation"/>
+    <Parameter name="apiPassword" value="ToBeDetermined"/>
+    <Parameter name="apiAuthType" value="None"/> <!-- Basic, Bearer, ApiKey, or None -->
+    <Parameter name="apiBearerToken" value=""/> <!-- If using Bearer token authentication -->
+    <Parameter name="apiKeyHeaderName" value="X-API-Key"/> <!-- If using API key authentication -->
+    <Parameter name="apiKeyValue" value=""/> <!-- If using API key authentication -->
+
+	<!-- Connection string for local SQL Server database -->
+    <Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />
+	<Parameter name="SqlScriptsPath" value="C:\Users\mark9\source\repos\HotelBooking\database" />
+	  
+</TestRunParameters>
 
 </RunSettings>

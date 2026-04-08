@@ -1,14 +1,15 @@
 ﻿using Newtonsoft.Json;
 
+namespace LDSTest.Shared;
+
 public abstract class ExpectedResults
 {
-    static List<string> labels = new List<string>();
-    static Boolean first = true;
-    public static string fileName;
-    //public static string ExpectedResultsFolder = Environment.GetEnvironmentVariable("ExpectedResultsFolder");
+    private static List<string> labels = new();
+    private static bool first = true;
+    public static string? fileName;
     public static string expectedResultsFolder = "../../../data/expectedResults";
 
-    public static void Init(string testName, Boolean generateExpectedResults, string folder)
+    public static void Init(string testName, bool generateExpectedResults, string folder)
     {
         fileName = expectedResultsFolder + "/" + folder + "/" + testName + ".json";
         if (generateExpectedResults) File.WriteAllText(fileName, "{\n");
@@ -40,7 +41,7 @@ public abstract class ExpectedResults
         return label;
     }
 
-    public static void Append(Object data, string dataLabel)
+    public static void Append(object data, string dataLabel)
     {
         var json = "";
 
@@ -56,15 +57,15 @@ public abstract class ExpectedResults
         //    return v
         //}, maxLength: 200, indent: 4})
 
-        File.AppendAllText(fileName, json);
+        File.AppendAllText(fileName!, json);
         first = false;
     }
 
-    public static void Close(Boolean generateExpectedResults)
+    public static void Close(bool generateExpectedResults)
     {
         if (generateExpectedResults)
         {
-            File.AppendAllText(fileName, "\n}");
+            File.AppendAllText(fileName!, "\n}");
             first = true;
         }
     }
