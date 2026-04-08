@@ -1,7 +1,9 @@
 using FluentAssertions;
+using LDSAPITest.Utils;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Http.Json;
+using static LDSAPITest.Examples.BookingApiTests;
 
 namespace LDSAPITest.Examples;
 
@@ -33,6 +35,7 @@ public class BookingApiTests : BaseApiTest
         var bookings = await DeserializeResponseAsync<List<Booking>>(response);
         bookings.Should().NotBeNull();
         bookings.Should().NotBeEmpty();
+        VerifyResponse.Verify(this.GetType().Name, new { bookings = bookings! });
         
         LogInfo($"Retrieved {bookings?.Count} bookings");
     }
@@ -52,6 +55,7 @@ public class BookingApiTests : BaseApiTest
         var booking = await response.Content.ReadFromJsonAsync<Booking>();
         booking.Should().NotBeNull();
         booking!.Id.Should().Be(bookingId);
+        VerifyResponse.Verify(this.GetType().Name, new { booking = booking! });
     }
 
     [Test]
@@ -76,5 +80,6 @@ public class BookingApiTests : BaseApiTest
         createdBooking.Should().NotBeNull();
         createdBooking!.CustomerId.Should().Be(newBooking.CustomerId);
         createdBooking.RoomNumber.Should().Be(newBooking.RoomNumber);
+        VerifyResponse.Verify(this.GetType().Name, new { booking = createdBooking! });
     }
 }

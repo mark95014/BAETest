@@ -29,7 +29,12 @@ public abstract class ExpectedResults
 
     public static string MakeDataLabel(object data, int testCaseId)
     {
-        string prefix = data.GetType().Name + "." + testCaseId;
+        return MakeDataLabel(data.GetType().Name, testCaseId);
+    }
+
+    public static string MakeDataLabel(string name, int testCaseId)
+    {
+        string prefix = name + "." + testCaseId;
         string label;
 
         int count = Occurrences(prefix);

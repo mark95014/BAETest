@@ -39,7 +39,7 @@ namespace LDSUITest.src.utils.PageData
 
         public async Task Verify(JObject expectedResult, string dataLabel)
         {
-            FieldInfo[] fields = GetType().GetFields();  // Simple - gets public fields
+            FieldInfo[] fields = GetType().GetFields();  // gets public fields
 
             foreach (FieldInfo field in fields)
             {

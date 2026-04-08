@@ -22,7 +22,7 @@ public abstract class BaseApiTest
     protected int ApiRetryCount { get; private set; }
     protected int ApiRetryDelayMs { get; private set; }
     protected bool Verbose { get; private set; }
-    protected bool GenerateExpectedResults { get; private set; }
+    public static bool GenerateExpectedResults { get; private set; }
 
     protected AsyncRetryPolicy<HttpResponseMessage> RetryPolicy { get; private set; } = null!;
 
@@ -86,6 +86,7 @@ public abstract class BaseApiTest
     [OneTimeTearDown]
     public virtual void BaseOneTimeTearDown()
     {
+        ExpectedResults.Close(GenerateExpectedResults);
         HttpClient?.Dispose();
         LogInfo("=== API Test Teardown Complete ===");
         new Database().ResetDatabase().GetAwaiter().GetResult();
@@ -374,6 +375,13 @@ public abstract class BaseApiTest
                 LogInfo($"  {header.Key}: {string.Join(", ", header.Value)}");
             }
         }
+    }
+
+    public static int GetTestCaseId()
+    {
+        var arg = TestContext.CurrentContext.Test.Arguments[0];
+        string testCaseIdString = arg?.ToString() ?? throw new InvalidOperationException("Test case ID argument is null.");
+        return int.Parse(testCaseIdString);
     }
 
     #endregion
