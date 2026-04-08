@@ -1,5 +1,6 @@
 using LDSUITest.pages;
 using LDSUITest.src.utils;
+using LDSTest.Shared;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using RoomsData = LDSUITest.utils.PageData.RoomsPageData;
@@ -59,6 +60,9 @@ namespace LDSUITest.tests.regression
 
             // Verify the entire table using the standard verification
             await RoomsPage.VerifyPage(Page);
+
+            // Reset the database to ensure test isolation and non-destructive testing
+            await new Database().ResetDatabase();
         }
     }
 }

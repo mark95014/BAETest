@@ -93,8 +93,10 @@
     <Parameter name="uat.databaseServer" value="trsqluatdb6002" />
     <Parameter name="stg.databaseServer" value="trsqlstgdb8002.ias04bd6.easn.morningstar.com" />
     <Parameter name="prod.databaseServer" value="trsqlprddb6002.morningstar.com" />
-    
-  
+
+	  <!-- Connection string for local SQL Server database -->
+	  <Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />
+	  <Parameter name="SqlScriptsPath" value="C:\Users\mark9\source\repos\HotelBooking\database" />
     
   </TestRunParameters>
 
