@@ -246,7 +246,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             return cells.Nth(column);
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Task<Result> VerifyAsync(string name, object expected)
         {
             // Data already loaded by BasePageData.Get() - no need to call GetAsync() again
             var actualGrid = Data as List<List<string>>;
@@ -254,26 +254,26 @@ namespace LDSUITest.src.utils.PageData.Elements
 
             if (actualGrid.Count != expectedGrid.Count)
             {
-                return new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}");
+                return Task.FromResult(new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}"));
             }
 
             for (int i = 0; i < expectedGrid.Count; i++)
             {
                 if (actualGrid[i].Count != expectedGrid[i].Count)
                 {
-                    return new Result(false, $"{name}: column count mismatch in row {i}. Expected {expectedGrid[i].Count}, actual {actualGrid[i].Count}");
+                    return Task.FromResult(new Result(false, $"{name}: column count mismatch in row {i}. Expected {expectedGrid[i].Count}, actual {actualGrid[i].Count}"));
                 }
 
                 for (int j = 0; j < expectedGrid[i].Count; j++)
                 {
                     if (actualGrid[i][j] != expectedGrid[i][j])
                     {
-                        return new Result(false, $"{name}: cell mismatch at [{i},{j}]. Expected '{expectedGrid[i][j]}', actual '{actualGrid[i][j]}'");
+                        return Task.FromResult(new Result(false, $"{name}: cell mismatch at [{i},{j}]. Expected '{expectedGrid[i][j]}', actual '{actualGrid[i][j]}'"));
                     }
                 }
             }
 
-            return new Result(true, $"{name}: grid data matches");
+            return Task.FromResult(new Result(true, $"{name}: grid data matches"));
         }
 
         public async Task<Result> VerifyRowCountAsync(string name, int expectedCount, bool includeHeader = false)

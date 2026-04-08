@@ -4,10 +4,15 @@ namespace LDSTest.Shared;
 
 public abstract class ExpectedResults
 {
+    // Make static fields private and expose via properties if needed
     private static List<string> labels = new();
     private static bool first = true;
     public static string? fileName;
-    public static string expectedResultsFolder = "../../../data/expectedResults";
+    private static readonly string expectedResultsFolder = "../../../data/expectedResults";
+
+    // Add public static properties if external access is required
+    public static string? FileName => fileName;
+    public static string ExpectedResultsFolder => expectedResultsFolder;
 
     public static void Init(string testName, bool generateExpectedResults, string folder)
     {
