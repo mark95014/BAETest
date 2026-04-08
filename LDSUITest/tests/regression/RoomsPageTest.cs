@@ -52,7 +52,7 @@ namespace LDSUITest.tests.regression
                 await Page.Locator("[id='price']").FillAsync(room.NewPrice);
 
                 // Save the changes
-                await Page.Locator(".btn-cancel").ClickAsync();
+                await Page.Locator(".btn-save").ClickAsync();
 
                 // Wait for the dialog to close and page to update
                 await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);

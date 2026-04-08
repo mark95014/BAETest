@@ -2,19 +2,8 @@
 <RunSettings>
   <!-- Configurations that affect the Test Framework -->
   <RunConfiguration>
-    <!--<MaxCpuCount>1</MaxCpuCount>-->
     <!-- Path relative to solution directory -->
     <ResultsDirectory>.\TestResults</ResultsDirectory>
-
-    <!-- [x86] | x64
-      - You can also change it from menu Test, Test Settings, Default Processor Architecture -->
-    <!--<TargetPlatform>x86</TargetPlatform>-->
-
-    <!-- Framework35 | [Framework40] | Framework45 -->
-    <!--<TargetFrameworkVersion>Framework40</TargetFrameworkVersion>-->
-
-    <!-- Path to Test Adapters -->
-    <!--<TestAdaptersPaths>%SystemDrive%\Temp\foo;%SystemDrive%\Temp\bar</TestAdaptersPaths>-->
 
     <!-- Add environment variables section -->
     <EnvironmentVariables>
@@ -22,63 +11,16 @@
     </EnvironmentVariables>
   </RunConfiguration>
 
-  <!-- Configurations for data collectors -->
-  <!--<DataCollectionRunSettings>
-    <DataCollectors>
-      <DataCollector friendlyName="Code Coverage" uri="datacollector://Microsoft/CodeCoverage/2.0" assemblyQualifiedName="Microsoft.VisualStudio.Coverage.DynamicCoverageDataCollector, Microsoft.VisualStudio.TraceCollector, Version=11.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
-        <Configuration>
-          <CodeCoverage>
-            <ModulePaths>
-              <Exclude>
-                <ModulePath>.*CPPUnitTestFramework.*</ModulePath>
-              </Exclude>
-            </ModulePaths>
-
-            --><!-- We recommend you do not change the following values: --><!--
-            <UseVerifiableInstrumentation>True</UseVerifiableInstrumentation>
-            <AllowLowIntegrityProcesses>True</AllowLowIntegrityProcesses>
-            <CollectFromChildProcesses>True</CollectFromChildProcesses>
-            <CollectAspDotNet>False</CollectAspDotNet>
-
-          </CodeCoverage>
-        </Configuration>
-      </DataCollector>
-
-    </DataCollectors>
-  </DataCollectionRunSettings>-->
-
-  <LoggerRunSettings>
-    <Loggers>
-      <!--<Logger friendlyName="console" enabled="True">
-        <Configuration>
-          <Verbosity>quiet</Verbosity>
-        </Configuration>
-      </Logger>-->
-      <Logger friendlyName="trx" enabled="True">
-        <!--<Configuration>
-          <LogFileName>trx.log</LogFileName>
-          <Verbosity>quiet</Verbosity>
-        </Configuration>-->
-      </Logger>
-      <!--<Logger friendlyName="html" enabled="True">
-        <Configuration>
-          <LogFileName>foo.html</LogFileName>
-        </Configuration>
-      </Logger>
-      <Logger friendlyName="blame" enabled="True" />-->
-    </Loggers>
-  </LoggerRunSettings>
-
   <!-- Parameters used by tests at runtime -->
   <TestRunParameters>
 
     <Parameter name="verbose" value="true"/>
     <Parameter name="enableTestRail" value="false"/>
     <Parameter name="environment" value="prod"/> <!--qa,dev,stg,uat,prod,local-->
-    <Parameter name="databaseUserName" value="TrxAutomation"/>
-    <Parameter name="databasePassword" value="Password4you"/>
-    <Parameter name="databaseRootName" value="TRX_TRX_0000_QATEMPLATE"/>
-    <Parameter name="trxPassword" value="Password4you"/>
+    <Parameter name="databaseUserName" value="BAEAutomation"/>
+    <Parameter name="databasePassword" value="Passwordyou"/>
+    <Parameter name="databaseRootName" value="BAE_QATEMPLATE"/>
+    <Parameter name="baePassword" value="Password4you"/>
     <Parameter name="generateExpectedResults" value="false"/>
     <Parameter name="testRailRunId" value="285348"/> <!-- Put the test run id from a previous run here and your test will add results to it.-->
     <Parameter name="milestoneId" value="2533"/>
@@ -89,10 +31,10 @@
     
     <!-- The test will use the database server which corresponds to the environment setting above.-->
     <Parameter name="local.databaseServer" value="." />
-    <Parameter name="qa.databaseServer" value="trsqlqadb8002.ias04bd6.easn.morningstar.com" />
-    <Parameter name="uat.databaseServer" value="trsqluatdb6002" />
-    <Parameter name="stg.databaseServer" value="trsqlstgdb8002.ias04bd6.easn.morningstar.com" />
-    <Parameter name="prod.databaseServer" value="trsqlprddb6002.morningstar.com" />
+    <Parameter name="qa.databaseServer" value="qadb.bae.com" />
+    <Parameter name="uat.databaseServer" value="uatdb.bae.com" />
+    <Parameter name="stg.databaseServer" value="stgdb.bae.com" />
+    <Parameter name="prod.databaseServer" value="proddb.bae.com" />
 
 	  <!-- Connection string for local SQL Server database -->
 	  <Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />
