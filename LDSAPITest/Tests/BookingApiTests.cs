@@ -1,9 +1,10 @@
 using FluentAssertions;
 using LDSAPITest.Utils;
+using LDSTest.Shared;
+using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Http.Json;
-using static LDSAPITest.Examples.BookingApiTests;
 
 namespace LDSAPITest.Examples;
 
@@ -45,8 +46,11 @@ public class BookingApiTests : BaseApiTest
     [TestCase(5, 7, Description = "Get booking by ID")]
     public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId, int bookingId)
     {
+        JObject testInput = TestInput.GetInput(testCaseId);
+        int id = (int)testInput["booking"]!["Id"]!;
+
         // Act
-        var response = await GetAsync($"GetBooking/{bookingId}");
+        var response = await GetAsync($"GetBooking/{id}");
 
         // Assert
         AssertStatusCode(response, HttpStatusCode.OK);
