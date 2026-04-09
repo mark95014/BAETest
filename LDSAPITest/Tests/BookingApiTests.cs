@@ -42,23 +42,23 @@ public class BookingApiTests : BaseApiTest
     }
 
     [Test]
-    [TestCase(2, 1, Description = "Get booking by ID")]
-    [TestCase(5, 7, Description = "Get booking by ID")]
-    public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId, int bookingId)
+    [TestCase(2, Description = "Get booking by ID 1")]
+    [TestCase(5, Description = "Get booking by ID 7")]
+    public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId)
     {
         JObject testInput = TestInput.GetInput(testCaseId);
-        int id = (int)testInput["booking"]!["Id"]!;
+        int bookingId = (int)testInput["booking"]!["Id"]!;
 
         // Act
-        var response = await GetAsync($"GetBooking/{id}");
+        var response = await GetAsync($"GetBooking/{bookingId}");
 
         // Assert
         AssertStatusCode(response, HttpStatusCode.OK);
         
         //var booking = await DeserializeResponseAsync<Booking>(response);
         var booking = await response.Content.ReadFromJsonAsync<Booking>();
-        booking.Should().NotBeNull();
-        booking!.Id.Should().Be(bookingId);
+        //booking.Should().NotBeNull();
+        //booking!.Id.Should().Be(bookingId);
         VerifyResponse.Verify(this.GetType().Name, new { booking = booking! });
     }
 
@@ -66,24 +66,16 @@ public class BookingApiTests : BaseApiTest
     [TestCase(3, Description = "Create new booking")]
     public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId)
     {
-        // Arrange
-        var newBooking = new
-        {
-            Id = 0,
-            CustomerId = 7,
-            RoomNumber = 1007
-        };
+        JObject testInput = TestInput.GetInput(testCaseId);
+        JObject bookingData = testInput["booking"] as JObject ?? throw new InvalidOperationException("Booking data not found in test input");
 
         // Act
-        var response = await PostAsync("CreateEditBooking", newBooking);
+        var response = await PostAsync("CreateEditBooking", bookingData);
 
         // Assert
         response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
         
         var createdBooking = await DeserializeResponseAsync<Booking>(response);
-        createdBooking.Should().NotBeNull();
-        createdBooking!.CustomerId.Should().Be(newBooking.CustomerId);
-        createdBooking.RoomNumber.Should().Be(newBooking.RoomNumber);
         VerifyResponse.Verify(this.GetType().Name, new { booking = createdBooking! });
     }
 }

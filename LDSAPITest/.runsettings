@@ -4,8 +4,6 @@
   <RunConfiguration>
     <ResultsDirectory>.\TestResults</ResultsDirectory>
     <EnvironmentVariables>
-      <!-- Set to 0 for API tests (no browser needed) -->
-      <HEADED>0</HEADED>
     </EnvironmentVariables>
   </RunConfiguration>
 	

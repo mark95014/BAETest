@@ -1,8 +1,6 @@
 ﻿using LDSTest.Shared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.IO;
-using System.Text;
 
 namespace LDSAPITest.Utils
 {

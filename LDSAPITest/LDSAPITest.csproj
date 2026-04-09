@@ -59,8 +59,4 @@
     <ProjectReference Include="..\LDSTest.Shared\LDSTest.Shared.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="data\expectedResults\regression\" />
-  </ItemGroup>
-
 </Project>

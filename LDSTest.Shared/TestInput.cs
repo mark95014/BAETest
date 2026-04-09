@@ -8,7 +8,7 @@ namespace LDSTest.Shared
         public static JObject GetInput(int testCaseId, [CallerFilePath] string callerFilePath = "")
         {
             string testname = Path.GetFileNameWithoutExtension(callerFilePath);
-            string fileName = "../../../data/TestInput/" + testname + ".json";
+            string fileName = "../../../data/TestInput/" + testname + "Input.json";
             var fileContent = File.ReadAllText(fileName);
             JObject allTestInput = JObject.Parse(fileContent);
             string index = testname + "." + testCaseId.ToString();
