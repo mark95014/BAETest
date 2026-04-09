@@ -1,82 +1,83 @@
 ﻿using Newtonsoft.Json;
 
-namespace LDSTest.Shared;
-
-public abstract class ExpectedResults
+namespace LDSTest.Shared
 {
-    // Make static fields private and expose via properties if needed
-    private static List<string> labels = new();
-    private static bool first = true;
-    public static string? fileName;
-    private static readonly string expectedResultsFolder = "../../../data/expectedResults";
-
-    // Add public static properties if external access is required
-    public static string? FileName => fileName;
-    public static string ExpectedResultsFolder => expectedResultsFolder;
-
-    public static void Init(string testName, bool generateExpectedResults, string folder)
+    public abstract class ExpectedResults
     {
-        fileName = expectedResultsFolder + "/" + folder + "/" + testName + ".json";
-        if (generateExpectedResults) File.WriteAllText(fileName, "{\n");
-    }
+        // Make static fields private and expose via properties if needed
+        private static List<string> labels = new();
+        private static bool first = true;
+        public static string? fileName;
+        private static readonly string expectedResultsFolder = "../../../data/expectedResults";
 
-    public static int Occurrences(string searchfor)
-    {
-        var count = 0;
+        // Add public static properties if external access is required
+        public static string? FileName => fileName;
+        public static string ExpectedResultsFolder => expectedResultsFolder;
 
-        foreach (string label in labels)
+        public static void Init(string testName, bool generateExpectedResults, string folder)
         {
-            if (label.StartsWith(searchfor)) count++;
+            fileName = expectedResultsFolder + "/" + folder + "/" + testName + ".json";
+            if (generateExpectedResults) File.WriteAllText(fileName, "{\n");
         }
 
-        return count;
-    }
-
-    public static string MakeDataLabel(object data, int testCaseId)
-    {
-        return MakeDataLabel(data.GetType().Name, testCaseId);
-    }
-
-    public static string MakeDataLabel(string name, int testCaseId)
-    {
-        string prefix = name + "." + testCaseId;
-        string label;
-
-        int count = Occurrences(prefix);
-
-        if (count > 0) label = prefix + "." + count.ToString();
-        else label = prefix;
-
-        labels.Add(label);
-        return label;
-    }
-
-    public static void Append(object data, string dataLabel)
-    {
-        var json = "";
-
-        if (!first) json = ",\n";
-
-        json += JsonConvert.SerializeObject(dataLabel) + ": ";
-
-        json += JsonConvert.SerializeObject(data, Formatting.Indented);
-
-        //    replacer: (k: string, v: any) => {
-        //    if (k == "selector") return undefined
-        //    if (k == "columnTypes") return undefined
-        //    return v
-        //}, maxLength: 200, indent: 4})
-
-        File.AppendAllText(fileName!, json);
-        first = false;
-    }
-
-    public static void Close(bool generateExpectedResults)
-    {
-        if (generateExpectedResults)
+        public static int Occurrences(string searchfor)
         {
-            File.AppendAllText(fileName!, "\n}");
-            first = true;
+            var count = 0;
+
+            foreach (string label in labels)
+            {
+                if (label.StartsWith(searchfor)) count++;
+            }
+
+            return count;
+        }
+
+        public static string MakeDataLabel(object data, int testCaseId)
+        {
+            return MakeDataLabel(data.GetType().Name, testCaseId);
+        }
+
+        public static string MakeDataLabel(string name, int testCaseId)
+        {
+            string prefix = name + "." + testCaseId;
+            string label;
+
+            int count = Occurrences(prefix);
+
+            if (count > 0) label = prefix + "." + count.ToString();
+            else label = prefix;
+
+            labels.Add(label);
+            return label;
+        }
+
+        public static void Append(object data, string dataLabel)
+        {
+            var json = "";
+
+            if (!first) json = ",\n";
+
+            json += JsonConvert.SerializeObject(dataLabel) + ": ";
+
+            json += JsonConvert.SerializeObject(data, Formatting.Indented);
+
+            //    replacer: (k: string, v: any) => {
+            //    if (k == "selector") return undefined
+            //    if (k == "columnTypes") return undefined
+            //    return v
+            //}, maxLength: 200, indent: 4})
+
+            File.AppendAllText(fileName!, json);
+            first = false;
+        }
+
+        public static void Close(bool generateExpectedResults)
+        {
+            if (generateExpectedResults)
+            {
+                File.AppendAllText(fileName!, "\n}");
+                first = true;
+            }
         }
     }
 }

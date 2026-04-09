@@ -7,7 +7,7 @@
 
     <!-- Add environment variables section -->
     <EnvironmentVariables>
-      <HEADED>0</HEADED>
+      <HEADED>1</HEADED>
     </EnvironmentVariables>
   </RunConfiguration>
 
