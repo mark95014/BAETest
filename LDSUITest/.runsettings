@@ -1,45 +1,49 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-  <!-- Configurations that affect the Test Framework -->
-  <RunConfiguration>
-    <!-- Path relative to solution directory -->
-    <ResultsDirectory>.\TestResults</ResultsDirectory>
+	<!-- Configurations that affect the Test Framework -->
+	<RunConfiguration>
+		<!-- Path relative to solution directory -->
+		<ResultsDirectory>.\TestResults</ResultsDirectory>
 
-    <!-- Add environment variables section -->
-    <EnvironmentVariables>
-      <HEADED>1</HEADED>
-    </EnvironmentVariables>
-  </RunConfiguration>
+		<!-- Add environment variables section -->
+		<EnvironmentVariables>
+			<HEADED>1</HEADED>
+		</EnvironmentVariables>
+	</RunConfiguration>
 
-  <!-- Parameters used by tests at runtime -->
-  <TestRunParameters>
+	<!-- Parameters used by tests at runtime -->
+	<TestRunParameters>
 
-    <Parameter name="verbose" value="true"/>
-    <Parameter name="enableTestRail" value="false"/>
-    <Parameter name="environment" value="prod"/> <!--qa,dev,stg,uat,prod,local-->
-    <Parameter name="databaseUserName" value="BAEAutomation"/>
-    <Parameter name="databasePassword" value="Passwordyou"/>
-    <Parameter name="databaseRootName" value="BAE_QATEMPLATE"/>
-    <Parameter name="baePassword" value="Password4you"/>
-    <Parameter name="generateExpectedResults" value="false"/>
-    <Parameter name="testRailRunId" value="285348"/> <!-- Put the test run id from a previous run here and your test will add results to it.-->
-    <Parameter name="milestoneId" value="2533"/>
-    <Parameter name="projectId" value="51"/>
-    <Parameter name="webURL" value="https://trx-environment.morningstar.com/" /> <!-- environment will be substituted by the test, e.g., trx-qa.morningstar.com-->
-    <Parameter name="localWebURL" value="http://localhost:56786/#/" />
-    <Parameter name="delayRebalance" value="false"/>
-    
-    <!-- The test will use the database server which corresponds to the environment setting above.-->
-    <Parameter name="local.databaseServer" value="." />
-    <Parameter name="qa.databaseServer" value="qadb.bae.com" />
-    <Parameter name="uat.databaseServer" value="uatdb.bae.com" />
-    <Parameter name="stg.databaseServer" value="stgdb.bae.com" />
-    <Parameter name="prod.databaseServer" value="proddb.bae.com" />
+		<Parameter name="slowMo" value="1000"/>
+		<Parameter name="verbose" value="true"/>
+		<Parameter name="enableTestRail" value="false"/>
+		<Parameter name="environment" value="prod"/>
+		<!--qa,dev,stg,uat,prod,local-->
+		<Parameter name="databaseUserName" value="BAEAutomation"/>
+		<Parameter name="databasePassword" value="Passwordyou"/>
+		<Parameter name="databaseRootName" value="BAE_QATEMPLATE"/>
+		<Parameter name="baePassword" value="Password4you"/>
+		<Parameter name="generateExpectedResults" value="false"/>
+		<Parameter name="testRailRunId" value="285348"/>
+		<!-- Put the test run id from a previous run here and your test will add results to it.-->
+		<Parameter name="milestoneId" value="2533"/>
+		<Parameter name="projectId" value="51"/>
+		<Parameter name="webURL" value="https://trx-environment.morningstar.com/" />
+		<!-- environment will be substituted by the test, e.g., trx-qa.morningstar.com-->
+		<Parameter name="localWebURL" value="http://localhost:56786/#/" />
+		<Parameter name="delayRebalance" value="false"/>
 
-	  <!-- Connection string for local SQL Server database -->
-	  <Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />
-	  <Parameter name="SqlScriptsPath" value="C:\Users\mark9\source\repos\HotelBooking\database" />
-    
-  </TestRunParameters>
+		<!-- The test will use the database server which corresponds to the environment setting above.-->
+		<Parameter name="local.databaseServer" value="." />
+		<Parameter name="qa.databaseServer" value="qadb.bae.com" />
+		<Parameter name="uat.databaseServer" value="uatdb.bae.com" />
+		<Parameter name="stg.databaseServer" value="stgdb.bae.com" />
+		<Parameter name="prod.databaseServer" value="proddb.bae.com" />
+
+		<!-- Connection string for local SQL Server database -->
+		<Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />
+		<Parameter name="SqlScriptsPath" value="C:\Users\mark9\source\repos\HotelBooking\database" />
+
+	</TestRunParameters>
 
 </RunSettings>

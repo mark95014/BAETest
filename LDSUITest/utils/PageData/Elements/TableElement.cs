@@ -138,6 +138,43 @@ namespace LDSUITest.src.utils.PageData.Elements
             return rowsData;
         }
 
+        public override Task<Result> VerifyAsync(string name, object expected)
+        {
+            // Data already loaded by BasePageData.Get() - no need to call GetAsync() again
+            var actualGrid = Data as List<List<string>>;
+            var expectedGrid = ((JArray)expected).ToObject<List<List<string>>>();
+
+            if (actualGrid.Count != expectedGrid.Count)
+            {
+                return Task.FromResult(new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}"));
+            }
+
+            for (int i = 0; i < expectedGrid.Count; i++)
+            {
+                if (actualGrid[i].Count != expectedGrid[i].Count)
+                {
+                    return Task.FromResult(new Result(false, $"{name}: column count mismatch in row {i}. Expected {expectedGrid[i].Count}, actual {actualGrid[i].Count}"));
+                }
+
+                for (int j = 0; j < expectedGrid[i].Count; j++)
+                {
+                    if (actualGrid[i][j] != expectedGrid[i][j])
+                    {
+                        return Task.FromResult(new Result(false, $"{name}: cell mismatch at [{i},{j}]. Expected '{expectedGrid[i][j]}', actual '{actualGrid[i][j]}'"));
+                    }
+                }
+            }
+
+            return Task.FromResult(new Result(true, $"{name}: grid data matches"));
+        }
+        #region Utility Methods - Available for Custom Verification Scenarios
+
+        /// <summary>
+        /// Utility method: Gets the count of rows in the table body.
+        /// Available for custom verification scenarios where granular row count checks are needed.
+        /// </summary>
+        /// <param name="includeHeader">If true, includes the header row in the count</param>
+        /// <returns>The number of rows</returns>
         public async Task<int> GetRowCountAsync(bool includeHeader = false)
         {
             var rows = Locator.Locator("tbody tr");
@@ -153,6 +190,11 @@ namespace LDSUITest.src.utils.PageData.Elements
             return bodyRowCount;
         }
 
+        /// <summary>
+        /// Utility method: Gets the count of columns in the table.
+        /// Available for custom verification scenarios where column count checks are needed.
+        /// </summary>
+        /// <returns>The number of columns</returns>
         public async Task<int> GetColumnCountAsync()
         {
             // Try to get column count from headers first
@@ -170,6 +212,13 @@ namespace LDSUITest.src.utils.PageData.Elements
             return await cells.CountAsync();
         }
 
+        /// <summary>
+        /// Utility method: Gets the text content of a specific cell.
+        /// Available for custom verification scenarios where individual cell checks are needed.
+        /// </summary>
+        /// <param name="row">Zero-based row index</param>
+        /// <param name="column">Zero-based column index</param>
+        /// <returns>The trimmed text content of the cell</returns>
         public async Task<string> GetCellTextAsync(int row, int column)
         {
             var rows = Locator.Locator("tbody tr");
@@ -179,6 +228,12 @@ namespace LDSUITest.src.utils.PageData.Elements
             return (await cell.TextContentAsync())?.Trim() ?? "";
         }
 
+        /// <summary>
+        /// Utility method: Gets all data from a specific row.
+        /// Available for custom verification scenarios where row-level checks are needed.
+        /// </summary>
+        /// <param name="rowIndex">Zero-based row index</param>
+        /// <returns>List of cell values in the row</returns>
         public async Task<List<string>> GetRowDataAsync(int rowIndex)
         {
             var rows = Locator.Locator("tbody tr");
@@ -196,6 +251,13 @@ namespace LDSUITest.src.utils.PageData.Elements
             return rowData;
         }
 
+        /// <summary>
+        /// Utility method: Gets all data from a specific column.
+        /// Available for custom verification scenarios where column-level checks are needed.
+        /// </summary>
+        /// <param name="columnIndex">Zero-based column index</param>
+        /// <param name="includeHeader">If true, includes the header cell in the result</param>
+        /// <returns>List of cell values in the column</returns>
         public async Task<List<string>> GetColumnDataAsync(int columnIndex, bool includeHeader = false)
         {
             var columnData = new List<string>();
@@ -232,12 +294,25 @@ namespace LDSUITest.src.utils.PageData.Elements
             return columnData;
         }
 
+        /// <summary>
+        /// Utility method: Gets a Playwright locator for a specific row.
+        /// Available for custom interactions with table rows (e.g., clicking, hovering).
+        /// </summary>
+        /// <param name="index">Zero-based row index</param>
+        /// <returns>ILocator for the specified row</returns>
         public ILocator GetRow(int index)
         {
             var rows = Locator.Locator("tbody tr");
             return rows.Nth(index);
         }
 
+        /// <summary>
+        /// Utility method: Gets a Playwright locator for a specific cell.
+        /// Available for custom interactions with table cells (e.g., clicking, hovering).
+        /// </summary>
+        /// <param name="row">Zero-based row index</param>
+        /// <param name="column">Zero-based column index</param>
+        /// <returns>ILocator for the specified cell</returns>
         public ILocator GetCell(int row, int column)
         {
             var rows = Locator.Locator("tbody tr");
@@ -246,36 +321,14 @@ namespace LDSUITest.src.utils.PageData.Elements
             return cells.Nth(column);
         }
 
-        public override Task<Result> VerifyAsync(string name, object expected)
-        {
-            // Data already loaded by BasePageData.Get() - no need to call GetAsync() again
-            var actualGrid = Data as List<List<string>>;
-            var expectedGrid = ((JArray)expected).ToObject<List<List<string>>>();
-
-            if (actualGrid.Count != expectedGrid.Count)
-            {
-                return Task.FromResult(new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}"));
-            }
-
-            for (int i = 0; i < expectedGrid.Count; i++)
-            {
-                if (actualGrid[i].Count != expectedGrid[i].Count)
-                {
-                    return Task.FromResult(new Result(false, $"{name}: column count mismatch in row {i}. Expected {expectedGrid[i].Count}, actual {actualGrid[i].Count}"));
-                }
-
-                for (int j = 0; j < expectedGrid[i].Count; j++)
-                {
-                    if (actualGrid[i][j] != expectedGrid[i][j])
-                    {
-                        return Task.FromResult(new Result(false, $"{name}: cell mismatch at [{i},{j}]. Expected '{expectedGrid[i][j]}', actual '{actualGrid[i][j]}'"));
-                    }
-                }
-            }
-
-            return Task.FromResult(new Result(true, $"{name}: grid data matches"));
-        }
-
+        /// <summary>
+        /// Utility method: Verifies the row count matches the expected value.
+        /// Available for custom verification scenarios where row count assertion is needed.
+        /// </summary>
+        /// <param name="name">Name of the verification (for reporting)</param>
+        /// <param name="expectedCount">Expected number of rows</param>
+        /// <param name="includeHeader">If true, includes the header row in the count</param>
+        /// <returns>Result indicating success or failure with message</returns>
         public async Task<Result> VerifyRowCountAsync(string name, int expectedCount, bool includeHeader = false)
         {
             var actualCount = await GetRowCountAsync(includeHeader);
@@ -283,6 +336,13 @@ namespace LDSUITest.src.utils.PageData.Elements
             return new Result(actualCount == expectedCount, message);
         }
 
+        /// <summary>
+        /// Utility method: Verifies the column count matches the expected value.
+        /// Available for custom verification scenarios where column count assertion is needed.
+        /// </summary>
+        /// <param name="name">Name of the verification (for reporting)</param>
+        /// <param name="expectedCount">Expected number of columns</param>
+        /// <returns>Result indicating success or failure with message</returns>
         public async Task<Result> VerifyColumnCountAsync(string name, int expectedCount)
         {
             var actualCount = await GetColumnCountAsync();
@@ -290,11 +350,22 @@ namespace LDSUITest.src.utils.PageData.Elements
             return new Result(actualCount == expectedCount, message);
         }
 
+        /// <summary>
+        /// Utility method: Verifies a specific cell contains the expected value.
+        /// Available for custom verification scenarios where individual cell assertion is needed.
+        /// </summary>
+        /// <param name="name">Name of the verification (for reporting)</param>
+        /// <param name="row">Zero-based row index</param>
+        /// <param name="column">Zero-based column index</param>
+        /// <param name="expectedValue">Expected cell value</param>
+        /// <returns>Result indicating success or failure with message</returns>
         public async Task<Result> VerifyCellAsync(string name, int row, int column, string expectedValue)
         {
             var actualValue = await GetCellTextAsync(row, column);
             var message = $"{name}: cell [{row},{column}]='{actualValue}', expected='{expectedValue}'";
             return new Result(actualValue == expectedValue, message);
         }
+
+        #endregion
     }
 }
