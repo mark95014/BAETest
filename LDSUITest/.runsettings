@@ -9,7 +9,8 @@
 	<!-- Parameters used by tests at runtime -->
 	<TestRunParameters>
 
-		<Parameter name="slowMo" value="5"/>
+		<Parameter name="headless" value="false"/>
+		<Parameter name="slowMo" value="0"/>
 		<Parameter name="verbose" value="true"/>
 		<Parameter name="enableTestRail" value="false"/>
 		<Parameter name="environment" value="prod"/>

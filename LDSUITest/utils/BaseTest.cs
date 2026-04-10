@@ -22,6 +22,7 @@ namespace LDSUITest.src.utils
         public string guid;
         public int defaultTimeoutInSeconds = 300;
         public static int slowMo = 0;
+        public static bool headless = true;
         
         public IPage Page { get; private set; } = null!;
         private IBrowser? _customBrowser;
@@ -45,29 +46,33 @@ namespace LDSUITest.src.utils
                 TestContext.Progress.WriteLine($"SlowMo enabled: {slowMo}ms");
             }
             
+            // Read headless from .runsettings
+            var headlessParam = TestContext.Parameters["headless"];
+            if (!string.IsNullOrEmpty(headlessParam) && bool.TryParse(headlessParam, out bool headlessValue))
+            {
+                headless = headlessValue;
+                TestContext.Progress.WriteLine($"Headless mode: {headless}");
+            }
+            
             ExpectedResults.Init(GetType().Name, generateExpectedResults, "regression");
         }
 
         [SetUp]
         public virtual async Task TestCaseSetUp()
         {
-            // Create a new browser with SlowMo if needed
-            if (slowMo > 0)
+            if (headless)
             {
-                _customBrowser = await Context.Browser!.BrowserType.LaunchAsync(new BrowserTypeLaunchOptions
-                {
-                    Headless = false,  // Show browser when SlowMo is enabled
-                    SlowMo = slowMo
-                });
-                
-                _customContext = await _customBrowser.NewContextAsync();
-                Page = await _customContext.NewPageAsync();
+                slowMo = 0; // Disable slowMo when running in headless mode for faster execution
             }
-            else
+
+            _customBrowser = await Context.Browser!.BrowserType.LaunchAsync(new BrowserTypeLaunchOptions
             {
-                // Use default context when no SlowMo
-                Page = await Context.NewPageAsync();
-            }
+                Headless = headless,
+                SlowMo = slowMo
+            });
+            
+            _customContext = await _customBrowser.NewContextAsync();
+            Page = await _customContext.NewPageAsync();
         }
 
         [TearDown]
