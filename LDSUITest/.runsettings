@@ -4,17 +4,12 @@
 	<RunConfiguration>
 		<!-- Path relative to solution directory -->
 		<ResultsDirectory>.\TestResults</ResultsDirectory>
-
-		<!-- Add environment variables section -->
-		<EnvironmentVariables>
-			<HEADED>1</HEADED>
-		</EnvironmentVariables>
 	</RunConfiguration>
 
 	<!-- Parameters used by tests at runtime -->
 	<TestRunParameters>
 
-		<Parameter name="slowMo" value="1000"/>
+		<Parameter name="slowMo" value="5"/>
 		<Parameter name="verbose" value="true"/>
 		<Parameter name="enableTestRail" value="false"/>
 		<Parameter name="environment" value="prod"/>
