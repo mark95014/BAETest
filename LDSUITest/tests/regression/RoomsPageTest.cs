@@ -15,7 +15,7 @@ namespace LDSUITest.tests.regression
         [SetUp]
         public async Task Setup()
         {
-            await Page.GotoAsync("https://localhost:7031/rooms");
+            await RoomsPage.GoTo(Page);
 
             _roomsPageData = new RoomsData();
             _roomsPageData.Initialize(Page);
@@ -45,17 +45,11 @@ namespace LDSUITest.tests.regression
                 var row = Page.Locator($"[id='roomsTable'] tbody tr:nth-child({room.RowIndex})");
                 await row.ClickAsync();
 
-                // Wait for the edit dialog/modal to appear
-                await Page.WaitForSelectorAsync("[id='price']");
-
-                // Change the price
                 await Page.Locator("[id='price']").FillAsync(room.NewPrice);
-
-                // Save the changes
                 await Page.Locator(".btn-save").ClickAsync();
 
-                // Wait for the dialog to close and page to update
-                await Page.WaitForLoadStateAsync(LoadState.NetworkIdle);
+                // Wait for the table to reload after save
+                await RoomsPage.WaitForPageToLoad(Page);
             }
 
             // Verify the entire table using the standard verification

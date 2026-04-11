@@ -13,7 +13,7 @@ namespace LDSUITest.tests.regression
         [SetUp]
         public async Task Setup()
         {
-            await Page.GotoAsync("https://localhost:7031/bookings");
+            await BookingsPage.GoTo(Page);
 
             _bookingsPageData = new BookingsData();
             _bookingsPageData.Initialize(Page);
@@ -25,17 +25,17 @@ namespace LDSUITest.tests.regression
             await BookingsPage.VerifyPage(Page);
         }
 
-        [TestCase(2, Description = "Verify filter functionality on Bookings page")]
-        public async Task VerifyBookingsFilter(int testCaseId)
+        [TestCase(2, "7", Description = "Verify filter functionality on Bookings page")]
+        public async Task VerifyBookingsFilter(int testCaseId, string customerId)
         {
-            await BookingsPage.FilterBookings(Page, "7");
+            await BookingsPage.FilterBookings(Page, customerId);
             await BookingsPage.VerifyPage(Page);
         }
 
-        [TestCase(3, Description = "Verify filter by customer name containing 'son'")]
-        public async Task VerifyBookingsFilterByCustomerName(int testCaseId)
+        [TestCase(3, "son", Description = "Verify filter by customer name containing 'son'")]
+        public async Task VerifyBookingsFilterByCustomerName(int testCaseId, string customerName)
         {
-            await BookingsPage.FilterBookingsByCustomerName(Page, "son");
+            await BookingsPage.FilterBookingsByCustomerName(Page, customerName);
             await BookingsPage.VerifyPage(Page);
         }
     }

@@ -13,21 +13,19 @@
 		<Parameter name="slowMo" value="0"/>
 		<Parameter name="verbose" value="true"/>
 		<Parameter name="enableTestRail" value="false"/>
-		<Parameter name="environment" value="prod"/>
-		<!--qa,dev,stg,uat,prod,local-->
+		<Parameter name="environment" value="local"/>
+		
 		<Parameter name="databaseUserName" value="BAEAutomation"/>
 		<Parameter name="databasePassword" value="Passwordyou"/>
 		<Parameter name="databaseRootName" value="BAE_QATEMPLATE"/>
 		<Parameter name="baePassword" value="Password4you"/>
 		<Parameter name="generateExpectedResults" value="false"/>
 		<Parameter name="testRailRunId" value="285348"/>
+		
+		<!-- TestRail parameters-->
 		<!-- Put the test run id from a previous run here and your test will add results to it.-->
 		<Parameter name="milestoneId" value="2533"/>
 		<Parameter name="projectId" value="51"/>
-		<Parameter name="webURL" value="https://trx-environment.morningstar.com/" />
-		<!-- environment will be substituted by the test, e.g., trx-qa.morningstar.com-->
-		<Parameter name="localWebURL" value="http://localhost:56786/#/" />
-		<Parameter name="delayRebalance" value="false"/>
 
 		<!-- The test will use the database server which corresponds to the environment setting above.-->
 		<Parameter name="local.databaseServer" value="." />
@@ -35,6 +33,13 @@
 		<Parameter name="uat.databaseServer" value="uatdb.bae.com" />
 		<Parameter name="stg.databaseServer" value="stgdb.bae.com" />
 		<Parameter name="prod.databaseServer" value="proddb.bae.com" />
+
+		<!-- Web Base URLs for UI Tests -->
+		<Parameter name="local.webBaseURL" value="https://localhost:7031" />
+		<Parameter name="qa.webBaseURL" value="https://lds-qa.bae.com" />
+		<Parameter name="uat.webBaseURL" value="https://lds-uat.bae.com" />
+		<Parameter name="stg.webBaseURL" value="https://lds-stg.bae.com" />
+		<Parameter name="prod.webBaseURL" value="https://lds.bae.com" />
 
 		<!-- Connection string for local SQL Server database -->
 		<Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />

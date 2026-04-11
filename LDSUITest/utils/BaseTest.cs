@@ -23,6 +23,7 @@ namespace LDSUITest.src.utils
         public int defaultTimeoutInSeconds = 300;
         public static int slowMo = 0;
         public static bool headless = true;
+        public static string webBaseUrl = string.Empty;
         
         public IPage Page { get; private set; } = null!;
         private IBrowser? _customBrowser;
@@ -53,6 +54,12 @@ namespace LDSUITest.src.utils
                 headless = headlessValue;
                 TestContext.Progress.WriteLine($"Headless mode: {headless}");
             }
+            
+            // Get environment-specific web base URL
+            webBaseUrl = TestContext.Parameters[$"{environment}.webBaseURL"] 
+                         ?? throw new InvalidOperationException($"Web Base URL not configured for environment: {environment}");
+            
+            TestContext.Progress.WriteLine($"Web Base URL: {webBaseUrl}");
             
             ExpectedResults.Init(GetType().Name, generateExpectedResults, "regression");
         }

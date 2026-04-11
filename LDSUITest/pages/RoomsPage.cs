@@ -1,3 +1,4 @@
+using LDSUITest.src.utils;
 using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 
@@ -5,7 +6,7 @@ namespace LDSUITest.pages
 {
     internal static class RoomsPage
     {
-        public readonly static string url = "https://localhost:7031/rooms";
+        private static string Url => $"{BaseTest.webBaseUrl}/rooms";
 
         internal static class Selectors
         {
@@ -19,7 +20,7 @@ namespace LDSUITest.pages
 
         internal static async Task GoTo(IPage page)
         {
-            await page.GotoAsync(url);
+            await page.GotoAsync(Url);
             await WaitForPageToLoad(page);
         }
 

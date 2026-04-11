@@ -15,6 +15,7 @@
     <Folder Include="data\expectedResults\multithreaded\" />
     <Folder Include="data\expectedResults\regression\" />
     <Folder Include="data\expectedResults\temp\" />
+    <Folder Include="data\TestInput\" />
     <Folder Include="inputData\" />
     <Folder Include="sandbox\" />
     <Folder Include="TestResults\" />
