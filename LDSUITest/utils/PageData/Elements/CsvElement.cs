@@ -8,12 +8,17 @@ namespace LDSUITest.src.utils.PageData.Elements
         private readonly string _downloadPath;
         private readonly string[] _columnsToIgnore;
 
-        public CsvElement(ILocator downloadButtonLocator, string expectedFileName, string[] columnsToIgnore = null, string downloadPath = null)
-            : base(downloadButtonLocator)
+        public CsvElement(
+            ILocator locator, 
+            string selector, 
+            string defaultValue = "", 
+            string? excludeColumns = null,  // Make nullable
+            string? emptyValue = null)      // Make nullable
+            : base(locator)
         {
-            _downloadPath = downloadPath ?? Path.Combine(Path.GetTempPath(), "playwright-downloads");
-            _columnsToIgnore = columnsToIgnore ?? Array.Empty<string>();
-            Data = expectedFileName;
+            _downloadPath = Path.Combine(Path.GetTempPath(), "playwright-downloads");
+            _columnsToIgnore = excludeColumns?.Split(',')?.Select(c => c.Trim()).ToArray() ?? Array.Empty<string>();
+            Data = defaultValue;
         }
 
         public override async Task GetAsync()
@@ -42,7 +47,7 @@ namespace LDSUITest.src.utils.PageData.Elements
                 while (!reader.EndOfStream)
                 {
                     var line = await reader.ReadLineAsync();
-                    var values = line.Split(',').Select(v => v.Trim('"', ' ')).ToList();
+                    var values = line?.Split(',').Select(v => v.Trim('"', ' ')).ToList() ?? new List<string>();
 
                     // Filter out ignored columns
                     var filteredValues = new List<string>();
@@ -50,7 +55,7 @@ namespace LDSUITest.src.utils.PageData.Elements
                     {
                         if (!_columnsToIgnore.Contains($"* {i}"))
                         {
-                            filteredValues.Add(values[i]);
+                            filteredValues.Add(values[i] ?? string.Empty);
                         }
                     }
 
@@ -69,7 +74,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             {
                 var actualCsv = Data as List<List<string>>;
 
-                if (actualCsv.Count != expectedCsv.Count)
+                if (actualCsv!.Count != expectedCsv.Count)
                 {
                     return new Result(false, $"{name}: CSV row count mismatch. Expected {expectedCsv.Count}, actual {actualCsv.Count}");
                 }

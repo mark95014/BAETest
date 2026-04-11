@@ -30,7 +30,7 @@ namespace LDSUITest.src.utils.PageData.Elements
                     color = await colorIndicator.First.GetAttributeAsync("style") ?? "";
                 }
 
-                legendData[label?.Trim()] = color;
+                legendData[label?.Trim() ?? string.Empty] = color;
             }
 
             Data = legendData;
@@ -56,7 +56,7 @@ namespace LDSUITest.src.utils.PageData.Elements
                 }
             }
 
-            return null;
+            return string.Empty;
         }
 
         public override async Task<Result> VerifyAsync(string name, object expected)
@@ -67,7 +67,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             {
                 var actualLegend = Data as Dictionary<string, string>;
 
-                if (actualLegend.Count != expectedLegend.Count)
+                if (actualLegend!.Count != expectedLegend.Count)
                 {
                     return new Result(false, $"{name}: legend item count mismatch. Expected {expectedLegend.Count}, actual {actualLegend.Count}");
                 }
@@ -96,7 +96,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             await GetAsync();
             var legendData = Data as Dictionary<string, string>;
 
-            if (legendData.ContainsKey(label))
+            if (legendData!.ContainsKey(label))
             {
                 return new Result(true, $"{name}: legend item '{label}' exists");
             }

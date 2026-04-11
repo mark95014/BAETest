@@ -5,7 +5,7 @@ namespace LDSUITest.src.utils.PageData.Elements
     public abstract class Element
     {
         protected ILocator Locator { get; }
-        public object Data { get; set; }
+        public object Data { get; set; } = null!;
 
         protected Element(ILocator locator)
         {

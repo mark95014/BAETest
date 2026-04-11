@@ -10,34 +10,52 @@ namespace LDSUITest.src.utils
     [TestFixture]
     public abstract class BaseTest : ContextTest
     {
+        // CA2211: Non-constant fields should not be visible
+        // Make static fields private and expose via properties if needed
+
         public static bool verbose;
-        public string environment;
-        public string databaseBackupFileName;
-        public static Results results;
-        public DBServer dbServer;
-        public string databaseName;
+        public static Results results = null!;  
+        public DBServer dbServer = null!;       
         public static bool generateExpectedResults;
-        public string trxUserName;
-        public string trxPassword;
-        public string guid;
-        public int defaultTimeoutInSeconds = 300;
         public static int slowMo = 0;
         public static bool headless = true;
         public static string webBaseUrl = string.Empty;
-        
+
+        // Provide internal/protected/public properties if access is needed outside this class
+        public static bool Verbose => verbose;
+        public static Results Results => results;
+        public static bool GenerateExpectedResults => generateExpectedResults;
+        public static int SlowMo => slowMo;
+        public static bool Headless => headless;
+        public static string WebBaseUrl => webBaseUrl;
+
+        public string environment = string.Empty;
+        public string databaseBackupFileName = string.Empty;
+        public string databaseName = string.Empty;
+        public string trxUserName = string.Empty;
+        public string trxPassword = string.Empty;
+        public string guid = string.Empty;
+        public int defaultTimeoutInSeconds = 300;
+
         public IPage Page { get; private set; } = null!;
         private IBrowser? _customBrowser;
         private IBrowserContext? _customContext;
+
+        public BaseTest()
+        {
+            // Initialize non-nullable fields to prevent CS8618 warnings
+            Page = null!; // Will be properly initialized in TestCaseSetUp
+        }
 
         [OneTimeSetUp]
         public virtual void BaseSetup()
         {
             //Log test start
             TestContext.Progress.WriteLine("BaseSetup");
-            results = new Results();
-            verbose = Boolean.Parse(TestContext.Parameters["verbose"]);
-            environment = TestContext.Parameters["environment"].ToString();
-            generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"]);
+            results = new();
+            verbose = Boolean.Parse(TestContext.Parameters["verbose"] ?? "false");
+            environment = TestContext.Parameters["environment"]?.ToString() ?? string.Empty;
+            generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
             
             // Read slowMo from .runsettings
             var slowMoParam = TestContext.Parameters["slowMo"];
@@ -118,7 +136,11 @@ namespace LDSUITest.src.utils
 
         public static int GetTestCaseId()
         {
-            int testCaseId = int.Parse(TestContext.CurrentContext.Test.Arguments[0].ToString());
+            var testCaseIdArg = TestContext.CurrentContext.Test.Arguments[0]?.ToString();
+            if (testCaseIdArg == null || !int.TryParse(testCaseIdArg, out int testCaseId))
+            {
+                throw new InvalidOperationException("Test case ID argument is missing or invalid");
+            }
             return testCaseId;
         }
 

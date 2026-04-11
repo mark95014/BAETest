@@ -8,7 +8,7 @@ namespace LDSUITest.tests.regression
     [TestFixture]
     public class BookingsPageTest : BaseTest
     {
-        private BookingsPage _bookingsPage;
+        private BookingsPage _bookingsPage = null!;
 
         [SetUp]
         public async Task Setup()

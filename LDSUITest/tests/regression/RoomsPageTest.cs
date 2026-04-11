@@ -1,15 +1,17 @@
 using LDSTest.Shared;
+using LDSUITest.data.TestInput;
 using LDSUITest.pages;
 using LDSUITest.src.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
+
 
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
     public class RoomsPageTest : BaseTest
     {
-        private RoomsPage _roomsPage;
+        private RoomsPage _roomsPage = null!;
 
         [SetUp]
         public async Task Setup()
@@ -27,26 +29,31 @@ namespace LDSUITest.tests.regression
         [TestCase(2, Description = "Verify edit room functionality")]
         public async Task VerifyEditRoomFunctionality(int testCaseId)
         {
-            var roomsToEdit = new[]
-            {
-                new { RowIndex = 1, NewPrice = "150" },
-                new { RowIndex = 3, NewPrice = "200" },
-                new { RowIndex = 5, NewPrice = "175" }
-            };
+            // Get test input data - strongly typed, no parsing needed!
+            var testData = RoomsPageTestData.GetTestData(testCaseId);
 
-            foreach (var room in roomsToEdit)
+            foreach (var room in testData.Rooms)
             {
-                var row = Page.Locator($"[id='roomsTable'] tbody tr:nth-child({room.RowIndex})");
+                // Use the DTO properties directly
+                string roomNumber = room.RoomNumber.ToString();
+                string newPrice = room.Price.ToString();
+
+                // Find the row with the matching room number in the specific column
+                var row = Page.Locator($"[id='roomsTable'] tbody tr:has(td:nth-child(1):text-is('{roomNumber}'))");
                 await row.ClickAsync();
 
-                await Page.Locator("[id='price']").FillAsync(room.NewPrice);
+                // Edit the price
+                await Page.Locator("[id='price']").FillAsync(newPrice);
                 await Page.Locator(".btn-save").ClickAsync();
 
+                // Wait for the table to reload
                 await _roomsPage.WaitForPageToLoad(Page);
             }
 
+            // Verify the entire table after all edits
             await BasePage.VerifyPage<RoomsPageData>(Page);
 
+            // Reset the database to ensure test isolation
             await new Database().ResetDatabase();
         }
     }

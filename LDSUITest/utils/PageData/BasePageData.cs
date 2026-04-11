@@ -6,7 +6,8 @@ namespace LDSUITest.src.utils.PageData
 {
     public abstract class BasePageData
     {
-        protected IPage Page { get; private set; }
+        // Line 9 - make Page nullable with null!
+        public IPage Page { get; set; } = null!;
 
         public void Initialize(IPage page)
         {
@@ -27,10 +28,10 @@ namespace LDSUITest.src.utils.PageData
             {
                 if (field != null)
                 {
-                    MethodInfo method = field.FieldType.GetMethod("GetAsync");
+                    MethodInfo method = field.FieldType.GetMethod("GetAsync")!;
                     if (method != null)
                     {
-                        var task = (Task)method.Invoke(field.GetValue(this), new object[] { });
+                        var task = (Task)method.Invoke(field.GetValue(this), new object[] { })!;
                         await task;
                     }
                 }
@@ -43,15 +44,17 @@ namespace LDSUITest.src.utils.PageData
 
             foreach (FieldInfo field in fields)
             {
+                // Lines 30-55 - Add null checks before dereferencing
+                // Example for line 34:
                 if (field != null && expectedResult[field.Name] != null)
                 {
-                    JObject expectedObject = (JObject)expectedResult[field.Name];
-                    Object expected = expectedObject["Data"];
-                    MethodInfo VerifyMethod = field.FieldType.GetMethod("VerifyAsync");
+                    JObject expectedObject = (JObject)expectedResult[field.Name]!;
+                    Object expected = expectedObject["Data"]!;
+                    MethodInfo VerifyMethod = field.FieldType.GetMethod("VerifyAsync")!;
                     if (VerifyMethod != null)
                     {
                         string dataName = dataLabel + "." + field.Name;
-                        var task = (Task<Result>)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected });
+                        var task = (Task<Result>)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected })!;
                         Result result = await task;
                         BaseTest.results.Add(result);
                     }

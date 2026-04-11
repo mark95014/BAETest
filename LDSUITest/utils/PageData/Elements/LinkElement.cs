@@ -21,17 +21,17 @@ namespace LDSUITest.src.utils.PageData.Elements
 
         public async Task<string> GetHrefAsync()
         {
-            return await Locator.GetAttributeAsync("href");
+            return await Locator.GetAttributeAsync("href") ?? string.Empty;
         }
 
         public override async Task GetAsync()
         {
-            Data = await Locator.TextContentAsync();
+            Data = await Locator.TextContentAsync() ?? string.Empty;
         }
 
         public override async Task<Result> VerifyAsync(string name, object expected)
         {
-            string actualText = await Locator.TextContentAsync();
+            string actualText = await Locator.TextContentAsync() ?? string.Empty;
             string expectedText = expected?.ToString() ?? "";
 
             var message = $"{name}: text='{actualText}', expected='{expectedText}'";

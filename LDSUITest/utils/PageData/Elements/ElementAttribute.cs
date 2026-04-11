@@ -13,7 +13,7 @@ namespace LDSUITest.src.utils.PageData.Elements
 
         public override async Task GetAsync()
         {
-            Data = await Locator.GetAttributeAsync(_attributeName);
+            Data = await Locator.GetAttributeAsync(_attributeName) ?? string.Empty;
         }
 
         public override async Task<Result> VerifyAsync(string name, object expected)

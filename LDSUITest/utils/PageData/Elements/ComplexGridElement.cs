@@ -17,7 +17,7 @@ namespace LDSUITest.src.utils.PageData.Elements
         {
             if (columnNumber >= ColumnTypes.Length)
             {
-                row.Add(null);
+                row.Add(string.Empty); // Use empty string instead of null
                 return;
             }
 
@@ -36,12 +36,12 @@ namespace LDSUITest.src.utils.PageData.Elements
                 }
                 else
                 {
-                    row.Add(null);
+                    row.Add(string.Empty); // Use empty string instead of null
                 }
             }
             else
             {
-                row.Add(null);
+                row.Add(string.Empty); // Use empty string instead of null
             }
         }
 

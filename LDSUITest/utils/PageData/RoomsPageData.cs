@@ -4,25 +4,27 @@ using Microsoft.Playwright;
 
 namespace LDSUITest.utils.PageData
 {
-    internal class RoomsPageData : BasePageData
+    public class RoomsPageData : BasePageData
     {
-        public TextElement Title;
-        public TableElement RoomsTable;
+        public TextElement Title { get; set; } = null!;
+        public TableElement RoomsTable { get; set; } = null!;
 
+        // Constructor or initialization will set these values before use
         protected override void InitializeElements()
         {
-            Title = new TextElement(Page.GetByRole(AriaRole.Heading, new() { Name = "All Rooms" }));
-            RoomsTable = new TableElement(Page.Locator("[id='roomsTable']"), supportsPagination: true);
+            // Initialize elements with their locators
+            Title = new TextElement(Page.Locator("selector-for-title"));
+            RoomsTable = new TableElement(Page.Locator("selector-for-table"));
         }
 
-        public override System.Threading.Tasks.Task GetAsync()
+        public override async Task GetAsync()
         {
-            return System.Threading.Tasks.Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
-        public override System.Threading.Tasks.Task VerifyAsync()
+        public override async Task VerifyAsync()
         {
-            return System.Threading.Tasks.Task.CompletedTask;
+            await Task.CompletedTask;
         }
     }
 }

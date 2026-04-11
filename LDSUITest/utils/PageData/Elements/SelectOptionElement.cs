@@ -33,7 +33,7 @@ namespace LDSUITest.src.utils.PageData.Elements
         {
             // Get the selected option's text (visible label)
             var selectedOption = Locator.Locator("option:checked");
-            return await selectedOption.TextContentAsync();
+            return await selectedOption.TextContentAsync() ?? string.Empty;
         }
 
         public override async Task<Result> VerifyAsync(string name, object expected)

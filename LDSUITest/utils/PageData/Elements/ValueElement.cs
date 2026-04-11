@@ -19,7 +19,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             }
             else if (_attribute == "text" || _attribute == "textContent")
             {
-                Data = await Locator.TextContentAsync();
+                Data = await Locator.TextContentAsync() ?? string.Empty;
             }
             else if (_attribute == "innerText")
             {
@@ -27,7 +27,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             }
             else
             {
-                Data = await Locator.GetAttributeAsync(_attribute);
+                Data = await Locator.GetAttributeAsync(_attribute) ?? string.Empty;
             }
         }
 

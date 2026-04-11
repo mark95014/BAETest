@@ -17,13 +17,13 @@ namespace LDSUITest.src.utils
 
             if (!passed)
             {
-                string currentMethod = System.Reflection.MethodBase.GetCurrentMethod().Name;
-                string currentNameSpace = GetType().Namespace.ToString().Split(".")[0];
-                StackFrame[] frames = new StackTrace(true).GetFrames();
+                string currentMethod = System.Reflection.MethodBase.GetCurrentMethod()!.Name;
+                string currentNameSpace = GetType().Namespace!.ToString().Split(".")[0];
+                StackFrame[] frames = new StackTrace(true).GetFrames()!;
 
                 foreach (StackFrame frame in frames)
                 {
-                    string frameMethod = frame.GetMethod().Name ?? "";
+                    string frameMethod = frame.GetMethod()!.Name;
                     string frameFileName = frame.GetFileName() ?? "";
 
                     if (!frameMethod.Equals(currentMethod) && frameFileName.Contains(currentNameSpace))

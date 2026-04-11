@@ -31,7 +31,7 @@ namespace LDSUITest.src.utils.PageData.Elements
 
         public async Task<string> GetTextAsync()
         {
-            return await Locator.TextContentAsync();
+            return await Locator.TextContentAsync() ?? string.Empty;
         }
 
         public override async Task<Result> VerifyAsync(string name, object expected)

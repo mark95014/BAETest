@@ -10,12 +10,12 @@ namespace LDSUITest.src.utils.PageData.Elements
 
         public async Task<string> GetSrcAsync()
         {
-            return await Locator.GetAttributeAsync("src");
+            return await Locator.GetAttributeAsync("src") ?? string.Empty;
         }
 
         public async Task<string> GetAltAsync()
         {
-            return await Locator.GetAttributeAsync("alt");
+            return await Locator.GetAttributeAsync("alt") ?? string.Empty;
         }
 
         public override async Task GetAsync()

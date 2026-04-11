@@ -105,7 +105,7 @@ namespace LDSUITest.src.utils.PageData.Elements
 
         public override async Task<Result> VerifyAsync(string name, object expected)
         {
-            List<List<object>> expectedResult = JsonConvert.DeserializeObject<List<List<object>>>(expected.ToString());
+            List<List<object>> expectedResult = JsonConvert.DeserializeObject<List<List<object>>>(expected.ToString()!)!;
 
             var actualData = Data as List<List<object>>;
             int actualRowCount = actualData?.Count ?? 0;
@@ -123,7 +123,7 @@ namespace LDSUITest.src.utils.PageData.Elements
 
             if (expectedRowCount > 0)
             {
-                for (int rowNum = 0; rowNum < expectedResult.Count; rowNum++)
+                for (int rowNum = 0; rowNum < expectedResult!.Count; rowNum++)
                 {
                     var expectedRow = expectedResult[rowNum];
                     if (expectedRow != null)
@@ -133,7 +133,7 @@ namespace LDSUITest.src.utils.PageData.Elements
                             var expectedCell = expectedRow[colNum];
                             if (expectedCell != null)
                             {
-                                if (colNum >= actualData[rowNum].Count || actualData[rowNum][colNum] == null)
+                                if (colNum >= actualData![rowNum].Count || actualData[rowNum][colNum] == null)
                                 {
                                     string msg = $"{name}: Missing actual result for column expected result: {expectedCell}";
                                     BaseTest.results.Add(new Result(false, msg));

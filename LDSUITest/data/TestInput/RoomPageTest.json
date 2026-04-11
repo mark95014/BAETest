@@ -1,0 +1,18 @@
+{
+  "RoomPageTest.2": {
+    "rooms": [
+      {
+        "RoomNumber": "101",
+        "Price": 150
+      },
+      {
+        "RoomNumber": "103",
+        "Price": 200
+      },
+      {
+        "RoomNumber": "105",
+        "Price": 175
+      }
+    ]
+  }
+}

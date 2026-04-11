@@ -46,7 +46,7 @@ namespace LDSUITest.utils
                 var data = new Dictionary<string, object> { { "milestone_id", milestoneId }, { "name", name } };
                 string endPoint = $"add_run/{projectId}";
                 JObject response = (JObject)testRailClient.SendPost(endPoint, data);
-                return (int)response["id"];
+                return (int)response["id"]!;
             }
             else return 0;
         }
@@ -58,14 +58,14 @@ namespace LDSUITest.utils
                 var data = new Dictionary<string, object> { { "name", name } };
                 string endPoint = $"update_run/{testRailRunId}";
                 JObject response = (JObject)testRailClient.SendPost(endPoint, data);
-                return (int)response["id"];
+                return (int)response["id"]!;
             }
             else return 0;
         }
 
         public static string MakeRunName(string trxVersion)
         {
-            string deployment = TestContext.Parameters["environment"].ToString();
+            string deployment = (TestContext.Parameters["environment"])!.ToString();
             string runName = $"Automated test: {deployment} environment, branch {trxVersion}";
             return runName;
         }
@@ -76,13 +76,13 @@ namespace LDSUITest.utils
 
             //environment variables take precedence
 
-            string enableTestRailVar = Environment.GetEnvironmentVariable("ENABLE_TEST_RAIL");
-            string runsettingsEnableTestRail = TestContext.Parameters["enableTestRail"].ToString().Trim().ToLower();
+            string enableTestRailVar = Environment.GetEnvironmentVariable("ENABLE_TEST_RAIL")!;
+            string runsettingsEnableTestRail = TestContext.Parameters["enableTestRail"]!.ToString().Trim().ToLower();
             try { enableTestRail = bool.Parse(enableTestRailVar ?? runsettingsEnableTestRail); }
             catch (Exception) { enableTestRail = false; }
 
-            string testRailRunIdVar = Environment.GetEnvironmentVariable("TEST_RAIL_RUN_ID");
-            string runsettingstestRailRunId = TestContext.Parameters["testRailRunId"].ToString().Trim();
+            string testRailRunIdVar = Environment.GetEnvironmentVariable("TEST_RAIL_RUN_ID")!;
+            string runsettingstestRailRunId = TestContext.Parameters["testRailRunId"]!.ToString().Trim();
             string runIdStr = testRailRunIdVar ?? runsettingstestRailRunId;
 
             if (enableTestRail)
@@ -91,9 +91,9 @@ namespace LDSUITest.utils
                 testRailClient.User = "MSAutomationTest@morningstar.com";
                 testRailClient.Password = "msauto";
 
-                int projectId = int.Parse(TestContext.Parameters["projectId"].ToString().ToLower().Trim());
-                int milestoneId = int.Parse(TestContext.Parameters["milestoneId"].ToString().ToLower().Trim());
-                string deployment = TestContext.Parameters["environment"].ToString();
+                int projectId = int.Parse(TestContext.Parameters["projectId"]!.ToString().ToLower().Trim());
+                int milestoneId = int.Parse(TestContext.Parameters["milestoneId"]!.ToString().ToLower().Trim());
+                string deployment = TestContext.Parameters["environment"]!.ToString();
 
                 string runName = $"Automated test: {deployment} environment, branch {trxVersion}";
 

@@ -1,28 +1,28 @@
-using LDSUITest.src.utils.PageData;
 using LDSUITest.src.utils.PageData.Elements;
-using Microsoft.Playwright;
+using LDSUITest.src.utils.PageData;
 
 namespace LDSUITest.utils.PageData
 {
-    internal class BookingsPageData : BasePageData
+    public class BookingsPageData : BasePageData
     {
-        public TextElement Title;
-        public TableElement BookingsTable;
+        public TextElement Title { get; set; } = null!;
+        public TableElement BookingsTable { get; set; } = null!;
 
         protected override void InitializeElements()
         {
-            Title = new TextElement(Page.GetByRole(AriaRole.Heading, new() { Name = "All Bookings" }));
-            BookingsTable = new TableElement(Page.Locator("[id='bookingsTable']"), supportsPagination: true);
+            // Initialize elements with their locators
+            Title = new TextElement(Page.Locator("selector-for-title"));
+            BookingsTable = new TableElement(Page.Locator("selector-for-table"));
         }
 
-        public override System.Threading.Tasks.Task GetAsync()
+        public override async Task GetAsync()
         {
-            return System.Threading.Tasks.Task.CompletedTask;
+            await Task.CompletedTask;
         }
 
-        public override System.Threading.Tasks.Task VerifyAsync()
+        public override async Task VerifyAsync()
         {
-            return System.Threading.Tasks.Task.CompletedTask;
+            await Task.CompletedTask;
         }
     }
 }

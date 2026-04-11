@@ -144,7 +144,7 @@ namespace LDSUITest.src.utils.PageData.Elements
             var actualGrid = Data as List<List<string>>;
             var expectedGrid = ((JArray)expected).ToObject<List<List<string>>>();
 
-            if (actualGrid.Count != expectedGrid.Count)
+            if (actualGrid!.Count != expectedGrid!.Count)
             {
                 return Task.FromResult(new Result(false, $"{name}: row count mismatch. Expected {expectedGrid.Count}, actual {actualGrid.Count}"));
             }

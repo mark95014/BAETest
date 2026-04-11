@@ -7,11 +7,11 @@ namespace LDSTest.Shared
         // Make static fields private and expose via properties if needed
         private static List<string> labels = new();
         private static bool first = true;
-        public static string? fileName;
+        private static string fileName = string.Empty;
         private static readonly string expectedResultsFolder = "../../../data/expectedResults";
 
         // Add public static properties if external access is required
-        public static string? FileName => fileName;
+        public static string FileName => fileName;
         public static string ExpectedResultsFolder => expectedResultsFolder;
 
         public static void Init(string testName, bool generateExpectedResults, string folder)
@@ -53,6 +53,9 @@ namespace LDSTest.Shared
 
         public static void Append(object data, string dataLabel)
         {
+            if (fileName == null)
+                throw new InvalidOperationException("ExpectedResults.Init must be called before Append");
+
             var json = "";
 
             if (!first) json = ",\n";
@@ -61,21 +64,15 @@ namespace LDSTest.Shared
 
             json += JsonConvert.SerializeObject(data, Formatting.Indented);
 
-            //    replacer: (k: string, v: any) => {
-            //    if (k == "selector") return undefined
-            //    if (k == "columnTypes") return undefined
-            //    return v
-            //}, maxLength: 200, indent: 4})
-
-            File.AppendAllText(fileName!, json);
+            File.AppendAllText(fileName, json);
             first = false;
         }
 
         public static void Close(bool generateExpectedResults)
         {
-            if (generateExpectedResults)
+            if (generateExpectedResults && fileName != null)
             {
-                File.AppendAllText(fileName!, "\n}");
+                File.AppendAllText(fileName, "\n}");
                 first = true;
             }
         }

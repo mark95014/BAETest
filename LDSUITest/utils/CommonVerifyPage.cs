@@ -18,8 +18,8 @@ public class CommonVerifyPage
         }
         else
         {
-            JObject expectedResults = (JObject)JsonConvert.DeserializeObject(File.ReadAllText(ExpectedResults.fileName));
-            JObject expectedResult = (JObject)expectedResults[dataLabel];
+            JObject expectedResults = (JObject)JsonConvert.DeserializeObject<JObject>(File.ReadAllText(ExpectedResults.FileName))!;
+            JObject expectedResult = (JObject)expectedResults[dataLabel]!;
             await data.Verify(expectedResult, dataLabel);
         }
     }

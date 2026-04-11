@@ -17,7 +17,7 @@ namespace LDSAPITest.Utils
             }
             else
             {
-                string fileContent = File.ReadAllText(ExpectedResults.fileName ?? throw new InvalidOperationException("Expected results file name is null."));
+                string fileContent = File.ReadAllText(ExpectedResults.FileName ?? throw new InvalidOperationException("Expected results file name is null."));
                 JObject expectedResults = JsonConvert.DeserializeObject<JObject>(fileContent) ?? throw new InvalidOperationException("Failed to deserialize expected results.");
                 JObject expectedResult = (JObject?)expectedResults[dataLabel] ?? throw new InvalidOperationException($"Expected result not found for label: {dataLabel}");
 

@@ -4,19 +4,20 @@
     <OutputType>Exe</OutputType>
     <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
-    <Nullable>disable</Nullable>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
     <Compile Remove="**\ClientPage*.cs" />
+    <Compile Remove="inputData\**" />
+    <EmbeddedResource Remove="inputData\**" />
+    <None Remove="inputData\**" />
   </ItemGroup>
 
   <ItemGroup>
     <Folder Include="data\expectedResults\multithreaded\" />
     <Folder Include="data\expectedResults\regression\" />
     <Folder Include="data\expectedResults\temp\" />
-    <Folder Include="data\TestInput\" />
-    <Folder Include="inputData\" />
     <Folder Include="sandbox\" />
     <Folder Include="TestResults\" />
     <Folder Include="tests\disabled\" />
