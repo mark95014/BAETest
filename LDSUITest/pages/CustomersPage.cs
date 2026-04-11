@@ -1,12 +1,11 @@
-using LDSUITest.src.utils;
 using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 
 namespace LDSUITest.pages
 {
-    internal static class CustomersPage
+    internal class CustomersPage : BasePage
     {
-        private static string Url => $"{BaseTest.webBaseUrl}/customers";
+        protected override string RelativePath => "/customers";
 
         internal static class Selectors
         {
@@ -24,37 +23,24 @@ namespace LDSUITest.pages
         private static ILocator FilterNameInput(IPage page) => page.Locator(Selectors.filterNameInput);
         private static ILocator ApplyFiltersButton(IPage page) => page.Locator(Selectors.applyFiltersButton);
 
-        internal static async Task GoTo(IPage page)
-        {
-            await page.GotoAsync(Url);
-            await WaitForPageToLoad(page);
-        }
-
-        internal static async Task WaitForPageToLoad(IPage page)
+        public override async Task WaitForPageToLoad(IPage page)
         {
             await PageTitle(page).WaitForAsync();
             await CustomersTable(page).WaitForAsync();
         }
 
-        internal static async Task FilterCustomersById(IPage page, string filterValue)
+        public async Task FilterCustomersById(IPage page, string filterValue)
         {
             await FilterIdInput(page).FillAsync(filterValue);
             await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
         }
 
-        internal static async Task FilterCustomersByName(IPage page, string filterValue)
+        public async Task FilterCustomersByName(IPage page, string filterValue)
         {
             await FilterNameInput(page).FillAsync(filterValue);
             await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
-        }
-
-        internal static async Task VerifyPage(IPage page)
-        {
-            var pageData = new CustomersPageData();
-            pageData.Initialize(page);
-            await CommonVerifyPage.Verify(pageData);
         }
     }
 }

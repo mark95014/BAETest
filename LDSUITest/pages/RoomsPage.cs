@@ -4,9 +4,9 @@ using Microsoft.Playwright;
 
 namespace LDSUITest.pages
 {
-    internal static class RoomsPage
+    internal class RoomsPage : BasePage
     {
-        private static string Url => $"{BaseTest.webBaseUrl}/rooms";
+        protected override string RelativePath => "/rooms";
 
         internal static class Selectors
         {
@@ -18,23 +18,10 @@ namespace LDSUITest.pages
         private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
         private static ILocator RoomsTable(IPage page) => page.Locator(Selectors.roomsTable);
 
-        internal static async Task GoTo(IPage page)
-        {
-            await page.GotoAsync(Url);
-            await WaitForPageToLoad(page);
-        }
-
-        internal static async Task WaitForPageToLoad(IPage page)
+        public override async Task WaitForPageToLoad(IPage page)
         {
             await PageTitle(page).WaitForAsync();
             await RoomsTable(page).WaitForAsync();
-        }
-
-        internal static async Task VerifyPage(IPage page)
-        {
-            var pageData = new RoomsPageData();
-            pageData.Initialize(page);
-            await CommonVerifyPage.Verify(pageData);
         }
     }
 }

@@ -1,42 +1,40 @@
 using LDSUITest.pages;
 using LDSUITest.src.utils;
+using LDSUITest.utils.PageData;
 using NUnit.Framework;
-using BookingsData = LDSUITest.utils.PageData.BookingsPageData;
 
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
     public class BookingsPageTest : BaseTest
     {
-        private BookingsData _bookingsPageData;
+        private BookingsPage _bookingsPage;
 
         [SetUp]
         public async Task Setup()
         {
-            await BookingsPage.GoTo(Page);
-
-            _bookingsPageData = new BookingsData();
-            _bookingsPageData.Initialize(Page);
+            _bookingsPage = new BookingsPage();
+            await _bookingsPage.GoTo(Page);
         }
 
         [TestCase(1, Description = "Verify all data on Bookings page")]
         public async Task VerifyBookingsPage(int testCaseId)
         {
-            await BookingsPage.VerifyPage(Page);
+            await BasePage.VerifyPage<BookingsPageData>(Page);
         }
 
         [TestCase(2, "7", Description = "Verify filter functionality on Bookings page")]
         public async Task VerifyBookingsFilter(int testCaseId, string customerId)
         {
-            await BookingsPage.FilterBookings(Page, customerId);
-            await BookingsPage.VerifyPage(Page);
+            await _bookingsPage.FilterBookings(Page, customerId);
+            await BasePage.VerifyPage<BookingsPageData>(Page);
         }
 
         [TestCase(3, "son", Description = "Verify filter by customer name containing 'son'")]
         public async Task VerifyBookingsFilterByCustomerName(int testCaseId, string customerName)
         {
-            await BookingsPage.FilterBookingsByCustomerName(Page, customerName);
-            await BookingsPage.VerifyPage(Page);
+            await _bookingsPage.FilterBookingsByCustomerName(Page, customerName);
+            await BasePage.VerifyPage<BookingsPageData>(Page);
         }
     }
 }

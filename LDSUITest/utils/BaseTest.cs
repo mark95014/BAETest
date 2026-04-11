@@ -105,7 +105,7 @@ namespace LDSUITest.src.utils
                 await _customBrowser.CloseAsync();
                 _customBrowser = null;
             }
-            
+
             TestCaseFinish();
         }
 
@@ -127,7 +127,7 @@ namespace LDSUITest.src.utils
             TestContext.CurrentContext.Test.Arguments[0] = testCaseId;
         }
 
-        public void TestCaseFinish()
+        public static void TestCaseFinish()
         {
             int testCaseId = GetTestCaseId();
             results.Display();
