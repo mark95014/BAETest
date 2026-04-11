@@ -9,12 +9,19 @@ namespace LDSUITest.pages
 
         internal static class Selectors
         {
-            internal static string pageTitle = "h1:has-text('All Customers')";
-            internal static string customersTable = "[id='customersTable']";
-            internal static string filterIdInput = "[id='filterId']";
-            internal static string filterNameInput = "[id='filterName']";
-            internal static string applyFiltersButton = "button:has-text('Apply Filters')";
+            internal const string pageTitle = "h1:has-text('All Customers')";
+            internal const string customersTable = "[id='customersTable']";
+            internal const string filterIdInput = "[id='filterId']";
+            internal const string filterNameInput = "[id='filterName']";
+            internal const string applyFiltersButton = "button:has-text('Apply Filters')";
         }
+
+        // Pre-initialized locators
+        private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
+        private static ILocator CustomersTable(IPage page) => page.Locator(Selectors.customersTable);
+        private static ILocator FilterIdInput(IPage page) => page.Locator(Selectors.filterIdInput);
+        private static ILocator FilterNameInput(IPage page) => page.Locator(Selectors.filterNameInput);
+        private static ILocator ApplyFiltersButton(IPage page) => page.Locator(Selectors.applyFiltersButton);
 
         internal static async Task GoTo(IPage page)
         {
@@ -24,21 +31,21 @@ namespace LDSUITest.pages
 
         internal static async Task WaitForPageToLoad(IPage page)
         {
-            await page.WaitForSelectorAsync(Selectors.pageTitle);
-            await page.WaitForSelectorAsync(Selectors.customersTable);
+            await PageTitle(page).WaitForAsync();
+            await CustomersTable(page).WaitForAsync();
         }
 
         internal static async Task FilterCustomersById(IPage page, string filterValue)
         {
-            await page.Locator(Selectors.filterIdInput).FillAsync(filterValue);
-            await page.ClickAsync(Selectors.applyFiltersButton);
+            await FilterIdInput(page).FillAsync(filterValue);
+            await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
         }
 
         internal static async Task FilterCustomersByName(IPage page, string filterValue)
         {
-            await page.Locator(Selectors.filterNameInput).FillAsync(filterValue);
-            await page.ClickAsync(Selectors.applyFiltersButton);
+            await FilterNameInput(page).FillAsync(filterValue);
+            await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
         }
 

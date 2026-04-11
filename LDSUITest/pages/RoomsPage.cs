@@ -9,9 +9,13 @@ namespace LDSUITest.pages
 
         internal static class Selectors
         {
-            internal static string pageTitle = "h1:has-text('All Rooms')";
-            internal static string roomsTable = "[id='roomsTable']";
+            internal const string pageTitle = "h1:has-text('All Rooms')";
+            internal const string roomsTable = "[id='roomsTable']";
         }
+
+        // Pre-initialized locators
+        private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
+        private static ILocator RoomsTable(IPage page) => page.Locator(Selectors.roomsTable);
 
         internal static async Task GoTo(IPage page)
         {
@@ -21,8 +25,8 @@ namespace LDSUITest.pages
 
         internal static async Task WaitForPageToLoad(IPage page)
         {
-            await page.WaitForSelectorAsync(Selectors.pageTitle);
-            await page.WaitForSelectorAsync(Selectors.roomsTable);
+            await PageTitle(page).WaitForAsync();
+            await RoomsTable(page).WaitForAsync();
         }
 
         internal static async Task VerifyPage(IPage page)
