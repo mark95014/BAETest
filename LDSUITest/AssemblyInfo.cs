@@ -3,5 +3,5 @@
 // Enable parallel execution at fixture level (test classes run in parallel)
 [assembly: Parallelizable(ParallelScope.Fixtures)]
 
-// Set number of workers (0 or omit = use all cores, or specify a number like 4)
-[assembly: LevelOfParallelism(0)]
+// Set number of workers (0 run sequentially, or specify a number like 4)
+[assembly: LevelOfParallelism(2)]
