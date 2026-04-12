@@ -1,12 +1,11 @@
 using FluentAssertions;
+using LDSAPITest.data.TestInput;
 using LDSAPITest.Utils;
-using LDSTest.Shared;
-using Newtonsoft.Json.Linq;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Http.Json;
 
-    namespace LDSAPITest.Tests
+namespace LDSAPITest.Tests
 {
     [TestFixture]
     public class BookingApiTests : BaseApiTest
@@ -23,10 +22,8 @@ using System.Net.Http.Json;
         [TestCase(1, Description = "Get all bookings")]
         public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId)
         {
-            // Act
             var response = await GetAsync("GetAllBookings");
 
-            // Assert
             await EnsureSuccessStatusCodeAsync(response);
         
             var bookings = await DeserializeResponseAsync<List<Booking>>(response);
@@ -42,13 +39,11 @@ using System.Net.Http.Json;
         [TestCase(5, Description = "Get booking by ID 7")]
         public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId)
         {
-            JObject testInput = TestInput.GetInput(testCaseId);
-            int bookingId = (int)testInput["booking"]!["Id"]!;
+            var testData = BookingApiTestData.GetTestData(testCaseId);
+            int bookingId = testData.Booking.Id;
 
-            // Act
             var response = await GetAsync($"GetBooking/{bookingId}");
 
-            // Assert
             AssertStatusCode(response, HttpStatusCode.OK);
         
             var booking = await response.Content.ReadFromJsonAsync<Booking>();
@@ -59,13 +54,11 @@ using System.Net.Http.Json;
         [TestCase(3, Description = "Create new booking")]
         public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId)
         {
-            JObject testInput = TestInput.GetInput(testCaseId);
-            JObject bookingData = (testInput["booking"] as JObject)!;
+            var testData = BookingApiTestData.GetTestData(testCaseId);
+            var bookingData = testData.Booking;
 
-            // Act
             var response = await PostAsync("CreateEditBooking", bookingData);
 
-            // Assert
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
         
             var createdBooking = await DeserializeResponseAsync<Booking>(response);

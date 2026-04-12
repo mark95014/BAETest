@@ -1,3 +1,4 @@
+using LDSUITest.data.TestInput;
 using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
@@ -23,16 +24,24 @@ namespace LDSUITest.tests.regression
             await BasePage.VerifyPage<CustomersPageData>(Page);
         }
 
-        [TestCase(2, "7", Description = "Verify filter by customer ID")]
-        public async Task VerifyCustomersFilterById(int testCaseId, string customerId)
+        [TestCase(2, Description = "Verify filter by customer ID")]
+        public async Task VerifyCustomersFilterById(int testCaseId)
         {
+            // Get test input data - strongly typed, no parsing needed!
+            var testData = CustomersPageTestData.GetTestData(testCaseId);
+            string customerId = testData.CustomerId;
+
             await _customersPage.FilterCustomersById(Page, customerId);
             await BasePage.VerifyPage<CustomersPageData>(Page);
         }
 
-        [TestCase(3, "son", Description = "Verify filter by customer name")]
-        public async Task VerifyCustomersFilterByName(int testCaseId, string customerName)
+        [TestCase(3, Description = "Verify filter by customer name")]
+        public async Task VerifyCustomersFilterByName(int testCaseId)
         {
+            // Get test input data - strongly typed, no parsing needed!
+            var testData = CustomersPageTestData.GetTestData(testCaseId);
+            string customerName = testData.CustomerName;
+
             await _customersPage.FilterCustomersByName(Page, customerName);
             await BasePage.VerifyPage<CustomersPageData>(Page);
         }
