@@ -1,7 +1,7 @@
 ﻿using TestContext = NUnit.Framework.TestContext;
 
 
-namespace LDSUITest.src.utils
+namespace LDSUITest.utils
 {
     public class Results
     {
@@ -44,7 +44,7 @@ namespace LDSUITest.src.utils
                     if (result.testCaseId == testCaseId)
                     {
                         Console.WriteLine($"\t{result.message}");
-                        if (BaseTest.verbose)
+                        if (BaseTest.Verbose)
                         {
                             Console.WriteLine("\t\tStack Trace");
 
@@ -58,7 +58,7 @@ namespace LDSUITest.src.utils
                 }
             }
 
-            if (BaseTest.verbose)
+            if (BaseTest.Verbose)
             {
                 foreach (Result result in all)
                 {
@@ -97,9 +97,9 @@ namespace LDSUITest.src.utils
 
         public Results()
         {
-            this.all = new List<Result>();
-            this.failed = new List<Result>();
-            this.passed = new List<Result>();
+            this.all = [];
+            this.failed = [];
+            this.passed = [];
         }
     }
 }

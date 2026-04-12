@@ -1,4 +1,4 @@
-using static DTO;
+using static LDSTest.Shared.DTO;
 
 namespace LDSUITest.data.TestInput
 {
@@ -9,20 +9,20 @@ namespace LDSUITest.data.TestInput
         {
             [2] = new RoomTestCase
             {
-                Rooms = new List<Room>
-                {
+                Rooms =
+                [
                     new Room { RoomNumber = 101, Price = 150 },
                     new Room { RoomNumber = 103, Price = 200 },
                     new Room { RoomNumber = 105, Price = 175 }
-                }
+                ]
             },
             // Add more test cases as needed
             [3] = new RoomTestCase
             {
-                Rooms = new List<Room>
-                {
+                Rooms =
+                [
                     new Room { RoomNumber = 102, Price = 125 }
-                }
+                ]
             }
         };
 
@@ -38,6 +38,6 @@ namespace LDSUITest.data.TestInput
 
     public class RoomTestCase
     {
-        public List<Room> Rooms { get; set; } = new();
+        public List<Room> Rooms { get; set; } = [];
     }
 }

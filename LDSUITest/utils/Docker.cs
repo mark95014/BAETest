@@ -1,4 +1,4 @@
-﻿namespace LDSUITest.src.utils
+﻿namespace LDSUITest.utils
 {
     public static class Docker
     {

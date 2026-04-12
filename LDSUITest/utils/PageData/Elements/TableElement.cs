@@ -1,7 +1,7 @@
 using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
     public class TableElement : Element
     {

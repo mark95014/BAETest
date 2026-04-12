@@ -4,4 +4,4 @@
 [assembly: Parallelizable(ParallelScope.Fixtures)]
 
 // Set number of workers (0 run sequentially, or specify a number like 4)
-[assembly: LevelOfParallelism(2)]
+[assembly: LevelOfParallelism(10)]

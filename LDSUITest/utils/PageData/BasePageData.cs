@@ -2,7 +2,7 @@ using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 
-namespace LDSUITest.src.utils.PageData
+namespace LDSUITest.utils.PageData
 {
     public abstract class BasePageData
     {
@@ -31,7 +31,7 @@ namespace LDSUITest.src.utils.PageData
                     MethodInfo method = field.FieldType.GetMethod("GetAsync")!;
                     if (method != null)
                     {
-                        var task = (Task)method.Invoke(field.GetValue(this), new object[] { })!;
+                        var task = (Task)method.Invoke(field.GetValue(this), [])!;
                         await task;
                     }
                 }
@@ -54,9 +54,9 @@ namespace LDSUITest.src.utils.PageData
                     if (VerifyMethod != null)
                     {
                         string dataName = dataLabel + "." + field.Name;
-                        var task = (Task<Result>)VerifyMethod.Invoke(field.GetValue(this), new object[] { dataName, expected })!;
+                        var task = (Task<Result>)VerifyMethod.Invoke(field.GetValue(this), [dataName, expected])!;
                         Result result = await task;
-                        BaseTest.results.Add(result);
+                        BaseTest.Results.Add(result);
                     }
                 }
             }

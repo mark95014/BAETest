@@ -1,6 +1,6 @@
 ﻿using Microsoft.Playwright;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
     public abstract class SimpleElement : Element
     {

@@ -1,7 +1,7 @@
 using LDSTest.Shared;
 using LDSUITest.data.TestInput;
 using LDSUITest.pages;
-using LDSUITest.src.utils;
+using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
 

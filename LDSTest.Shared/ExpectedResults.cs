@@ -5,7 +5,7 @@ namespace LDSTest.Shared
     public abstract class ExpectedResults
     {
         // Make static fields private and expose via properties if needed
-        private static List<string> labels = new();
+        private static readonly List<string> labels = [];
         private static bool first = true;
         private static string fileName = string.Empty;
         private static readonly string expectedResultsFolder = "../../../data/expectedResults";

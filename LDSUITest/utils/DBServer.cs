@@ -1,18 +1,9 @@
-﻿namespace LDSUITest.src.utils
+﻿namespace LDSUITest.utils
 {
-    public class DBServer
+    public class DBServer(string serverName, string userName, string password)
     {
-        public string serverName;
-        public string userName;
-        public string password;
-
-        public DBServer(string serverName, string userName, string password)
-        {
-            this.serverName = serverName;
-            this.userName = userName;
-            this.password = password;
-        }
+        public string serverName = serverName;
+        public string userName = userName;
+        public string password = password;
     }
-
-
 }

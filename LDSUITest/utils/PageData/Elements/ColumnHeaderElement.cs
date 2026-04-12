@@ -1,13 +1,9 @@
 ﻿using Microsoft.Playwright;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
-    public class ColumnHeaderElement : SimpleElement
+    public class ColumnHeaderElement(ILocator locator) : SimpleElement(locator)
     {
-        public ColumnHeaderElement(ILocator locator) : base(locator)
-        {
-        }
-
         public async Task ClickAsync()
         {
             await Locator.ClickAsync();

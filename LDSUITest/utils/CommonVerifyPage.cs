@@ -1,26 +1,28 @@
 ﻿using LDSTest.Shared;
-using LDSUITest.src.utils;
-using LDSUITest.src.utils.PageData;
+using LDSUITest.utils.PageData;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 
-public class CommonVerifyPage
+namespace LDSUITest.utils
 {
-    public static async Task Verify(BasePageData data)
+    public class CommonVerifyPage
     {
-        await data.Get();
-
-        string dataLabel = ExpectedResults.MakeDataLabel(data, BaseTest.GetTestCaseId());
-
-        if (BaseTest.generateExpectedResults)
+        public static async Task Verify(BasePageData data)
         {
-            ExpectedResults.Append(data, dataLabel);
-        }
-        else
-        {
-            JObject expectedResults = (JObject)JsonConvert.DeserializeObject<JObject>(File.ReadAllText(ExpectedResults.FileName))!;
-            JObject expectedResult = (JObject)expectedResults[dataLabel]!;
-            await data.Verify(expectedResult, dataLabel);
+            await data.Get();
+
+            string dataLabel = ExpectedResults.MakeDataLabel(data, BaseTest.GetTestCaseId());
+
+            if (BaseTest.GenerateExpectedResults)
+            {
+                ExpectedResults.Append(data, dataLabel);
+            }
+            else
+            {
+                JObject expectedResults = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(ExpectedResults.FileName))!;
+                JObject expectedResult = (JObject)expectedResults[dataLabel]!;
+                await data.Verify(expectedResult, dataLabel);
+            }
         }
     }
 }

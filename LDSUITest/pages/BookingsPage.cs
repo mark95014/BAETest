@@ -1,4 +1,4 @@
-using LDSUITest.src.utils;
+using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 

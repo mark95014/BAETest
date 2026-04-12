@@ -5,8 +5,8 @@ namespace LDSTest.Shared
 {
     public class Database
     {
-        private string _connectionString = null!;
-        private string _sqlScriptsPath = null!;
+        private readonly string _connectionString = null!;
+        private readonly string _sqlScriptsPath = null!;
 
         public Database()
         {

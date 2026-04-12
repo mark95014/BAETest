@@ -1,11 +1,10 @@
 ﻿using LDSTest.Shared;
-using LDSUITest.utils;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
 using NUnit.Framework;
 using TestContext = NUnit.Framework.TestContext;
 
-namespace LDSUITest.src.utils
+namespace LDSUITest.utils
 {
     [TestFixture]
     public abstract class BaseTest : ContextTest
@@ -13,15 +12,15 @@ namespace LDSUITest.src.utils
         // CA2211: Non-constant fields should not be visible
         // Make static fields private and expose via properties if needed
 
-        public static bool verbose;
-        public static Results results = null!;  
+        private static bool verbose;
+        private static Results results = null!;  
         public DBServer dbServer = null!;       
-        public static bool generateExpectedResults;
-        public static int slowMo = 0;
-        public static bool headless = true;
-        public static string webBaseUrl = string.Empty;
+        private static bool generateExpectedResults;
+        private static int slowMo = 0;
+        private static bool headless = true;
+        private static string webBaseUrl = string.Empty;
 
-        // Provide internal/protected/public properties if access is needed outside this class
+        // Provide public read-only properties for external access
         public static bool Verbose => verbose;
         public static Results Results => results;
         public static bool GenerateExpectedResults => generateExpectedResults;

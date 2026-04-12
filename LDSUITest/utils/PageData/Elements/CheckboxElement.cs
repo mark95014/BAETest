@@ -1,13 +1,9 @@
 ﻿using Microsoft.Playwright;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
-    public class CheckboxElement : SimpleElement
+    public class CheckboxElement(ILocator locator) : SimpleElement(locator)
     {
-        public CheckboxElement(ILocator locator) : base(locator)
-        {
-        }
-
         public async Task CheckAsync()
         {
             await Locator.CheckAsync();

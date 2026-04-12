@@ -1,17 +1,12 @@
 using Microsoft.Playwright;
 using Newtonsoft.Json;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
-    public class ComplexGridElement : GridElement
+    public class ComplexGridElement(ILocator locator, Type[] columnTypes) : GridElement(locator)
     {
         [JsonIgnore]
-        public Type[] ColumnTypes { get; }
-
-        public ComplexGridElement(ILocator locator, Type[] columnTypes) : base(locator)
-        {
-            ColumnTypes = columnTypes;
-        }
+        public Type[] ColumnTypes { get; } = columnTypes;
 
         public override async Task GetCellAsync(ILocator cellLocator, List<object> row, int columnNumber)
         {

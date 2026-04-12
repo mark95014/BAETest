@@ -1,5 +1,5 @@
-using LDSUITest.src.utils.PageData.Elements;
-using LDSUITest.src.utils.PageData;
+using LDSUITest.utils.PageData.Elements;
+using LDSUITest.utils.PageData;
 
 namespace LDSUITest.utils.PageData
 {

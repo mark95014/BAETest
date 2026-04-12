@@ -11,7 +11,7 @@ namespace LDSUITest.utils
         private static bool enableTestRail;
         private static readonly int testRailFailedStatus = 5;
         private static readonly int testRailPassedStatus = 1;
-        private static APIClient testRailClient;
+        private static readonly APIClient testRailClient = new("https://morningstar.testrail.com/");
         private static int testRailRunId;
         private static readonly bool debug = false;
 
@@ -87,7 +87,6 @@ namespace LDSUITest.utils
 
             if (enableTestRail)
             {
-                testRailClient = new APIClient("https://morningstar.testrail.com/");
                 testRailClient.User = "MSAutomationTest@morningstar.com";
                 testRailClient.Password = "msauto";
 

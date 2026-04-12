@@ -1,6 +1,6 @@
 ﻿using System.Diagnostics;
 
-namespace LDSUITest.src.utils
+namespace LDSUITest.utils
 {
     public class Result
     {

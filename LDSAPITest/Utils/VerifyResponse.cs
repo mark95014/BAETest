@@ -23,13 +23,7 @@ namespace LDSAPITest.Utils
 
                 foreach (var property in expectedResult.Properties())
                 {
-                    var actualProperty = responseObject.Property(property.Name);
-
-                    if (actualProperty == null)
-                    {
-                        throw new Exception($"Missing property at {dataLabel}.{property.Name}");
-                    }
-
+                    var actualProperty = responseObject.Property(property.Name) ?? throw new Exception($"Missing property at {dataLabel}.{property.Name}");
                     if (!JToken.DeepEquals(property.Value, actualProperty.Value))
                     {
                         throw new Exception($"Value mismatch at {dataLabel}.{property.Name}: expected '{property.Value}', got '{actualProperty.Value}'");

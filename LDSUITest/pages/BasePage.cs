@@ -1,5 +1,5 @@
-using LDSUITest.src.utils;
-using LDSUITest.src.utils.PageData;
+using LDSUITest.utils;
+using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 
 namespace LDSUITest.pages
@@ -14,7 +14,7 @@ namespace LDSUITest.pages
         /// <summary>
         /// Full URL constructed from base URL + relative path
         /// </summary>
-        protected string Url => $"{BaseTest.webBaseUrl}{RelativePath}";
+        protected string Url => $"{BaseTest.WebBaseUrl}{RelativePath}";
 
         /// <summary>
         /// Navigate to this page and wait for it to load

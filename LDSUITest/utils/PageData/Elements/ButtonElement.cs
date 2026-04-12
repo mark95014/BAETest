@@ -1,13 +1,9 @@
 using Microsoft.Playwright;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
-    public class ButtonElement : SimpleElement
+    public class ButtonElement(ILocator locator) : SimpleElement(locator)
     {
-        public ButtonElement(ILocator locator) : base(locator)
-        {
-        }
-
         public async Task ClickAsync()
         {
             await Locator.ClickAsync();

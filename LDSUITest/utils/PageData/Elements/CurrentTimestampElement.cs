@@ -1,14 +1,10 @@
 ﻿using Microsoft.Playwright;
 using System.Text.RegularExpressions;
 
-namespace LDSUITest.src.utils.PageData.Elements
+namespace LDSUITest.utils.PageData.Elements
 {
-    public class CurrentTimestampElement : TextElement
+    public class CurrentTimestampElement(ILocator locator) : TextElement(locator)
     {
-        public CurrentTimestampElement(ILocator locator) : base(locator)
-        {
-        }
-
         public override async Task<Result> VerifyAsync(string name, object expected)
         {
             await GetAsync();

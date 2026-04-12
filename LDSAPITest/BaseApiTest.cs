@@ -319,7 +319,7 @@ namespace LDSAPITest
         /// <summary>
         /// Asserts that the response has the expected status code.
         /// </summary>
-        protected void AssertStatusCode(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
+        protected static void AssertStatusCode(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
         {
             if (response.StatusCode != expectedStatusCode)
             {
@@ -334,7 +334,7 @@ namespace LDSAPITest
         /// <summary>
         /// Ensures the response was successful (2xx status code).
         /// </summary>
-        protected async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
+        protected static async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
