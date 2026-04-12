@@ -31,10 +31,6 @@ namespace LDSUITest.utils
             Console.WriteLine($"\tFailed Assertions {this.failed.Count}");
             Console.WriteLine();
 
-            //TestContext.Progress.WriteLine($"Total Assertions {this.all.Count}");
-            //TestContext.Progress.WriteLine($"Passed Assertions {this.passed.Count}");
-            //TestContext.Progress.WriteLine($"Failed Assertions {this.failed.Count}");
-
             if (HasFailures())
             {
                 Console.WriteLine();
@@ -65,11 +61,6 @@ namespace LDSUITest.utils
                     if (result.testCaseId == testCaseId)
                     {
                         string status = result.passed ? "Passed" : "Failed";
-
-                        //Console.ForegroundColor = result.passed ? ConsoleColor.Green : ConsoleColor.Red;
-
-                        //Console.Write(status);
-                        //Console.ResetColor();
                         Console.WriteLine($"{status}, {result.message}");
                     }
                 }

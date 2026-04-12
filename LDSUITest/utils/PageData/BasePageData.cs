@@ -6,7 +6,6 @@ namespace LDSUITest.utils.PageData
 {
     public abstract class BasePageData
     {
-        // Line 9 - make Page nullable with null!
         public IPage Page { get; set; } = null!;
 
         public void Initialize(IPage page)
@@ -17,12 +16,9 @@ namespace LDSUITest.utils.PageData
 
         protected abstract void InitializeElements();
 
-        public abstract Task GetAsync();
-        public abstract Task VerifyAsync();
-
         public async Task Get()
         {
-            FieldInfo[] fields = GetType().GetFields();  // Simple - gets public fields
+            FieldInfo[] fields = GetType().GetFields();
 
             foreach (FieldInfo field in fields)
             {
@@ -44,8 +40,6 @@ namespace LDSUITest.utils.PageData
 
             foreach (FieldInfo field in fields)
             {
-                // Lines 30-55 - Add null checks before dereferencing
-                // Example for line 34:
                 if (field != null && expectedResult[field.Name] != null)
                 {
                     JObject expectedObject = (JObject)expectedResult[field.Name]!;

@@ -1,17 +1,15 @@
 ﻿using Microsoft.Playwright;
-using LDSUITest.utils;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public class TextElement : Element
     {
-        public string? Regex { get; set; }  // Make nullable
+        public string? Regex { get; set; }
 
         public TextElement(ILocator locator) : base(locator)
         {
         }
 
-        // Line 28 - Change constructor to accept nullable regex
         public TextElement(ILocator locator, string defaultValue = "", string? regex = null) 
             : base(locator)
         {

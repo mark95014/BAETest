@@ -7,7 +7,7 @@ namespace LDSUITest.utils
         public bool passed;
         public string message;
         public int testCaseId;
-        public List<string> stackTrace = new List<string>();
+        public List<string> stackTrace = [];
 
         public Result(bool passed, string message = "")
         {

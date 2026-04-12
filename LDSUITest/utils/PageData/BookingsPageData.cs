@@ -1,5 +1,4 @@
 using LDSUITest.utils.PageData.Elements;
-using LDSUITest.utils.PageData;
 
 namespace LDSUITest.utils.PageData
 {
@@ -10,19 +9,8 @@ namespace LDSUITest.utils.PageData
 
         protected override void InitializeElements()
         {
-            // Initialize elements with their locators
             Title = new TextElement(Page.Locator("selector-for-title"));
             BookingsTable = new TableElement(Page.Locator("selector-for-table"));
-        }
-
-        public override async Task GetAsync()
-        {
-            await Task.CompletedTask;
-        }
-
-        public override async Task VerifyAsync()
-        {
-            await Task.CompletedTask;
         }
     }
 }

@@ -12,7 +12,7 @@ namespace LDSUITest.utils
         // CA2211: Non-constant fields should not be visible
         // Make static fields private and expose via properties if needed
 
-        private static bool verbose;
+        private static bool verbose = false;
         private static Results results = null!;  
         public DBServer dbServer = null!;       
         private static bool generateExpectedResults;
@@ -42,53 +42,31 @@ namespace LDSUITest.utils
 
         public BaseTest()
         {
-            // Initialize non-nullable fields to prevent CS8618 warnings
             Page = null!; // Will be properly initialized in TestCaseSetUp
         }
 
         [OneTimeSetUp]
         public virtual void BaseSetup()
         {
-            //Log test start
             TestContext.Progress.WriteLine("BaseSetup");
             results = new();
             verbose = Boolean.Parse(TestContext.Parameters["verbose"] ?? "false");
             environment = TestContext.Parameters["environment"]?.ToString() ?? string.Empty;
             generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
-            
-            // Read slowMo from .runsettings
-            var slowMoParam = TestContext.Parameters["slowMo"];
-            if (!string.IsNullOrEmpty(slowMoParam) && int.TryParse(slowMoParam, out int slowMoValue))
-            {
-                slowMo = slowMoValue;
-                TestContext.Progress.WriteLine($"SlowMo enabled: {slowMo}ms");
-            }
-            
-            // Read headless from .runsettings
-            var headlessParam = TestContext.Parameters["headless"];
-            if (!string.IsNullOrEmpty(headlessParam) && bool.TryParse(headlessParam, out bool headlessValue))
-            {
-                headless = headlessValue;
-                TestContext.Progress.WriteLine($"Headless mode: {headless}");
-            }
-            
-            // Get environment-specific web base URL
-            webBaseUrl = TestContext.Parameters[$"{environment}.webBaseURL"] 
-                         ?? throw new InvalidOperationException($"Web Base URL not configured for environment: {environment}");
-            
-            TestContext.Progress.WriteLine($"Web Base URL: {webBaseUrl}");
-            
+            slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;          
+            headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
+            webBaseUrl = TestContext.Parameters[$"{environment}.webBaseURL"] ?? "";
+
             ExpectedResults.Init(GetType().Name, generateExpectedResults, "regression");
         }
 
         [SetUp]
         public virtual async Task TestCaseSetUp()
         {
-            if (headless)
-            {
-                slowMo = 0; // Disable slowMo when running in headless mode for faster execution
-            }
+            slowMo = headless ? 0 : slowMo; // Disable slowMo when running in headless mode for faster execution
 
+            // This is the reason for using ContextTest as the base class instead of PageTest
+            // to allow for custom browser and context creation with specific options
             _customBrowser = await Context.Browser!.BrowserType.LaunchAsync(new BrowserTypeLaunchOptions
             {
                 Headless = headless,
@@ -102,10 +80,8 @@ namespace LDSUITest.utils
         [TearDown]
         public virtual async Task TestCaseTearDown()
         {
-            //log test case finish
             TestContext.Progress.WriteLine("TestCaseTearDown");
             
-            // Clean up in reverse order of creation
             if (Page != null)
             {
                 await Page.CloseAsync();
@@ -135,11 +111,8 @@ namespace LDSUITest.utils
 
         public static int GetTestCaseId()
         {
-            var testCaseIdArg = TestContext.CurrentContext.Test.Arguments[0]?.ToString();
-            if (testCaseIdArg == null || !int.TryParse(testCaseIdArg, out int testCaseId))
-            {
-                throw new InvalidOperationException("Test case ID argument is missing or invalid");
-            }
+            // NUnit stores the arguments to a [TestCase] in TestContext. Arg[0] is test case id
+            int testCaseId = int.Parse(TestContext.CurrentContext.Test.Arguments[0]!.ToString()!);
             return testCaseId;
         }
 
@@ -157,7 +130,7 @@ namespace LDSUITest.utils
 
             try
             {
-                NUnit.Framework.Assert.That(results.HasFailures(), NUnit.Framework.Is.False, $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
+                Assert.That(results.HasFailures(), Is.False, $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
                 TestRail.AddSuccessfulTestRailResult(testCaseId);
             }
             catch (Exception)

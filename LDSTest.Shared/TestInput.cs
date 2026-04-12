@@ -3,6 +3,7 @@ using System.Runtime.CompilerServices;
 
 namespace LDSTest.Shared
 {
+    // This class is an obsolete utility. See LDS*Test/data/TestInput for the new way.
     public class TestInput
     {
         public static JObject GetInput(int testCaseId, [CallerFilePath] string callerFilePath = "")
