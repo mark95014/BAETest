@@ -1,19 +1,18 @@
 ﻿using System.Diagnostics;
 
-namespace LDSUITest.utils
+namespace LDSTest.Shared
 {
     public class Result
     {
         public bool passed;
         public string message;
-        public int testCaseId;
+        public int testCaseId = Context.GetTestCaseId();
         public List<string> stackTrace = [];
 
         public Result(bool passed, string message = "")
         {
             this.passed = passed;
             this.message = message;
-            this.testCaseId = BaseTest.GetTestCaseId();
 
             if (!passed)
             {

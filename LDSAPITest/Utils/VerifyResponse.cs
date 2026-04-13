@@ -8,7 +8,7 @@ namespace LDSAPITest.Utils
     {
         public static void Verify(string name, object response)
         {
-            string dataLabel = ExpectedResults.MakeDataLabel(name, BaseApiTest.GetTestCaseId());
+            string dataLabel = ExpectedResults.MakeDataLabel(name, Context.GetTestCaseId());
             JObject responseObject = JObject.FromObject(response);
 
             if (BaseApiTest.GenerateExpectedResults)

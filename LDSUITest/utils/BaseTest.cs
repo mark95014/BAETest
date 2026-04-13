@@ -9,9 +9,6 @@ namespace LDSUITest.utils
     [TestFixture]
     public abstract class BaseTest : ContextTest
     {
-        // CA2211: Non-constant fields should not be visible
-        // Make static fields private and expose via properties if needed
-
         private static bool verbose = false;
         private static Results results = null!;  
         public DBServer dbServer = null!;       
@@ -109,12 +106,12 @@ namespace LDSUITest.utils
             ExpectedResults.Close(generateExpectedResults);
         }
 
-        public static int GetTestCaseId()
-        {
-            // NUnit stores the arguments to a [TestCase] in TestContext. Arg[0] is test case id
-            int testCaseId = int.Parse(TestContext.CurrentContext.Test.Arguments[0]!.ToString()!);
-            return testCaseId;
-        }
+        //public static int GetTestCaseId()
+        //{
+        //    // NUnit stores the arguments to a [TestCase] in TestContext. Arg[0] is test case id
+        //    int testCaseId = int.Parse(TestContext.CurrentContext.Test.Arguments[0]!.ToString()!);
+        //    return testCaseId;
+        //}
 
         public static void SetTestCaseId(string testCaseId)
         {
@@ -123,7 +120,7 @@ namespace LDSUITest.utils
 
         public static void TestCaseFinish()
         {
-            int testCaseId = GetTestCaseId();
+            int testCaseId = LDSTest.Shared.Context.GetTestCaseId();
             results.Display();
 
             string errorMessages = results.GetErrorMessages();

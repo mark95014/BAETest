@@ -1,7 +1,7 @@
 ﻿using TestContext = NUnit.Framework.TestContext;
 
 
-namespace LDSUITest.utils
+namespace LDSTest.Shared
 {
     public class Results
     {
@@ -21,11 +21,11 @@ namespace LDSUITest.utils
 
         public void Display()
         {
-            int testCaseId = BaseTest.GetTestCaseId();
+            int testCaseId = Context.GetTestCaseId();
             Console.WriteLine();
             Console.WriteLine("Summary");
             string passFail = HasFailures() ? "Failed" : "Passed";
-            Console.WriteLine($"\tTest Case {TestContext.CurrentContext.Test.FullName} TestRail test case id: {BaseTest.GetTestCaseId()} {passFail}");
+            Console.WriteLine($"\tTest Case {TestContext.CurrentContext.Test.FullName} TestRail test case id: {testCaseId} {passFail}");
             Console.WriteLine($"\tTotal Assertions {this.all.Count}");
             Console.WriteLine($"\tPassed Assertions {this.passed.Count}");
             Console.WriteLine($"\tFailed Assertions {this.failed.Count}");
@@ -40,7 +40,7 @@ namespace LDSUITest.utils
                     if (result.testCaseId == testCaseId)
                     {
                         Console.WriteLine($"\t{result.message}");
-                        if (BaseTest.Verbose)
+                        //if (BaseTest.Verbose)
                         {
                             Console.WriteLine("\t\tStack Trace");
 
@@ -54,7 +54,7 @@ namespace LDSUITest.utils
                 }
             }
 
-            if (BaseTest.Verbose)
+            //if (BaseTest.Verbose)
             {
                 foreach (Result result in all)
                 {

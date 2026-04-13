@@ -11,7 +11,7 @@ namespace LDSUITest.utils
         {
             await data.Get();
 
-            string dataLabel = ExpectedResults.MakeDataLabel(data, BaseTest.GetTestCaseId());
+            string dataLabel = ExpectedResults.MakeDataLabel(data, Context.GetTestCaseId());
 
             if (BaseTest.GenerateExpectedResults)
             {

@@ -36,6 +36,12 @@ namespace LDSTest.Shared
                     await insertCustomersCmd.ExecuteNonQueryAsync();
                 }
 
+                var insertRoomsScript = await File.ReadAllTextAsync(Path.Combine(_sqlScriptsPath, "Insert_Rooms.sql"));
+                using (var insertRoomsCmd = new SqlCommand(insertRoomsScript, connection))
+                {
+                    await insertRoomsCmd.ExecuteNonQueryAsync();
+                }
+
                 var insertBookingsScript = await File.ReadAllTextAsync(Path.Combine(_sqlScriptsPath, "Insert_Bookings.sql"));
                 using (var insertBookingsCmd = new SqlCommand(insertBookingsScript, connection))
                 {

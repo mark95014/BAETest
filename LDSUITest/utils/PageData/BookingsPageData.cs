@@ -9,8 +9,8 @@ namespace LDSUITest.utils.PageData
 
         protected override void InitializeElements()
         {
-            Title = new TextElement(Page.Locator("selector-for-title"));
-            BookingsTable = new TableElement(Page.Locator("selector-for-table"));
+            Title = new TextElement(Page.Locator("h1:has-text('All Bookings')"));
+            BookingsTable = new TableElement(Page.Locator("[id='bookingsTable']"));
         }
     }
 }

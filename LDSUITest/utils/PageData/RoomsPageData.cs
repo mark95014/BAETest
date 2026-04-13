@@ -10,9 +10,9 @@ namespace LDSUITest.utils.PageData
         // Constructor or initialization will set these values before use
         protected override void InitializeElements()
         {
-            // Initialize elements with their locators
-            Title = new TextElement(Page.Locator("selector-for-title"));
-            RoomsTable = new TableElement(Page.Locator("selector-for-table"));
+            // Update these selectors to match your actual page
+            Title = new TextElement(Page.Locator("h1:has-text('All Rooms')"));
+            RoomsTable = new TableElement(Page.Locator("[id='roomsTable']"));
         }
     }
 }

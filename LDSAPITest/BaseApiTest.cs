@@ -377,12 +377,12 @@ namespace LDSAPITest
             }
         }
 
-        public static int GetTestCaseId()
-        {
-            var arg = TestContext.CurrentContext.Test.Arguments[0];
-            string testCaseIdString = arg?.ToString() ?? throw new InvalidOperationException("Test case ID argument is null.");
-            return int.Parse(testCaseIdString);
-        }
+        //public static int GetTestCaseId()
+        //{
+        //    var arg = TestContext.CurrentContext.Test.Arguments[0];
+        //    string testCaseIdString = arg?.ToString() ?? throw new InvalidOperationException("Test case ID argument is null.");
+        //    return int.Parse(testCaseIdString);
+        //}
 
         #endregion
     }

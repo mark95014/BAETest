@@ -1,3 +1,4 @@
+using LDSTest.Shared;
 using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
@@ -18,16 +19,16 @@ namespace LDSUITest.utils.PageData
 
         public async Task Get()
         {
-            FieldInfo[] fields = GetType().GetFields();
+            PropertyInfo[] properties = GetType().GetProperties();
 
-            foreach (FieldInfo field in fields)
+            foreach (PropertyInfo property in properties)
             {
-                if (field != null)
+                if (property != null && property.Name != nameof(Page))
                 {
-                    MethodInfo method = field.FieldType.GetMethod("GetAsync")!;
+                    MethodInfo? method = property.PropertyType.GetMethod("GetAsync");
                     if (method != null)
                     {
-                        var task = (Task)method.Invoke(field.GetValue(this), [])!;
+                        var task = (Task)method.Invoke(property.GetValue(this), [])!;
                         await task;
                     }
                 }
@@ -36,19 +37,19 @@ namespace LDSUITest.utils.PageData
 
         public async Task Verify(JObject expectedResult, string dataLabel)
         {
-            FieldInfo[] fields = GetType().GetFields();  // gets public fields
+            PropertyInfo[] properties = GetType().GetProperties();
 
-            foreach (FieldInfo field in fields)
+            foreach (PropertyInfo property in properties)
             {
-                if (field != null && expectedResult[field.Name] != null)
+                if (property != null && property.Name != nameof(Page) && expectedResult[property.Name] != null)
                 {
-                    JObject expectedObject = (JObject)expectedResult[field.Name]!;
+                    JObject expectedObject = (JObject)expectedResult[property.Name]!;
                     Object expected = expectedObject["Data"]!;
-                    MethodInfo VerifyMethod = field.FieldType.GetMethod("VerifyAsync")!;
-                    if (VerifyMethod != null)
+                    MethodInfo? verifyMethod = property.PropertyType.GetMethod("VerifyAsync");
+                    if (verifyMethod != null)
                     {
-                        string dataName = dataLabel + "." + field.Name;
-                        var task = (Task<Result>)VerifyMethod.Invoke(field.GetValue(this), [dataName, expected])!;
+                        string dataName = dataLabel + "." + property.Name;
+                        var task = (Task<Result>)verifyMethod.Invoke(property.GetValue(this), [dataName, expected])!;
                         Result result = await task;
                         BaseTest.Results.Add(result);
                     }

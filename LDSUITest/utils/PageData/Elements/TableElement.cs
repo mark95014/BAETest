@@ -1,3 +1,4 @@
+using LDSTest.Shared;
 using Microsoft.Playwright;
 using Newtonsoft.Json.Linq;
 
@@ -9,11 +10,25 @@ namespace LDSUITest.utils.PageData.Elements
         private readonly string _nextButtonSelector;
         private readonly string _firstButtonSelector;
 
-        public TableElement(ILocator locator, bool supportsPagination = false) : base(locator)
+        public TableElement(ILocator locator) : base(locator)
         {
-            _supportsPagination = supportsPagination;
             _nextButtonSelector = "[id='btnNext']";
             _firstButtonSelector = "[id='btnFirst']";
+        }
+
+        private async Task<bool> HasMultiplePagesAsync()
+        {
+            var page = Locator.Page;
+            var nextButton = page.Locator(_nextButtonSelector);
+
+            var count = await nextButton.CountAsync();
+            if (count == 0)
+            {
+                return false;
+            }
+
+            var isDisabled = await nextButton.IsDisabledAsync();
+            return !isDisabled;
         }
 
         public override async Task GetAsync()
@@ -27,7 +42,7 @@ namespace LDSUITest.utils.PageData.Elements
                 gridData.Add(headers);
             }
 
-            if (_supportsPagination)
+            if (await HasMultiplePagesAsync())
             {
                 // Navigate to first page
                 await GoToFirstPageAsync();
