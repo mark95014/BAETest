@@ -1,5 +1,6 @@
 using LDSTest.Shared;
 using Microsoft.Playwright;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
 
@@ -7,6 +8,7 @@ namespace LDSUITest.utils.PageData
 {
     public abstract class BasePageData
     {
+        [JsonIgnore]
         public IPage Page { get; set; } = null!;
 
         public void Initialize(IPage page)

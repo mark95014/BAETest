@@ -19,7 +19,7 @@
 		<Parameter name="databasePassword" value="Passwordyou"/>
 		<Parameter name="databaseRootName" value="BAE_QATEMPLATE"/>
 		<Parameter name="baePassword" value="Password4you"/>
-		<Parameter name="generateExpectedResults" value="true"/>
+		<Parameter name="generateExpectedResults" value="false"/>
 		<Parameter name="testRailRunId" value="285348"/>
 		
 		<!-- TestRail parameters-->
