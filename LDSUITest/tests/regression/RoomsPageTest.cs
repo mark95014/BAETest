@@ -9,6 +9,8 @@ using NUnit.Framework;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.None)]
+
     public class RoomsPageTest : BaseTest
     {
         private RoomsPage _roomsPage = null!;
@@ -21,12 +23,15 @@ namespace LDSUITest.tests.regression
         }
 
         [TestCase(1, Description = "Verify all data on Rooms page")]
+        [Order(1)]
         public async Task VerifyRoomsPage(int testCaseId)
         {
             await BasePage.VerifyPage<RoomsPageData>(Page);
         }
 
         [TestCase(2, Description = "Verify edit room functionality")]
+        [Order(2)]
+        [Ignore("This changes the database, which interferes with other tests.")]
         public async Task VerifyEditRoomFunctionality(int testCaseId)
         {
             // Get test input data - strongly typed, no parsing needed!

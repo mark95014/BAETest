@@ -7,6 +7,8 @@ using NUnit.Framework;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.None)]
+
     public class BookingsPageTest : BaseTest
     {
         private BookingsPage _bookingsPage = null!;
