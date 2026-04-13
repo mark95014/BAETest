@@ -6,7 +6,6 @@ namespace LDSUITest.utils.PageData.Elements
 {
     public class TableElement : Element
     {
-        private readonly bool _supportsPagination;
         private readonly string _nextButtonSelector;
         private readonly string _firstButtonSelector;
 
