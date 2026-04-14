@@ -1,4 +1,5 @@
 using LDSTest.Shared;
+using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Newtonsoft.Json;
 using NUnit.Framework;
 using Polly;
@@ -15,6 +16,9 @@ namespace LDSAPITest
     /// </summary>
     public abstract class BaseApiTest
     {
+        public required ExpectedResults ExpectedResults;
+        // Implement in the future. public Results Results { get; } = new Results();
+
         protected HttpClient HttpClient { get; private set; } = null!;
         protected string ApiBaseUrl { get; private set; } = null!;
         protected string Environment { get; private set; } = null!;
@@ -22,7 +26,7 @@ namespace LDSAPITest
         protected int ApiRetryCount { get; private set; }
         protected int ApiRetryDelayMs { get; private set; }
         protected bool Verbose { get; private set; }
-        public static bool GenerateExpectedResults { get; private set; }
+        public bool GenerateExpectedResults { get; private set; }
 
         protected AsyncRetryPolicy<HttpResponseMessage> RetryPolicy { get; private set; } = null!;
 
@@ -80,13 +84,17 @@ namespace LDSAPITest
                     });
 
             new Database().ResetDatabase().GetAwaiter().GetResult();
-            ExpectedResults.Init(GetType().Name, GenerateExpectedResults, "regression");
+
+            var testName = TestContext.CurrentContext.Test.Name;
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            ExpectedResults = new ExpectedResults(testName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults.Init();
         }
 
         [OneTimeTearDown]
         public virtual void BaseOneTimeTearDown()
         {
-            ExpectedResults.Close(GenerateExpectedResults);
+            ExpectedResults.Close();
             HttpClient?.Dispose();
             LogInfo("=== API Test Teardown Complete ===");
             new Database().ResetDatabase().GetAwaiter().GetResult();

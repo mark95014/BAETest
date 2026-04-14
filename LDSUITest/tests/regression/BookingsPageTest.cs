@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
+    [Parallelizable(ParallelScope.All)]
 
     public class BookingsPageTest : BaseTest
     {
@@ -23,7 +23,7 @@ namespace LDSUITest.tests.regression
         [TestCase(1, Description = "Verify all data on Bookings page")]
         public async Task VerifyBookingsPage(int testCaseId)
         {
-            await BasePage.VerifyPage<BookingsPageData>(Page);
+            await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 
         [TestCase(2, Description = "Verify filter functionality on Bookings page")]
@@ -34,7 +34,7 @@ namespace LDSUITest.tests.regression
             string customerId = testData.CustomerId;
 
             await _bookingsPage.FilterBookings(Page, customerId);
-            await BasePage.VerifyPage<BookingsPageData>(Page);
+            await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 
         [TestCase(3, Description = "Verify filter by customer name containing 'son'")]
@@ -45,7 +45,7 @@ namespace LDSUITest.tests.regression
             string customerName = testData.CustomerName;
 
             await _bookingsPage.FilterBookingsByCustomerName(Page, customerName);
-            await BasePage.VerifyPage<BookingsPageData>(Page);
+            await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
     }
 }

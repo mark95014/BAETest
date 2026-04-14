@@ -1,26 +1,27 @@
 ﻿using Newtonsoft.Json;
+using NUnit.Framework;
 
 namespace LDSTest.Shared
 {
-    public abstract class ExpectedResults
+    public class ExpectedResults
     {
-        // Make static fields private and expose via properties if needed
-        private static readonly List<string> labels = [];
-        private static bool first = true;
-        private static string fileName = string.Empty;
-        private static readonly string expectedResultsFolder = "../../../data/expectedResults";
+        private readonly List<string> labels = [];
+        private bool first = true;
+        public string FileName { get; }
+        public readonly bool GenerateExpectedResults;
 
-        // Add public static properties if external access is required
-        public static string FileName => fileName;
-        public static string ExpectedResultsFolder => expectedResultsFolder;
-
-        public static void Init(string testName, bool generateExpectedResults, string folder)
+        public ExpectedResults(string testName, string expectedResultsFolder, bool generateExpectedResults)
         {
-            fileName = expectedResultsFolder + "/" + folder + "/" + testName + ".json";
-            if (generateExpectedResults) File.WriteAllText(fileName, "{\n");
+            GenerateExpectedResults = generateExpectedResults;
+            FileName = Path.Combine(expectedResultsFolder, $"{testName}.json");
         }
 
-        public static int Occurrences(string searchfor)
+        public void Init()
+        {
+            if (GenerateExpectedResults) File.WriteAllText(FileName, "{\n"); // Start a new JSON object
+        }
+
+        public int Occurrences(string searchfor)
         {
             var count = 0;
 
@@ -32,12 +33,12 @@ namespace LDSTest.Shared
             return count;
         }
 
-        public static string MakeDataLabel(object data, int testCaseId)
+        public string MakeDataLabel(object data, int testCaseId)
         {
             return MakeDataLabel(data.GetType().Name, testCaseId);
         }
 
-        public static string MakeDataLabel(string name, int testCaseId)
+        public string MakeDataLabel(string name, int testCaseId)
         {
             string prefix = name + "." + testCaseId;
             string label;
@@ -51,11 +52,8 @@ namespace LDSTest.Shared
             return label;
         }
 
-        public static void Append(object data, string dataLabel)
+        public void Append(object data, string dataLabel)
         {
-            if (fileName == null)
-                throw new InvalidOperationException("ExpectedResults.Init must be called before Append");
-
             var json = "";
 
             if (!first) json = ",\n";
@@ -64,15 +62,15 @@ namespace LDSTest.Shared
 
             json += JsonConvert.SerializeObject(data, Formatting.Indented);
 
-            File.AppendAllText(fileName, json);
+            File.AppendAllText(FileName, json);
             first = false;
         }
 
-        public static void Close(bool generateExpectedResults)
+        public void Close()
         {
-            if (generateExpectedResults && fileName != null)
+            if (GenerateExpectedResults)
             {
-                File.AppendAllText(fileName, "\n}");
+                File.AppendAllText(FileName, "\n}");
                 first = true;
             }
         }

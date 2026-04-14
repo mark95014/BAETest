@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
+    [Parallelizable(ParallelScope.All)]
 
     public class RoomsPageTest : BaseTest
     {
@@ -26,7 +26,7 @@ namespace LDSUITest.tests.regression
         [Order(1)]
         public async Task VerifyRoomsPage(int testCaseId)
         {
-            await BasePage.VerifyPage<RoomsPageData>(Page);
+            await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
         }
 
         [TestCase(2, Description = "Verify edit room functionality")]
@@ -56,7 +56,7 @@ namespace LDSUITest.tests.regression
             }
 
             // Verify the entire table after all edits
-            await BasePage.VerifyPage<RoomsPageData>(Page);
+            await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
 
             // Reset the database to ensure test isolation
             await new Database().ResetDatabase();

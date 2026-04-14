@@ -18,6 +18,7 @@
     <Parameter name="milestoneId" value="2533"/>
     <Parameter name="projectId" value="51"/>
 	<Parameter name="generateExpectedResults" value="false"/>
+	<Parameter name="expectedResultsFolder" value="../../../data/expectedResults" />
     
     <!-- Database parameters (shared with UI tests if needed) -->
     <Parameter name="databaseUserName" value="QAUser"/>

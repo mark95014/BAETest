@@ -9,27 +9,18 @@ namespace LDSUITest.utils
     [TestFixture]
     public abstract class BaseTest : ContextTest
     {
-        private static bool verbose = false;
-        private static Results results = null!;  
-        public DBServer dbServer = null!;       
-        private static bool generateExpectedResults;
-        private static int slowMo = 0;
-        private static bool headless = true;
-        private static string webBaseUrl = string.Empty;
+        public required ExpectedResults ExpectedResults;
+        public bool Verbose = Boolean.Parse(TestContext.Parameters["verbose"] ?? "false");
+        public Results Results = new();  
+        public DBServer DbServer = null!;       
+        public bool GenerateExpectedResults;
+        private int slowMo = 0;
+        private bool headless = true;
+
 
         // Provide public read-only properties for external access
-        public static bool Verbose => verbose;
-        public static Results Results => results;
-        public static bool GenerateExpectedResults => generateExpectedResults;
-        public static int SlowMo => slowMo;
-        public static bool Headless => headless;
-        public static string WebBaseUrl => webBaseUrl;
-
-        public string environment = string.Empty;
         public string databaseBackupFileName = string.Empty;
         public string databaseName = string.Empty;
-        public string trxUserName = string.Empty;
-        public string trxPassword = string.Empty;
         public string guid = string.Empty;
         public int defaultTimeoutInSeconds = 300;
 
@@ -39,22 +30,23 @@ namespace LDSUITest.utils
 
         public BaseTest()
         {
-            Page = null!; // Will be properly initialized in TestCaseSetUp
+            //Page = null!; // Will be properly initialized in TestCaseSetUp
         }
 
         [OneTimeSetUp]
         public virtual void BaseSetup()
         {
             TestContext.Progress.WriteLine("BaseSetup");
-            results = new();
-            verbose = Boolean.Parse(TestContext.Parameters["verbose"] ?? "false");
-            environment = TestContext.Parameters["environment"]?.ToString() ?? string.Empty;
-            generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
+
+            GenerateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
             slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;          
             headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
-            webBaseUrl = TestContext.Parameters[$"{environment}.webBaseURL"] ?? "";
-
-            ExpectedResults.Init(GetType().Name, generateExpectedResults, "regression");
+            
+            var testName = TestContext.CurrentContext.Test.Name;
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            
+            ExpectedResults = new ExpectedResults(testName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults.Init();
         }
 
         [SetUp]
@@ -103,31 +95,24 @@ namespace LDSUITest.utils
         public virtual void TestTearDown()
         {
             TestContext.Progress.WriteLine("TestTearDown");
-            ExpectedResults.Close(generateExpectedResults);
+            ExpectedResults.Close();
         }
 
-        //public static int GetTestCaseId()
-        //{
-        //    // NUnit stores the arguments to a [TestCase] in TestContext. Arg[0] is test case id
-        //    int testCaseId = int.Parse(TestContext.CurrentContext.Test.Arguments[0]!.ToString()!);
-        //    return testCaseId;
-        //}
-
-        public static void SetTestCaseId(string testCaseId)
+        public void SetTestCaseId(string testCaseId)
         {
             TestContext.CurrentContext.Test.Arguments[0] = testCaseId;
         }
 
-        public static void TestCaseFinish()
+        public void TestCaseFinish()
         {
             int testCaseId = LDSTest.Shared.Context.GetTestCaseId();
-            results.Display();
+            Results.Display();
 
-            string errorMessages = results.GetErrorMessages();
+            string errorMessages = Results.GetErrorMessages();
 
             try
             {
-                Assert.That(results.HasFailures(), Is.False, $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
+                Assert.That(Results.HasFailures(), Is.False, $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
                 TestRail.AddSuccessfulTestRailResult(testCaseId);
             }
             catch (Exception)

@@ -37,7 +37,7 @@ namespace LDSUITest.utils.PageData
             }
         }
 
-        public async Task Verify(JObject expectedResult, string dataLabel)
+        public async Task Verify(JObject expectedResult, string dataLabel, Results results)
         {
             PropertyInfo[] properties = GetType().GetProperties();
 
@@ -53,7 +53,7 @@ namespace LDSUITest.utils.PageData
                         string dataName = dataLabel + "." + property.Name;
                         var task = (Task<Result>)verifyMethod.Invoke(property.GetValue(this), [dataName, expected])!;
                         Result result = await task;
-                        BaseTest.Results.Add(result);
+                        results.Add(result);
                     }
                 }
             }

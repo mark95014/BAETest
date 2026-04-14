@@ -7,21 +7,21 @@ namespace LDSUITest.utils
 {
     public class CommonVerifyPage
     {
-        public static async Task Verify(BasePageData data)
+        public async Task Verify(BasePageData data, ExpectedResults expectedResults, Results results)
         {
             await data.Get();
 
-            string dataLabel = ExpectedResults.MakeDataLabel(data, Context.GetTestCaseId());
+            string dataLabel = expectedResults.MakeDataLabel(data, Context.GetTestCaseId());
 
-            if (BaseTest.GenerateExpectedResults)
+            if (expectedResults.GenerateExpectedResults)
             {
-                ExpectedResults.Append(data, dataLabel);
+                expectedResults.Append(data, dataLabel);
             }
             else
             {
-                JObject expectedResults = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(ExpectedResults.FileName))!;
-                JObject expectedResult = (JObject)expectedResults[dataLabel]!;
-                await data.Verify(expectedResult, dataLabel);
+                JObject _expectedResults = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(expectedResults.FileName))!;
+                JObject expectedResult = (JObject)_expectedResults[dataLabel]!;
+                await data.Verify(expectedResult, dataLabel, results);
             }
         }
     }

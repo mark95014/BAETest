@@ -20,7 +20,7 @@ namespace LDSAPITest.Tests
 
         [Test]
         [TestCase(1, Description = "Get all bookings")]
-        public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId)
+        public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
         {
             var response = await GetAsync("GetAllBookings");
 
@@ -29,7 +29,7 @@ namespace LDSAPITest.Tests
             var bookings = await DeserializeResponseAsync<List<Booking>>(response);
             bookings.Should().NotBeNull();
             bookings.Should().NotBeEmpty();
-            VerifyResponse.Verify(this.GetType().Name, new { bookings = bookings! });
+            VerifyResponse.Verify(new { bookings = bookings! }, ExpectedResults);
         
             LogInfo($"Retrieved {bookings?.Count} bookings");
         }
@@ -37,7 +37,7 @@ namespace LDSAPITest.Tests
         [Test]
         [TestCase(2, Description = "Get booking by ID 1")]
         [TestCase(5, Description = "Get booking by ID 7")]
-        public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId)
+        public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
         {
             var testData = BookingApiTestData.GetTestData(testCaseId);
             int bookingId = testData.Booking.Id;
@@ -47,7 +47,7 @@ namespace LDSAPITest.Tests
             AssertStatusCode(response, HttpStatusCode.OK);
         
             var booking = await response.Content.ReadFromJsonAsync<Booking>();
-            VerifyResponse.Verify(this.GetType().Name, new { booking = booking! });
+            VerifyResponse.Verify(new { booking = booking! }, ExpectedResults);
         }
 
         [Test]
@@ -62,7 +62,7 @@ namespace LDSAPITest.Tests
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
         
             var createdBooking = await DeserializeResponseAsync<Booking>(response);
-            VerifyResponse.Verify(this.GetType().Name, new { booking = createdBooking! });
+            VerifyResponse.Verify(new { booking = createdBooking! }, ExpectedResults);
         }
     }
 }

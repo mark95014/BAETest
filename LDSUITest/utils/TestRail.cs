@@ -63,14 +63,14 @@ namespace LDSUITest.utils
             else return 0;
         }
 
-        public static string MakeRunName(string trxVersion)
+        public static string MakeRunName(string appVersion)
         {
             string deployment = (TestContext.Parameters["environment"])!.ToString();
-            string runName = $"Automated test: {deployment} environment, branch {trxVersion}";
+            string runName = $"Automated test: {deployment} environment, branch {appVersion}";
             return runName;
         }
 
-        public static void InitTestRail(string trxVersion = "")
+        public static void InitTestRail(string appVersion)
         {
             if (debug) TestContext.Progress.WriteLine($"NUnit.Framework.TestContext {NUnit.Framework.TestContext.Parameters}");
 
@@ -94,7 +94,7 @@ namespace LDSUITest.utils
                 int milestoneId = int.Parse(TestContext.Parameters["milestoneId"]!.ToString().ToLower().Trim());
                 string deployment = TestContext.Parameters["environment"]!.ToString();
 
-                string runName = $"Automated test: {deployment} environment, branch {trxVersion}";
+                string runName = $"Automated test: {deployment} environment, branch {appVersion}";
 
                 if (runIdStr.Length > 0)
                 {

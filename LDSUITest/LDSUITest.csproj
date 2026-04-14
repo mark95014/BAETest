@@ -15,9 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="data\expectedResults\multithreaded\" />
-    <Folder Include="data\expectedResults\regression\" />
-    <Folder Include="data\expectedResults\temp\" />
+    <Folder Include="data\TestRailCases\" />
     <Folder Include="sandbox\" />
     <Folder Include="TestResults\" />
     <Folder Include="tests\disabled\" />

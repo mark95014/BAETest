@@ -6,8 +6,11 @@ namespace LDSUITest.utils.PageData.Elements
 {
     public abstract class GridElement : Element
     {
-        protected GridElement(ILocator locator) : base(locator)
+        protected Results Results { get; }
+
+        protected GridElement(ILocator locator, Results results) : base(locator)
         {
+            Results = results;
         }
 
         public abstract Task GetCellAsync(ILocator cellLocator, List<object> row, int columnNumber);
@@ -137,13 +140,13 @@ namespace LDSUITest.utils.PageData.Elements
                                 if (colNum >= actualData![rowNum].Count || actualData[rowNum][colNum] == null)
                                 {
                                     string msg = $"{name}: Missing actual result for column expected result: {expectedCell}";
-                                    BaseTest.Results.Add(new Result(false, msg));
+                                    Results.Add(new Result(false, msg));
                                 }
                                 else
                                 {
                                     string msg = $"{name}: actual= {actualData[rowNum][colNum]} expected= {expectedCell}";
                                     var result = await VerifyCellAsync(actualData[rowNum][colNum], expectedCell, msg, colNum);
-                                    BaseTest.Results.Add(result);
+                                    Results.Add(result);
                                 }
                             }
                         }

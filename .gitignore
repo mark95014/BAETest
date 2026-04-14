@@ -5,5 +5,4 @@ TestResults/
 *.exe
 TestResult.xml
 data/testRunId
-data/TrxVersion
 chromedriver.log
