@@ -1,6 +1,7 @@
 using FluentAssertions;
 using LDSAPITest.data.TestInput;
 using LDSAPITest.Utils;
+using LDSTest.Shared;
 using NUnit.Framework;
 using System.Net;
 using System.Net.Http.Json;
@@ -8,7 +9,7 @@ using System.Net.Http.Json;
 namespace LDSAPITest.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
+    [Parallelizable(ParallelScope.Self)]
 
     public class BookingApiTests : BaseApiTest
     {
@@ -21,7 +22,6 @@ namespace LDSAPITest.Tests
         }
 
         [Test]
-
         [TestCase(1, Description = "Get all bookings")]
         public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
         {
@@ -66,6 +66,8 @@ namespace LDSAPITest.Tests
         
             var createdBooking = await DeserializeResponseAsync<Booking>(response);
             VerifyResponse.Verify(new { booking = createdBooking! }, ExpectedResults);
+
+            await new Database().ResetDatabase();
         }
     }
 }

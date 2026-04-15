@@ -57,11 +57,6 @@
       "Id": 10,
       "CustomerId": 10,
       "RoomNumber": 1010
-    },
-    {
-      "Id": 11,
-      "CustomerId": 7,
-      "RoomNumber": 1007
     }
   ]
 },

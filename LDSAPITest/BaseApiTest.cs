@@ -85,7 +85,7 @@ namespace LDSAPITest
                         LogInfo($"Retry {retryCount} after {timespan.TotalSeconds}s due to: {outcome.Result.StatusCode}");
                     });
 
-            new Database().ResetDatabase().GetAwaiter().GetResult();
+            //new Database().ResetDatabase().GetAwaiter().GetResult();
 
             TestName = TestContext.CurrentContext.Test.Name;
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
@@ -99,7 +99,7 @@ namespace LDSAPITest
             ExpectedResults.Close();
             HttpClient?.Dispose();
             LogInfo("=== API Test Teardown Complete ===");
-            new Database().ResetDatabase().GetAwaiter().GetResult();
+            //new Database().ResetDatabase().GetAwaiter().GetResult();
         }
 
         /// <summary>
