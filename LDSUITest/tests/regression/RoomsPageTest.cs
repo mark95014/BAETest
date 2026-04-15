@@ -9,7 +9,9 @@ using NUnit.Framework;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.Self)]
+    // This test modifies the database and should not be run in parallel with other tests.
+    // This will be solved when I implement each test having its own database copy.
+    [Parallelizable(ParallelScope.None)]
 
     public class RoomsPageTest : BaseTest
     {
@@ -30,7 +32,7 @@ namespace LDSUITest.tests.regression
 
         [NonParallelizable]
         [TestCase(2, Description = "Verify edit room functionality")]
-        [Ignore("This test modifies the database and should not be run in parallel with other tests. Consider refactoring to ensure test isolation.")]
+        //[Ignore("This test modifies the database and should not be run in parallel with other tests. Consider refactoring to ensure test isolation.")]
         public async Task VerifyEditRoomFunctionality(int testCaseId)
         {
             // Get test input data - strongly typed, no parsing needed!
