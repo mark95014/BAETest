@@ -9,13 +9,14 @@ namespace LDSUITest.utils
     [TestFixture]
     public abstract class BaseTest : ContextTest
     {
-        public required ExpectedResults ExpectedResults;
+        public ExpectedResults ExpectedResults = null!;
         public bool Verbose = Boolean.Parse(TestContext.Parameters["verbose"] ?? "false");
         public Results Results = new();  
         public DBServer DbServer = null!;       
         public bool GenerateExpectedResults;
         private int slowMo = 0;
         private bool headless = true;
+        private string testName;
 
 
         // Provide public read-only properties for external access
@@ -41,17 +42,20 @@ namespace LDSUITest.utils
             GenerateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
             slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;          
             headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
-            
-            var testName = TestContext.CurrentContext.Test.Name;
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            
-            ExpectedResults = new ExpectedResults(testName, expectedResultsFolder, GenerateExpectedResults);
-            ExpectedResults.Init();
+            testName = TestContext.CurrentContext.Test.Name;
         }
 
         [SetUp]
         public virtual async Task TestCaseSetUp()
-        {
+        {   
+            // Create fresh Results for each test
+            Results = new Results();
+
+            // Create ExpectedResults per test, not per fixture
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            ExpectedResults = new ExpectedResults(testName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults.Init();
+            
             slowMo = headless ? 0 : slowMo; // Disable slowMo when running in headless mode for faster execution
 
             // This is the reason for using ContextTest as the base class instead of PageTest
@@ -71,33 +75,56 @@ namespace LDSUITest.utils
         {
             TestContext.Progress.WriteLine("TestCaseTearDown");
 
-            if (Page != null)
+            try
             {
-                await Page.CloseAsync();
+                if (Page != null && !Page.IsClosed)
+                {
+                    await Page.CloseAsync();
+                }
+            }
+            catch (Exception ex)
+            {
+                TestContext.Progress.WriteLine($"Error closing page: {ex.Message}");
             }
 
-            if (_customContext != null)
+            try
             {
-                await _customContext.CloseAsync();
-                _customContext = null;
+                if (_customContext != null)
+                {
+                    await _customContext.CloseAsync();
+                    _customContext = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                TestContext.Progress.WriteLine($"Error closing context: {ex.Message}");
             }
 
-            if (_customBrowser != null)
+            try
             {
-                await _customBrowser.CloseAsync();
-                _customBrowser = null;
+                if (_customBrowser != null)
+                {
+                    await _customBrowser.CloseAsync();
+                    _customBrowser = null;
+                }
+            }
+            catch (Exception ex)
+            {
+                TestContext.Progress.WriteLine($"Error closing browser: {ex.Message}");
             }
 
             TestCaseFinish();
+            
+            // Close ExpectedResults after each test
+            ExpectedResults?.Close();
 
-            await Task.CompletedTask; // Placeholder to allow async method without actual async operations
+            await Task.CompletedTask;
         }
 
         [OneTimeTearDown]
         public virtual void TestTearDown()
         {
             TestContext.Progress.WriteLine("TestTearDown");
-            ExpectedResults.Close();
         }
 
         public void SetTestCaseId(string testCaseId)
