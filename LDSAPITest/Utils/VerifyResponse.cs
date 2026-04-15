@@ -9,7 +9,11 @@ namespace LDSAPITest.Utils
     {
         public static void Verify(object response, ExpectedResults expectedResults)
         {
-            string dataLabel = expectedResults.MakeDataLabel(TestContext.CurrentContext.Test.Name, int.Parse(TestContext.CurrentContext.Test.ID));
+            //var full = TestContext.CurrentContext.Test.ClassName;
+            //var className = System.IO.Path.GetFileNameWithoutExtension(full);
+            //var testName = TestContext.CurrentContext.Test.Name;
+
+            string dataLabel = expectedResults.MakeDataLabel(expectedResults.TestName, Context.GetTestCaseId());
             JObject responseObject = JObject.FromObject(response);
 
             if (expectedResults.GenerateExpectedResults)

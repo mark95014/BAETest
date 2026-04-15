@@ -9,7 +9,7 @@ using NUnit.Framework;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
+    [Parallelizable(ParallelScope.Self)]
 
     public class RoomsPageTest : BaseTest
     {
@@ -23,15 +23,14 @@ namespace LDSUITest.tests.regression
         }
 
         [TestCase(1, Description = "Verify all data on Rooms page")]
-        [Order(1)]
         public async Task VerifyRoomsPage(int testCaseId)
         {
             await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
         }
 
+        [NonParallelizable]
         [TestCase(2, Description = "Verify edit room functionality")]
-        [Order(2)]
-        [Ignore("This changes the database, which interferes with other tests.")]
+        [Ignore("This test modifies the database and should not be run in parallel with other tests. Consider refactoring to ensure test isolation.")]
         public async Task VerifyEditRoomFunctionality(int testCaseId)
         {
             // Get test input data - strongly typed, no parsing needed!

@@ -70,18 +70,18 @@ namespace LDSUITest.utils
         public virtual async Task TestCaseTearDown()
         {
             TestContext.Progress.WriteLine("TestCaseTearDown");
-            
+
             if (Page != null)
             {
                 await Page.CloseAsync();
             }
-            
+
             if (_customContext != null)
             {
                 await _customContext.CloseAsync();
                 _customContext = null;
             }
-            
+
             if (_customBrowser != null)
             {
                 await _customBrowser.CloseAsync();
@@ -89,6 +89,8 @@ namespace LDSUITest.utils
             }
 
             TestCaseFinish();
+
+            await Task.CompletedTask; // Placeholder to allow async method without actual async operations
         }
 
         [OneTimeTearDown]

@@ -17,6 +17,8 @@ namespace LDSAPITest
     public abstract class BaseApiTest
     {
         public required ExpectedResults ExpectedResults;
+        public required string TestName;
+
         // Implement in the future. public Results Results { get; } = new Results();
 
         protected HttpClient HttpClient { get; private set; } = null!;
@@ -85,9 +87,9 @@ namespace LDSAPITest
 
             new Database().ResetDatabase().GetAwaiter().GetResult();
 
-            var testName = TestContext.CurrentContext.Test.Name;
+            TestName = TestContext.CurrentContext.Test.Name;
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            ExpectedResults = new ExpectedResults(testName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
         }
 

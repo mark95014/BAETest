@@ -1,5 +1,4 @@
 ﻿using Newtonsoft.Json;
-using NUnit.Framework;
 
 namespace LDSTest.Shared
 {
@@ -8,10 +7,12 @@ namespace LDSTest.Shared
         private readonly List<string> labels = [];
         private bool first = true;
         public string FileName { get; }
+        public string TestName;
         public readonly bool GenerateExpectedResults;
 
         public ExpectedResults(string testName, string expectedResultsFolder, bool generateExpectedResults)
         {
+            TestName = testName;
             GenerateExpectedResults = generateExpectedResults;
             FileName = Path.Combine(expectedResultsFolder, $"{testName}.json");
         }

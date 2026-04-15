@@ -8,6 +8,8 @@ using System.Net.Http.Json;
 namespace LDSAPITest.Tests
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.All)]
+
     public class BookingApiTests : BaseApiTest
     {
         // Data models
@@ -19,6 +21,7 @@ namespace LDSAPITest.Tests
         }
 
         [Test]
+
         [TestCase(1, Description = "Get all bookings")]
         public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
         {
@@ -34,7 +37,6 @@ namespace LDSAPITest.Tests
             LogInfo($"Retrieved {bookings?.Count} bookings");
         }
 
-        [Test]
         [TestCase(2, Description = "Get booking by ID 1")]
         [TestCase(5, Description = "Get booking by ID 7")]
         public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
@@ -50,8 +52,9 @@ namespace LDSAPITest.Tests
             VerifyResponse.Verify(new { booking = booking! }, ExpectedResults);
         }
 
-        [Test]
+        [NonParallelizable]
         [TestCase(3, Description = "Create new booking")]
+
         public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId)
         {
             var testData = BookingApiTestData.GetTestData(testCaseId);
