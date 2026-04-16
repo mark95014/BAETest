@@ -143,7 +143,7 @@ namespace LDSTest.Shared
                 TestContext.Progress.WriteLine("Database.WaitForJobs begin");
                 //SELECT Id FROM [TRXConfig].[dbo].[Users] 
                 //join[TRXConfig].[dbo].[Jobs] on useruid = id where Login = 'T9cnl8LP8g'
-                string queryString = $"select COUNT(*) FROM [TRXConfig].[dbo].[Users] join[TRXConfig].[dbo].[Jobs] on useruid = id where Login = '{Test.trxUserName}'";
+                string queryString = "";//$"select COUNT(*) FROM [TRXConfig].[dbo].[Users] join[TRXConfig].[dbo].[Jobs] on useruid = id where Login = '{Test.trxUserName}'";
                 string connectionString = $"Server={dbServer.serverName};User Id={dbServer.userName};Password={dbServer.password};database=TRXConfig";
                 using (SqlConnection connection = new SqlConnection(connectionString))
                 {
@@ -160,7 +160,7 @@ namespace LDSTest.Shared
 
         internal static void RunQuery(DBServer dbServer, string query)
         {
-            string dbName = TestContext.Parameters["databaseRootName"] + "_" + Test.guid;
+            string dbName = "";//TestContext.Parameters["databaseRootName"] + "_" + Test.guid;
             string connectionString = $"Server={dbServer.serverName};User Id={dbServer.userName};Password={dbServer.password};Database={dbName}";
             using SqlConnection connection = new SqlConnection(connectionString);
             SqlCommand command = new SqlCommand(query, connection);
