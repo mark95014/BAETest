@@ -1,10 +1,9 @@
 using LDSTest.Shared;
-using LDSUITest.data.TestInput;
 using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
-
+using System.Collections;
 
 namespace LDSUITest.tests.regression
 {
@@ -17,6 +16,38 @@ namespace LDSUITest.tests.regression
     {
         private RoomsPage _roomsPage = null!;
 
+        // Test data model
+        public class Room
+        {
+            public int RoomNumber { get; set; }
+            public int Price { get; set; }
+        }
+
+        // Test data source for VerifyRoomsPage
+        private static IEnumerable VerifyRoomsPageTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(1)
+                    .SetDescription("Verify all data on Rooms page");
+            }
+        }
+
+        // Test data source for VerifyEditRoomFunctionality
+        private static IEnumerable VerifyEditRoomFunctionalityTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(2, new List<Room>
+                {
+                    new() { RoomNumber = 101, Price = 150 },
+                    new() { RoomNumber = 103, Price = 200 },
+                    new() { RoomNumber = 105, Price = 175 }
+                })
+                .SetDescription("Verify edit room functionality");
+            }
+        }
+
         [SetUp]
         public async Task Setup()
         {
@@ -24,23 +55,19 @@ namespace LDSUITest.tests.regression
             await _roomsPage.GoTo(Page);
         }
 
-        [TestCase(1, Description = "Verify all data on Rooms page")]
+        [TestCaseSource(nameof(VerifyRoomsPageTestCases))]
         public async Task VerifyRoomsPage(int testCaseId)
         {
             await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
         }
 
         [NonParallelizable]
-        [TestCase(2, Description = "Verify edit room functionality")]
-        //[Ignore("This test modifies the database and should not be run in parallel with other tests. Consider refactoring to ensure test isolation.")]
-        public async Task VerifyEditRoomFunctionality(int testCaseId)
+        [TestCaseSource(nameof(VerifyEditRoomFunctionalityTestCases))]
+        public async Task VerifyEditRoomFunctionality(int testCaseId, List<Room> rooms)
         {
-            // Get test input data - strongly typed, no parsing needed!
-            var testData = RoomsPageTestData.GetTestData(testCaseId);
-
-            foreach (var room in testData.Rooms)
+            foreach (var room in rooms)
             {
-                // Use the DTO properties directly
+                // Use the properties directly
                 string roomNumber = room.RoomNumber.ToString();
                 string newPrice = room.Price.ToString();
 

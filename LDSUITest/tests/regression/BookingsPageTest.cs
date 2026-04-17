@@ -1,8 +1,8 @@
-using LDSUITest.data.TestInput;
 using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
+using System.Collections;
 
 namespace LDSUITest.tests.regression
 {
@@ -13,6 +13,36 @@ namespace LDSUITest.tests.regression
     {
         private BookingsPage _bookingsPage = null!;
 
+        // Test data source for VerifyBookingsPage
+        private static IEnumerable VerifyBookingsPageTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(1)
+                    .SetDescription("Verify all data on Bookings page");
+            }
+        }
+
+        // Test data source for VerifyBookingsFilter
+        private static IEnumerable VerifyBookingsFilterTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(2, "7")
+                    .SetDescription("Verify filter functionality on Bookings page");
+            }
+        }
+
+        // Test data source for VerifyBookingsFilterByCustomerName
+        private static IEnumerable VerifyBookingsFilterByCustomerNameTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(3, "son")
+                    .SetDescription("Verify filter by customer name containing 'son'");
+            }
+        }
+
         [SetUp]
         public async Task Setup()
         {
@@ -20,30 +50,22 @@ namespace LDSUITest.tests.regression
             await _bookingsPage.GoTo(Page);
         }
 
-        [TestCase(1, Description = "Verify all data on Bookings page")]
+        [TestCaseSource(nameof(VerifyBookingsPageTestCases))]
         public async Task VerifyBookingsPage(int testCaseId)
         {
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 
-        [TestCase(2, Description = "Verify filter functionality on Bookings page")]
-        public async Task VerifyBookingsFilter(int testCaseId)
+        [TestCaseSource(nameof(VerifyBookingsFilterTestCases))]
+        public async Task VerifyBookingsFilter(int testCaseId, string customerId)
         {
-            // Get test input data - strongly typed, no parsing needed!
-            var testData = BookingsPageTestData.GetTestData(testCaseId);
-            string customerId = testData.CustomerId;
-
             await _bookingsPage.FilterBookings(Page, customerId);
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 
-        [TestCase(3, Description = "Verify filter by customer name containing 'son'")]
-        public async Task VerifyBookingsFilterByCustomerName(int testCaseId)
+        [TestCaseSource(nameof(VerifyBookingsFilterByCustomerNameTestCases))]
+        public async Task VerifyBookingsFilterByCustomerName(int testCaseId, string customerName)
         {
-            // Get test input data - strongly typed, no parsing needed!
-            var testData = BookingsPageTestData.GetTestData(testCaseId);
-            string customerName = testData.CustomerName;
-
             await _bookingsPage.FilterBookingsByCustomerName(Page, customerName);
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }

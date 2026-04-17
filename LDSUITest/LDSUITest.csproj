@@ -9,16 +9,18 @@
 
   <ItemGroup>
     <Compile Remove="**\ClientPage*.cs" />
+    <Compile Remove="data\TestRailCases\**" />
     <Compile Remove="inputData\**" />
     <Compile Remove="tests\utils\**" />
+    <EmbeddedResource Remove="data\TestRailCases\**" />
     <EmbeddedResource Remove="inputData\**" />
     <EmbeddedResource Remove="tests\utils\**" />
+    <None Remove="data\TestRailCases\**" />
     <None Remove="inputData\**" />
     <None Remove="tests\utils\**" />
   </ItemGroup>
 
   <ItemGroup>
-    <Folder Include="data\TestRailCases\" />
     <Folder Include="sandbox\" />
     <Folder Include="TestResults\" />
     <Folder Include="tests\volume\" />

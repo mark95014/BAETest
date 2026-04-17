@@ -16,7 +16,7 @@ namespace LDSUITest.utils
         public bool GenerateExpectedResults;
         private int slowMo = 0;
         private bool headless = true;
-        private string testName;
+        private string testName = null!;
 
 
         // Provide public read-only properties for external access
