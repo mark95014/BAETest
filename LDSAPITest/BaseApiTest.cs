@@ -1,9 +1,6 @@
 using LDSTest.Shared;
-using Microsoft.VisualStudio.TestPlatform.ObjectModel;
 using Newtonsoft.Json;
 using NUnit.Framework;
-using Polly;
-using Polly.Retry;
 using System.Net;
 using System.Net.Http.Headers;
 using System.Text;
@@ -11,8 +8,8 @@ using System.Text;
 namespace LDSAPITest
 {
     /// <summary>
-    /// Base class for all API tests.Provides HttpClient configuration, authentication,
-    /// retry logic, and common helper methods.
+    /// Base class for all API tests. Provides HttpClient configuration, authentication,
+    /// and common helper methods.
     /// </summary>
     public abstract class BaseApiTest
     {
@@ -25,35 +22,27 @@ namespace LDSAPITest
         protected string ApiBaseUrl { get; private set; } = null!;
         protected string Environment { get; private set; } = null!;
         protected int ApiTimeout { get; private set; }
-        protected int ApiRetryCount { get; private set; }
-        protected int ApiRetryDelayMs { get; private set; }
         protected bool Verbose { get; private set; }
         public bool GenerateExpectedResults { get; private set; }
-
-        protected AsyncRetryPolicy<HttpResponseMessage> RetryPolicy { get; private set; } = null!;
 
         [OneTimeSetUp]
         public virtual void BaseOneTimeSetUp()
         {
-   
             // Read test parameters from .runsettings
             Environment = TestContext.Parameters["environment"] ?? "qa";
             Verbose = bool.Parse(TestContext.Parameters["verbose"] ?? "false");
             GenerateExpectedResults = bool.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
             ApiTimeout = int.Parse(TestContext.Parameters["apiTimeout"] ?? "30");
-            ApiRetryCount = int.Parse(TestContext.Parameters["apiRetryCount"] ?? "3");
-            ApiRetryDelayMs = int.Parse(TestContext.Parameters["apiRetryDelayMs"] ?? "1000");
 
             // Get environment-specific API base URL
-            ApiBaseUrl = TestContext.Parameters[$"{Environment}.apiBaseURL"] 
-                         ?? TestContext.Parameters["apiBaseURL"] 
+            ApiBaseUrl = TestContext.Parameters[$"{Environment}.apiBaseURL"]
+                         ?? TestContext.Parameters["apiBaseURL"]
                          ?? throw new InvalidOperationException($"API Base URL not configured for environment: {Environment}");
 
-            LogInfo($"=== API Test Setup ===");
+            LogInfo("=== API Test Setup ===");
             LogInfo($"Environment: {Environment}");
             LogInfo($"API Base URL: {ApiBaseUrl}");
             LogInfo($"Timeout: {ApiTimeout}s");
-            LogInfo($"Retry Count: {ApiRetryCount}");
 
             // Initialize HttpClient
             HttpClient = new HttpClient
@@ -70,23 +59,7 @@ namespace LDSAPITest
             // Configure authentication
             ConfigureAuthentication();
 
-            // Configure retry policy using Polly
-            RetryPolicy = Policy
-                .HandleResult<HttpResponseMessage>(r => 
-                    r.StatusCode == HttpStatusCode.RequestTimeout ||
-                    r.StatusCode == HttpStatusCode.ServiceUnavailable ||
-                    r.StatusCode == HttpStatusCode.GatewayTimeout ||
-                    (int)r.StatusCode >= 500)
-                .WaitAndRetryAsync(
-                    ApiRetryCount,
-                    retryAttempt => TimeSpan.FromMilliseconds(ApiRetryDelayMs * retryAttempt),
-                    onRetry: (outcome, timespan, retryCount, context) =>
-                    {
-                        LogInfo($"Retry {retryCount} after {timespan.TotalSeconds}s due to: {outcome.Result.StatusCode}");
-                    });
-
-            //new Database().ResetDatabase().GetAwaiter().GetResult();
-
+            // Initialize expected results
             TestName = TestContext.CurrentContext.Test.Name;
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
@@ -99,7 +72,6 @@ namespace LDSAPITest
             ExpectedResults.Close();
             HttpClient?.Dispose();
             LogInfo("=== API Test Teardown Complete ===");
-            //new Database().ResetDatabase().GetAwaiter().GetResult();
         }
 
         /// <summary>
@@ -109,10 +81,10 @@ namespace LDSAPITest
         protected virtual void ConfigureAuthentication()
         {
             var authType = TestContext.Parameters["apiAuthType"] ?? "None";
-        
+
             LogInfo($"Authentication Type: {authType}");
 
-            switch (authType.ToLower())
+            switch (authType.ToLowerInvariant())
             {
                 case "basic":
                     ConfigureBasicAuth();
@@ -152,7 +124,7 @@ namespace LDSAPITest
         private void ConfigureBearerAuth()
         {
             var token = TestContext.Parameters["apiBearerToken"];
-        
+
             if (!string.IsNullOrEmpty(token))
             {
                 HttpClient.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
@@ -168,7 +140,7 @@ namespace LDSAPITest
         {
             var headerName = TestContext.Parameters["apiKeyHeaderName"] ?? "X-API-Key";
             var apiKey = TestContext.Parameters["apiKeyValue"];
-        
+
             if (!string.IsNullOrEmpty(apiKey))
             {
                 HttpClient.DefaultRequestHeaders.Add(headerName, apiKey);
@@ -183,97 +155,67 @@ namespace LDSAPITest
         #region HTTP Helper Methods
 
         /// <summary>
-        /// Sends a GET request with automatic retry on transient failures.
+        /// Sends a GET request.
         /// </summary>
-        protected async Task<HttpResponseMessage> GetAsync(string endpoint, bool useRetry = true)
+        protected async Task<HttpResponseMessage> GetAsync(string endpoint)
         {
             LogInfo($"GET {endpoint}");
-        
-            if (useRetry)
-            {
-                return await RetryPolicy.ExecuteAsync(async () => await HttpClient.GetAsync(endpoint));
-            }
-        
             var response = await HttpClient.GetAsync(endpoint);
             LogResponse(response);
             return response;
         }
 
         /// <summary>
-        /// Sends a POST request with automatic retry on transient failures.
+        /// Sends a POST request.
         /// </summary>
-        protected async Task<HttpResponseMessage> PostAsync<T>(string endpoint, T content, bool useRetry = false)
+        protected async Task<HttpResponseMessage> PostAsync<T>(string endpoint, T content)
         {
             LogInfo($"POST {endpoint}");
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
             LogInfo($"Request Body:\n{json}");
-        
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        
-            if (useRetry)
-            {
-                return await RetryPolicy.ExecuteAsync(async () => await HttpClient.PostAsync(endpoint, httpContent));
-            }
-        
+
+            using var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await HttpClient.PostAsync(endpoint, httpContent);
             LogResponse(response);
             return response;
         }
 
         /// <summary>
-        /// Sends a PUT request with automatic retry on transient failures.
+        /// Sends a PUT request.
         /// </summary>
-        protected async Task<HttpResponseMessage> PutAsync<T>(string endpoint, T content, bool useRetry = false)
+        protected async Task<HttpResponseMessage> PutAsync<T>(string endpoint, T content)
         {
             LogInfo($"PUT {endpoint}");
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
             LogInfo($"Request Body:\n{json}");
-        
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        
-            if (useRetry)
-            {
-                return await RetryPolicy.ExecuteAsync(async () => await HttpClient.PutAsync(endpoint, httpContent));
-            }
-        
+
+            using var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await HttpClient.PutAsync(endpoint, httpContent);
             LogResponse(response);
             return response;
         }
 
         /// <summary>
-        /// Sends a PATCH request with automatic retry on transient failures.
+        /// Sends a PATCH request.
         /// </summary>
-        protected async Task<HttpResponseMessage> PatchAsync<T>(string endpoint, T content, bool useRetry = false)
+        protected async Task<HttpResponseMessage> PatchAsync<T>(string endpoint, T content)
         {
             LogInfo($"PATCH {endpoint}");
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
             LogInfo($"Request Body:\n{json}");
-        
-            var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
-        
-            if (useRetry)
-            {
-                return await RetryPolicy.ExecuteAsync(async () => await HttpClient.PatchAsync(endpoint, httpContent));
-            }
-        
+
+            using var httpContent = new StringContent(json, Encoding.UTF8, "application/json");
             var response = await HttpClient.PatchAsync(endpoint, httpContent);
             LogResponse(response);
             return response;
         }
 
         /// <summary>
-        /// Sends a DELETE request with automatic retry on transient failures.
+        /// Sends a DELETE request.
         /// </summary>
-        protected async Task<HttpResponseMessage> DeleteAsync(string endpoint, bool useRetry = false)
+        protected async Task<HttpResponseMessage> DeleteAsync(string endpoint)
         {
             LogInfo($"DELETE {endpoint}");
-        
-            if (useRetry)
-            {
-                return await RetryPolicy.ExecuteAsync(async () => await HttpClient.DeleteAsync(endpoint));
-            }
-        
             var response = await HttpClient.DeleteAsync(endpoint);
             LogResponse(response);
             return response;
@@ -289,17 +231,17 @@ namespace LDSAPITest
         protected async Task<T?> DeserializeResponseAsync<T>(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
-        
+
             if (Verbose)
             {
                 LogInfo($"Response Content:\n{content}");
             }
-        
+
             if (string.IsNullOrWhiteSpace(content))
             {
                 return default;
             }
-        
+
             try
             {
                 return JsonConvert.DeserializeObject<T>(content);
@@ -317,23 +259,23 @@ namespace LDSAPITest
         protected async Task<string> GetResponseContentAsync(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
-        
+
             if (Verbose)
             {
                 LogInfo($"Response Content:\n{content}");
             }
-        
+
             return content;
         }
 
         /// <summary>
         /// Asserts that the response has the expected status code.
         /// </summary>
-        protected static void AssertStatusCode(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
+        protected static async Task AssertStatusCodeAsync(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
         {
             if (response.StatusCode != expectedStatusCode)
             {
-                var content = response.Content.ReadAsStringAsync().Result;
+                var content = await response.Content.ReadAsStringAsync();
                 Assert.Fail(
                     $"Expected status code {(int)expectedStatusCode} ({expectedStatusCode}), " +
                     $"but got {(int)response.StatusCode} ({response.StatusCode}).\n" +
@@ -376,7 +318,7 @@ namespace LDSAPITest
         protected void LogResponse(HttpResponseMessage response)
         {
             LogInfo($"Response Status: {(int)response.StatusCode} {response.StatusCode}");
-        
+
             if (Verbose && response.Headers.Any())
             {
                 LogInfo("Response Headers:");
@@ -386,13 +328,6 @@ namespace LDSAPITest
                 }
             }
         }
-
-        //public static int GetTestCaseId()
-        //{
-        //    var arg = TestContext.CurrentContext.Test.Arguments[0];
-        //    string testCaseIdString = arg?.ToString() ?? throw new InvalidOperationException("Test case ID argument is null.");
-        //    return int.Parse(testCaseIdString);
-        //}
 
         #endregion
     }

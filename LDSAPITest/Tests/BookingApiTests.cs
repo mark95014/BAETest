@@ -46,7 +46,7 @@ namespace LDSAPITest.Tests
 
             var response = await GetAsync($"GetBooking/{bookingId}");
 
-            AssertStatusCode(response, HttpStatusCode.OK);
+            await AssertStatusCodeAsync(response, HttpStatusCode.OK);
         
             var booking = await response.Content.ReadFromJsonAsync<Booking>();
             VerifyResponse.Verify(new { booking = booking! }, ExpectedResults);
