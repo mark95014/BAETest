@@ -3,6 +3,7 @@ using LDSAPITest.data.TestInput;
 using LDSAPITest.Utils;
 using LDSTest.Shared;
 using NUnit.Framework;
+using System.Collections;
 using System.Net;
 using System.Net.Http.Json;
 
@@ -21,9 +22,55 @@ namespace LDSAPITest.Tests
             public int RoomNumber { get; set; }
         }
 
+        // Test data class
+        public class BookingTestData
+        {
+            public int TestCaseId { get; set; }
+            public string Description { get; set; } = string.Empty;
+            public Booking? Booking { get; set; }
+        }
+
+        // Test data source for GetAllBookings
+        private static IEnumerable GetAllBookingsTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(1)
+                    .SetDescription("Get all bookings");
+            }
+        }
+
+        // Test data source for GetBookingById
+        private static IEnumerable GetBookingByIdTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(2, new Booking { Id = 1 })
+                    .SetDescription("Get booking by ID 1");
+                
+                yield return new TestCaseData(5, new Booking { Id = 7 })
+                    .SetDescription("Get booking by ID 7");
+            }
+        }
+
+        // Test data source for CreateBooking
+        private static IEnumerable CreateBookingTestCases
+        {
+            get
+            {
+                yield return new TestCaseData(3, new Booking 
+                { 
+                    Id = 0,
+                    CustomerId = 7,
+                    RoomNumber = 1007
+                })
+                .SetDescription("Create new booking");
+            }
+        }
+
         [Test]
-        [TestCase(1, Description = "Get all bookings")]
-        public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
+        [TestCaseSource(nameof(GetAllBookingsTestCases))]
+        public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId)
         {
             var response = await GetAsync("GetAllBookings");
 
@@ -37,12 +84,10 @@ namespace LDSAPITest.Tests
             LogInfo($"Retrieved {bookings?.Count} bookings");
         }
 
-        [TestCase(2, Description = "Get booking by ID 1")]
-        [TestCase(5, Description = "Get booking by ID 7")]
-        public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId) //never remove testCaseId argument. necessary for TestContext to retrieve it.
+        [TestCaseSource(nameof(GetBookingByIdTestCases))]
+        public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId, Booking bookingInput)
         {
-            var testData = BookingApiTestData.GetTestData(testCaseId);
-            int bookingId = testData.Booking.Id;
+            int bookingId = bookingInput.Id;
 
             var response = await GetAsync($"GetBooking/{bookingId}");
 
@@ -53,13 +98,9 @@ namespace LDSAPITest.Tests
         }
 
         [NonParallelizable]
-        [TestCase(3, Description = "Create new booking")]
-
-        public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId)
+        [TestCaseSource(nameof(CreateBookingTestCases))]
+        public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId, Booking bookingData)
         {
-            var testData = BookingApiTestData.GetTestData(testCaseId);
-            var bookingData = testData.Booking;
-
             var response = await PostAsync("CreateEditBooking", bookingData);
 
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
