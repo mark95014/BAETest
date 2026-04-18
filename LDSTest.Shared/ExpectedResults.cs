@@ -2,6 +2,10 @@
 
 namespace LDSTest.Shared
 {
+    /// <summary>
+    /// This class looks up expected results per test case and can generate expected results from actual results.
+    /// The expected results are stored as JSON files.
+    /// </summary>
     public class ExpectedResults
     {
         private readonly List<string> labels = [];

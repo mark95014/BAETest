@@ -29,15 +29,11 @@ namespace LDSAPITest
         public virtual void BaseOneTimeSetUp()
         {
             // Read test parameters from .runsettings
-            Environment = TestContext.Parameters["environment"] ?? "qa";
-            Verbose = bool.Parse(TestContext.Parameters["verbose"] ?? "false");
-            GenerateExpectedResults = bool.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
-            ApiTimeout = int.Parse(TestContext.Parameters["apiTimeout"] ?? "30");
-
-            // Get environment-specific API base URL
-            ApiBaseUrl = TestContext.Parameters[$"{Environment}.apiBaseURL"]
-                         ?? TestContext.Parameters["apiBaseURL"]
-                         ?? throw new InvalidOperationException($"API Base URL not configured for environment: {Environment}");
+            Environment = TestContext.Parameters["environment"]!;
+            Verbose = bool.Parse(TestContext.Parameters["verbose"]!);
+            GenerateExpectedResults = bool.Parse(TestContext.Parameters["generateExpectedResults"]!);
+            ApiTimeout = int.Parse(TestContext.Parameters["apiTimeout"]!);
+            ApiBaseUrl = TestContext.Parameters[$"{Environment}.apiBaseURL"]!;
 
             LogInfo("=== API Test Setup ===");
             LogInfo($"Environment: {Environment}");
@@ -61,7 +57,7 @@ namespace LDSAPITest
 
             // Initialize expected results
             TestName = TestContext.CurrentContext.Test.Name;
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"]!;
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
         }
@@ -80,7 +76,7 @@ namespace LDSAPITest
         /// </summary>
         protected virtual void ConfigureAuthentication()
         {
-            var authType = TestContext.Parameters["apiAuthType"] ?? "None";
+            var authType = TestContext.Parameters["apiAuthType"]!;
 
             LogInfo($"Authentication Type: {authType}");
 
@@ -138,8 +134,8 @@ namespace LDSAPITest
 
         private void ConfigureApiKeyAuth()
         {
-            var headerName = TestContext.Parameters["apiKeyHeaderName"] ?? "X-API-Key";
-            var apiKey = TestContext.Parameters["apiKeyValue"];
+            var headerName = TestContext.Parameters["apiKeyHeaderName"]!;
+            var apiKey = TestContext.Parameters["apiKeyValue"]!;
 
             if (!string.IsNullOrEmpty(apiKey))
             {
