@@ -12,6 +12,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.gitattributes = .gitattributes
 		.gitignore = .gitignore
 		App.config = App.config
+		doc\AWS-Design.docx = doc\AWS-Design.docx
+		doc\BDD_Gherkin_Analysis.md = doc\BDD_Gherkin_Analysis.md
 		Directory.Build.props = Directory.Build.props
 		README.md = README.md
 	EndProjectSection

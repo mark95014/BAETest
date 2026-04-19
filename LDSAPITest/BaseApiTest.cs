@@ -153,7 +153,7 @@ namespace LDSAPITest
         /// <summary>
         /// Sends a GET request.
         /// </summary>
-        protected async Task<HttpResponseMessage> GetAsync(string endpoint)
+        public async Task<HttpResponseMessage> GetAsync(string endpoint)
         {
             LogInfo($"GET {endpoint}");
             var response = await HttpClient.GetAsync(endpoint);
@@ -164,7 +164,7 @@ namespace LDSAPITest
         /// <summary>
         /// Sends a POST request.
         /// </summary>
-        protected async Task<HttpResponseMessage> PostAsync<T>(string endpoint, T content)
+        public async Task<HttpResponseMessage> PostAsync<T>(string endpoint, T content)
         {
             LogInfo($"POST {endpoint}");
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
@@ -179,7 +179,7 @@ namespace LDSAPITest
         /// <summary>
         /// Sends a PUT request.
         /// </summary>
-        protected async Task<HttpResponseMessage> PutAsync<T>(string endpoint, T content)
+        public async Task<HttpResponseMessage> PutAsync<T>(string endpoint, T content)
         {
             LogInfo($"PUT {endpoint}");
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
@@ -194,7 +194,7 @@ namespace LDSAPITest
         /// <summary>
         /// Sends a PATCH request.
         /// </summary>
-        protected async Task<HttpResponseMessage> PatchAsync<T>(string endpoint, T content)
+        public async Task<HttpResponseMessage> PatchAsync<T>(string endpoint, T content)
         {
             LogInfo($"PATCH {endpoint}");
             var json = JsonConvert.SerializeObject(content, Formatting.Indented);
@@ -209,7 +209,7 @@ namespace LDSAPITest
         /// <summary>
         /// Sends a DELETE request.
         /// </summary>
-        protected async Task<HttpResponseMessage> DeleteAsync(string endpoint)
+        public async Task<HttpResponseMessage> DeleteAsync(string endpoint)
         {
             LogInfo($"DELETE {endpoint}");
             var response = await HttpClient.DeleteAsync(endpoint);
@@ -224,35 +224,35 @@ namespace LDSAPITest
         /// <summary>
         /// Deserializes the response content to the specified type.
         /// </summary>
-        protected async Task<T?> DeserializeResponseAsync<T>(HttpResponseMessage response)
-        {
-            var content = await response.Content.ReadAsStringAsync();
+        //public async Task<T?> DeserializeResponseAsync<T>(HttpResponseMessage response)
+        //{
+        //    var content = await response.Content.ReadAsStringAsync();
 
-            if (Verbose)
-            {
-                LogInfo($"Response Content:\n{content}");
-            }
+        //    if (Verbose)
+        //    {
+        //        LogInfo($"Response Content:\n{content}");
+        //    }
 
-            if (string.IsNullOrWhiteSpace(content))
-            {
-                return default;
-            }
+        //    if (string.IsNullOrWhiteSpace(content))
+        //    {
+        //        return default;
+        //    }
 
-            try
-            {
-                return JsonConvert.DeserializeObject<T>(content);
-            }
-            catch (JsonException ex)
-            {
-                LogInfo($"Failed to deserialize response: {ex.Message}");
-                throw;
-            }
-        }
+        //    try
+        //    {
+        //        return JsonConvert.DeserializeObject<T>(content);
+        //    }
+        //    catch (JsonException ex)
+        //    {
+        //        LogInfo($"Failed to deserialize response: {ex.Message}");
+        //        throw;
+        //    }
+        //}
 
         /// <summary>
         /// Gets the response content as a string.
         /// </summary>
-        protected async Task<string> GetResponseContentAsync(HttpResponseMessage response)
+        public async Task<string> GetResponseContentAsync(HttpResponseMessage response)
         {
             var content = await response.Content.ReadAsStringAsync();
 
@@ -267,7 +267,7 @@ namespace LDSAPITest
         /// <summary>
         /// Asserts that the response has the expected status code.
         /// </summary>
-        protected static async Task AssertStatusCodeAsync(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
+        public static async Task AssertStatusCodeAsync(HttpResponseMessage response, HttpStatusCode expectedStatusCode)
         {
             if (response.StatusCode != expectedStatusCode)
             {
@@ -282,7 +282,7 @@ namespace LDSAPITest
         /// <summary>
         /// Ensures the response was successful (2xx status code).
         /// </summary>
-        protected static async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
+        public static async Task EnsureSuccessStatusCodeAsync(HttpResponseMessage response)
         {
             if (!response.IsSuccessStatusCode)
             {
@@ -300,7 +300,7 @@ namespace LDSAPITest
         /// <summary>
         /// Logs an informational message if verbose mode is enabled.
         /// </summary>
-        protected void LogInfo(string message)
+        public void LogInfo(string message)
         {
             if (Verbose)
             {
@@ -311,7 +311,7 @@ namespace LDSAPITest
         /// <summary>
         /// Logs the HTTP response status and headers.
         /// </summary>
-        protected void LogResponse(HttpResponseMessage response)
+        public void LogResponse(HttpResponseMessage response)
         {
             LogInfo($"Response Status: {(int)response.StatusCode} {response.StatusCode}");
 

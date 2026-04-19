@@ -75,7 +75,7 @@ namespace LDSAPITest.Tests
 
             await EnsureSuccessStatusCodeAsync(response);
         
-            var bookings = await DeserializeResponseAsync<List<Booking>>(response);
+            var bookings = await response.Content.ReadFromJsonAsync<List<Booking>>();
             bookings.Should().NotBeNull();
             bookings.Should().NotBeEmpty();
             VerifyResponse.Verify(new { bookings = bookings! }, ExpectedResults);
@@ -104,7 +104,7 @@ namespace LDSAPITest.Tests
 
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
         
-            var createdBooking = await DeserializeResponseAsync<Booking>(response);
+            var createdBooking = await response.Content.ReadFromJsonAsync<Booking>();
             VerifyResponse.Verify(new { booking = createdBooking! }, ExpectedResults);
 
             await new Database().ResetDatabase();

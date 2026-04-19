@@ -6,6 +6,13 @@
     <EnvironmentVariables>
     </EnvironmentVariables>
   </RunConfiguration>
+  
+  <!-- SpecFlow Configuration -->
+  <SpecFlow>
+    <Trace>
+      <StepDefinitionSkeletonStyle>RegexAttribute</StepDefinitionSkeletonStyle>
+    </Trace>
+  </SpecFlow>
 	
   <!-- Parameters used by tests at runtime -->
   <TestRunParameters>

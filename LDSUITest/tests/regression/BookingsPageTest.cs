@@ -13,7 +13,7 @@ namespace LDSUITest.tests.regression
     {
         private BookingsPage _bookingsPage = null!;
 
-        // Test data source for VerifyBookingsPage
+        // TestCase input
         private static IEnumerable VerifyBookingsPageTestCases
         {
             get
@@ -23,7 +23,6 @@ namespace LDSUITest.tests.regression
             }
         }
 
-        // Test data source for VerifyBookingsFilter
         private static IEnumerable VerifyBookingsFilterTestCases
         {
             get
@@ -33,7 +32,6 @@ namespace LDSUITest.tests.regression
             }
         }
 
-        // Test data source for VerifyBookingsFilterByCustomerName
         private static IEnumerable VerifyBookingsFilterByCustomerNameTestCases
         {
             get
