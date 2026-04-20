@@ -13,12 +13,14 @@ namespace LDSTest.Shared
         public string FileName { get; }
         public string TestName;
         public readonly bool GenerateExpectedResults;
+        private readonly int testCaseId;
 
         public ExpectedResults(string testName, string expectedResultsFolder, bool generateExpectedResults)
         {
             TestName = testName;
             GenerateExpectedResults = generateExpectedResults;
             FileName = Path.Combine(expectedResultsFolder, $"{testName}.json");
+            testCaseId = TestCaseIdProvider.GetTestCaseId();
         }
 
         public void Init()
@@ -38,12 +40,12 @@ namespace LDSTest.Shared
             return count;
         }
 
-        public string MakeDataLabel(object data, int testCaseId)
+        public string MakeDataLabel(object data)
         {
-            return MakeDataLabel(data.GetType().Name, testCaseId);
+            return MakeDataLabel(data.GetType().Name);
         }
 
-        public string MakeDataLabel(string name, int testCaseId)
+        public string MakeDataLabel(string name)
         {
             string prefix = name + "." + testCaseId;
             string label;

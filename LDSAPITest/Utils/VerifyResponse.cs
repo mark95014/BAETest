@@ -1,7 +1,6 @@
 ﻿using LDSTest.Shared;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using NUnit.Framework;
 
 namespace LDSAPITest.Utils
 {

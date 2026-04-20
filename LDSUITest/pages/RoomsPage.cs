@@ -1,6 +1,3 @@
-using Azure;
-using LDSUITest.utils;
-using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 
 namespace LDSUITest.pages
@@ -26,8 +23,8 @@ namespace LDSUITest.pages
             await PageTitle(page).WaitForAsync();
             await RoomsTable(page).WaitForAsync();
             await NextPageButton(page).WaitForAsync();
-            Thread.Sleep(1500); // Small delay to ensure any dynamic content has time to load
             await NextPageButton(page).IsEnabledAsync(); // Ensure the button is enabled, indicating the table is fully loaded and interactive
+            Thread.Sleep(500); // Additional wait to ensure all dynamic content is fully loaded and interactive
         }
     }
 }

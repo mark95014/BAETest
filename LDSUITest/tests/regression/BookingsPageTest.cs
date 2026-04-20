@@ -48,6 +48,9 @@ namespace LDSUITest.tests.regression
             await _bookingsPage.GoTo(Page);
         }
 
+        // DON'T REMOVE testCaseId parameter. It gets set in TestContext by NUnit when the TestCaseSource()'s are invoked.
+        // It is retrieved from TestContext and used later by the ExpectedResults and Results classes.
+
         [TestCaseSource(nameof(VerifyBookingsPageTestCases))]
         public async Task VerifyBookingsPage(int testCaseId)
         {

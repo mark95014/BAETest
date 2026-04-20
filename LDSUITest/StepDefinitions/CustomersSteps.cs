@@ -51,6 +51,7 @@ namespace LDSUITest.StepDefinitions
         [Then(@"the customers table should contain the expected data")]
         public async Task ThenTheCustomersTableShouldContainTheExpectedData()
         {
+            var testCaseId = _scenarioContext.Get<int>("TestCaseId");
             await BasePage.VerifyPage<CustomersPageData>(_page, _expectedResults, _results);
         }
 
@@ -103,6 +104,7 @@ namespace LDSUITest.StepDefinitions
         [Then(@"the filtered customers table should contain the expected data")]
         public async Task ThenTheFilteredCustomersTableShouldContainTheExpectedData()
         {
+            var testCaseId = _scenarioContext.Get<int>("TestCaseId");
             await BasePage.VerifyPage<CustomersPageData>(_page, _expectedResults, _results);
         }
 

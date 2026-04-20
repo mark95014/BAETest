@@ -1,8 +1,10 @@
 using Microsoft.Playwright;
+using static Microsoft.Playwright.Assertions;
+using LDSUITest.Hooks;
 
 namespace LDSUITest.pages
 {
-    internal class BookingsPage : BasePage
+    public class BookingsPage : BasePage
     {
         protected override string RelativePath => "/bookings";
 
@@ -13,19 +15,26 @@ namespace LDSUITest.pages
             internal const string filterCustomerIdInput = "[id='filterCustomerId']";
             internal const string filterCustomerNameInput = "[id='filterCustomerName']";
             internal const string applyFiltersButton = "button:has-text('Apply Filters')";
+            internal const string nextPageButton = "[id='btnNext']";
         }
 
         // Pre-initialized locators
-        private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
-        private static ILocator BookingsTable(IPage page) => page.Locator(Selectors.bookingsTable);
-        private static ILocator FilterCustomerIdInput(IPage page) => page.Locator(Selectors.filterCustomerIdInput);
-        private static ILocator FilterCustomerNameInput(IPage page) => page.Locator(Selectors.filterCustomerNameInput);
-        private static ILocator ApplyFiltersButton(IPage page) => page.Locator(Selectors.applyFiltersButton);
+        public static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
+        public static ILocator BookingsTable(IPage page) => page.Locator(Selectors.bookingsTable);
+        public static ILocator FilterCustomerIdInput(IPage page) => page.Locator(Selectors.filterCustomerIdInput);
+        public static ILocator FilterCustomerNameInput(IPage page) => page.Locator(Selectors.filterCustomerNameInput);
+        public static ILocator ApplyFiltersButton(IPage page) => page.Locator(Selectors.applyFiltersButton);
+        public static ILocator NextPageButton(IPage page) => page.Locator(Selectors.nextPageButton);
 
         public override async Task WaitForPageToLoad(IPage page)
         {
             await PageTitle(page).WaitForAsync();
+            await Expect(PageTitle(page)).ToBeVisibleAsync();
             await BookingsTable(page).WaitForAsync();
+            await NextPageButton(page).WaitForAsync();
+            await Expect(NextPageButton(page)).ToBeEnabledAsync();
+            //Thread.Sleep(500);    see if ToBeEnabledAsync is sufficient without additional wait
+            UITestHooks.
         }
 
         public async Task FilterBookings(IPage page, string filterValue)

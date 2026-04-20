@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
 using LDSTest.Shared;
 using LDSUITest.pages;
-using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 using TechTalk.SpecFlow;
@@ -9,7 +8,7 @@ using TechTalk.SpecFlow;
 namespace LDSUITest.StepDefinitions
 {
     [Binding]
-    public class BookingsSteps
+    public class BookingsSteps : BookingsPage
     {
         private readonly ScenarioContext _scenarioContext;
         private IPage _page = null!;
@@ -64,17 +63,15 @@ namespace LDSUITest.StepDefinitions
         [Then(@"the bookings page should display correctly")]
         public async Task ThenTheBookingsPageShouldDisplayCorrectly()
         {
-            var pageTitle = _page.Locator("h1:has-text('All Bookings')");
-            await pageTitle.WaitForAsync();
-            (await pageTitle.IsVisibleAsync()).Should().BeTrue("Page title 'All Bookings' should be visible");
-            
-            var bookingsTable = _page.Locator("[id='bookingsTable']");
-            (await bookingsTable.IsVisibleAsync()).Should().BeTrue("Bookings table should be visible");
+            await _bookingsPage.WaitForPageToLoad(_page);
         }
 
         [Then(@"the page data should be verified against expected results")]
         public async Task ThenThePageDataShouldBeVerifiedAgainstExpectedResults()
         {
+            // Get test case ID from ScenarioContext (stored by UITestHooks)
+            var testCaseId = _scenarioContext.Get<int>("TestCaseId");
+            
             await BasePage.VerifyPage<BookingsPageData>(_page, _expectedResults, _results);
         }
     }

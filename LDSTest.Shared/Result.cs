@@ -6,13 +6,14 @@ namespace LDSTest.Shared
     {
         public bool passed;
         public string message;
-        public int testCaseId = Context.GetTestCaseId();
+        public int testCaseId;
         public List<string> stackTrace = [];
 
         public Result(bool passed, string message = "")
         {
             this.passed = passed;
             this.message = message;
+            this.testCaseId = TestCaseIdProvider.GetTestCaseId(); // Uses the provider
 
             if (!passed)
             {

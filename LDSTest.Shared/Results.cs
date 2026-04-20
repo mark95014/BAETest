@@ -21,10 +21,11 @@ namespace LDSTest.Shared
 
         public void Display()
         {
-            int testCaseId = Context.GetTestCaseId();
+            int testCaseId = TestCaseIdProvider.GetTestCaseId();
             Console.WriteLine();
             Console.WriteLine("Summary");
             string passFail = HasFailures() ? "Failed" : "Passed";
+            //UITestHooks
             Console.WriteLine($"\tTest Case {TestContext.CurrentContext.Test.FullName} TestRail test case id: {testCaseId} {passFail}");
             Console.WriteLine($"\tTotal Assertions {this.all.Count}");
             Console.WriteLine($"\tPassed Assertions {this.passed.Count}");

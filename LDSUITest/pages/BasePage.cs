@@ -6,7 +6,7 @@ using NUnit.Framework;
 
 namespace LDSUITest.pages
 {
-    internal abstract class BasePage
+    public abstract class BasePage
     {
         private readonly string WebBaseUrl = TestContext.Parameters[$"{TestContext.Parameters["environment"]?.ToString()}.webBaseURL"] ?? "";
 

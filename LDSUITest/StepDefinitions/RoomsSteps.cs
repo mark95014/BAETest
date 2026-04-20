@@ -58,6 +58,7 @@ namespace LDSUITest.StepDefinitions
         [Then(@"the rooms table should contain the expected data")]
         public async Task ThenTheRoomsTableShouldContainTheExpectedData()
         {
+            var testCaseId = _scenarioContext.Get<int>("TestCaseId");
             await BasePage.VerifyPage<RoomsPageData>(_page, _expectedResults, _results);
         }
 
@@ -131,6 +132,7 @@ namespace LDSUITest.StepDefinitions
         [Then(@"the rooms table should reflect the updated prices")]
         public async Task ThenTheRoomsTableShouldReflectTheUpdatedPrices()
         {
+            var testCaseId = _scenarioContext.Get<int>("TestCaseId");
             await BasePage.VerifyPage<RoomsPageData>(_page, _expectedResults, _results);
         }
 

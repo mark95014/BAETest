@@ -1,5 +1,6 @@
 using LDSTest.Shared;
 using LDSUITest.utils;
+using Microsoft.Playwright;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
 
@@ -8,126 +9,166 @@ namespace LDSUITest.Hooks
     [Binding]
     public class UITestHooks : BaseTest
     {
-        private readonly ScenarioContext _scenarioContext;
-        private readonly FeatureContext _featureContext;
-        private int _testCaseId;
+        public readonly ScenarioContext _scenarioContext;
+        public readonly FeatureContext _featureContext;
+        public int _testCaseId;
+        public IBrowser? _browser;
+        public IBrowserContext? _browserContext;
 
         public UITestHooks(ScenarioContext scenarioContext, FeatureContext featureContext)
         {
             _scenarioContext = scenarioContext;
             _featureContext = featureContext;
-        }
+        } 
 
         [BeforeScenario]
         public async Task BeforeScenario()
         {
-            TestContext.Progress.WriteLine($"Scenario: {_scenarioContext.ScenarioInfo.Title}");
-
-            // Get test case ID from tags BEFORE calling BaseSetup
-            var testCaseTag = _scenarioContext.ScenarioInfo.Tags
-                .FirstOrDefault(t => t.StartsWith("testcase:"));
-            _testCaseId = 0;
-            if (testCaseTag != null)
+            try
             {
-                int.TryParse(testCaseTag.Replace("testcase:", ""), out _testCaseId);
-            }
+                TestContext.Progress.WriteLine($"[1] Starting BeforeScenario for: {_scenarioContext.ScenarioInfo.Title}");
 
-            // Set the test case ID in Context for TestRail integration
-            if (_testCaseId > 0)
+                // Get test case ID from tags
+                var testCaseTag = _scenarioContext.ScenarioInfo.Tags.FirstOrDefault(t => t.StartsWith("testcase:"));
+                _testCaseId = 0;
+                if (testCaseTag != null)
+                {
+                    int.TryParse(testCaseTag.Replace("testcase:", ""), out _testCaseId);
+                }
+                TestContext.Progress.WriteLine($"[2] Test case ID extracted: {_testCaseId}");
+
+                // Register test case ID with the provider
+                TestCaseIdProvider.SetTestCaseId(_testCaseId);
+
+                // Call BaseTest setup - this initializes parameters
+                TestContext.Progress.WriteLine("[3] Calling BaseSetup...");
+                BaseSetup();
+                TestContext.Progress.WriteLine("[4] BaseSetup completed");
+                
+                // Override test name with scenario title for SpecFlow
+                var scenarioTitle = $"{_featureContext.FeatureInfo.Title}_{_scenarioContext.ScenarioInfo.Title}";
+                TestContext.Progress.WriteLine($"[5] Scenario title: {scenarioTitle}");
+                
+                // For SpecFlow, manually initialize the browser
+                TestContext.Progress.WriteLine("[6] Initializing browser for SpecFlow...");
+                
+                var slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;
+                var headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
+                slowMo = headless ? 0 : slowMo;
+
+                var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+                _browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+                {
+                    Headless = headless,
+                    SlowMo = slowMo
+                });
+                
+                _browserContext = await _browser.NewContextAsync();
+                Page = await _browserContext.NewPageAsync();
+                
+                TestContext.Progress.WriteLine("[7] Browser initialized");
+
+                // Initialize Results
+                Results = new Results();
+
+                TestContext.Progress.WriteLine("[8] Initializing ExpectedResults...");
+                var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+                
+                if (ExpectedResults != null)
+                {
+                    ExpectedResults.Close();
+                }
+                
+                ExpectedResults = new ExpectedResults(scenarioTitle, expectedResultsFolder, GenerateExpectedResults);
+                ExpectedResults.Init();
+                TestContext.Progress.WriteLine("[9] ExpectedResults initialized");
+
+                // Store shared objects
+                TestContext.Progress.WriteLine("[10] Adding objects to ScenarioContext...");
+                _scenarioContext.Add("Page", Page);
+                _scenarioContext.Add("BaseTest", this);
+                _scenarioContext.Add("ExpectedResults", ExpectedResults);
+                _scenarioContext.Add("Results", Results);
+                _scenarioContext.Add("TestCaseId", _testCaseId);
+                TestContext.Progress.WriteLine("[11] BeforeScenario completed successfully");
+            }
+            catch (Exception ex)
             {
-                LDSTest.Shared.Context.SetTestCaseId(_testCaseId);
+                TestContext.Progress.WriteLine($"[ERROR] Exception in BeforeScenario: {ex.GetType().Name}");
+                TestContext.Progress.WriteLine($"[ERROR] Message: {ex.Message}");
+                TestContext.Progress.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+                throw;
             }
-
-            // Call BaseTest setup - this initializes parameters
-            BaseSetup();
-            
-            // Override test name with scenario title for SpecFlow
-            var scenarioTitle = $"{_featureContext.FeatureInfo.Title}_{_scenarioContext.ScenarioInfo.Title}";
-            
-            await TestCaseSetUp();
-
-            // Recreate ExpectedResults with proper scenario name
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            ExpectedResults?.Close();
-            ExpectedResults = new ExpectedResults(scenarioTitle, expectedResultsFolder, GenerateExpectedResults);
-            ExpectedResults.Init();
-
-            // Store shared objects
-            _scenarioContext.Add("Page", Page);
-            _scenarioContext.Add("BaseTest", this);
-            _scenarioContext.Add("ExpectedResults", ExpectedResults);
-            _scenarioContext.Add("Results", Results);
-            _scenarioContext.Add("TestCaseId", _testCaseId);
         }
 
         [AfterScenario]
         public async Task AfterScenario()
         {
-            // Custom teardown logic that avoids TestCaseFinish() which expects NUnit test arguments
-            TestContext.Progress.WriteLine("SpecFlow Scenario TearDown");
-
             try
             {
+                TestContext.Progress.WriteLine("[TEARDOWN 1] Starting AfterScenario");
+
                 if (Page != null && !Page.IsClosed)
                 {
+                    TestContext.Progress.WriteLine("[TEARDOWN 2] Closing page...");
                     await Page.CloseAsync();
                 }
+
+                // Close browser context and browser
+                if (_browserContext != null)
+                {
+                    await _browserContext.CloseAsync();
+                }
+
+                if (_browser != null)
+                {
+                    await _browser.CloseAsync();
+                }
+
+                // Handle Results and TestRail - pass testCaseId explicitly
+                if (Results != null)
+                {
+                    TestContext.Progress.WriteLine("[TEARDOWN 3] Processing results...");
+                    Results.Display(_testCaseId); // Pass testCaseId as parameter
+                    string errorMessages = Results.GetErrorMessages();
+
+                    try
+                    {
+                        if (Results.HasFailures())
+                        {
+                            TestContext.Progress.WriteLine($"[TEARDOWN 4] Test failed: {errorMessages}");
+                            TestRail.AddUnSuccessfulTestRailResult(_testCaseId, errorMessages);
+                            Assert.Fail($"Scenario '{_scenarioContext.ScenarioInfo.Title}' Failed: {errorMessages}");
+                        }
+                        else
+                        {
+                            TestContext.Progress.WriteLine("[TEARDOWN 5] Test passed");
+                            TestRail.AddSuccessfulTestRailResult(_testCaseId);
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        TestContext.Progress.WriteLine($"[TEARDOWN ERROR] TestRail reporting error: {ex.Message}");
+                    }
+                }
+
+                // Close ExpectedResults
+                TestContext.Progress.WriteLine("[TEARDOWN 6] Closing ExpectedResults...");
+                ExpectedResults?.Close();
+
+                TestContext.Progress.WriteLine($"[TEARDOWN 7] Completed: {_scenarioContext.ScenarioInfo.Title}");
             }
             catch (Exception ex)
             {
-                TestContext.Progress.WriteLine($"Error closing page: {ex.Message}");
+                TestContext.Progress.WriteLine($"[TEARDOWN FATAL ERROR] {ex.GetType().Name}: {ex.Message}");
+                TestContext.Progress.WriteLine($"[TEARDOWN FATAL ERROR] StackTrace: {ex.StackTrace}");
+                // Don't rethrow - we're in cleanup
             }
-
-            // Handle Results and TestRail manually without calling TestCaseFinish()
-            if (Results != null)
+            finally
             {
-                Results.Display();
-                string errorMessages = Results.GetErrorMessages();
-
-                try
-                {
-                    if (Results.HasFailures())
-                    {
-                        TestRail.AddUnSuccessfulTestRailResult(_testCaseId, errorMessages);
-                        Assert.Fail($"Scenario '{_scenarioContext.ScenarioInfo.Title}' Failed: {errorMessages}");
-                    }
-                    else
-                    {
-                        TestRail.AddSuccessfulTestRailResult(_testCaseId);
-                    }
-                }
-                catch (Exception ex)
-                {
-                    TestContext.Progress.WriteLine($"Error in TestRail reporting: {ex.Message}");
-                }
+                // Always clear the test case ID
+                TestCaseIdProvider.Clear();
             }
-
-            // Close ExpectedResults
-            ExpectedResults?.Close();
-
-            // Close browser context and browser (instead of calling TestCaseTearDown which calls TestCaseFinish)
-            try
-            {
-                // Access private fields using reflection if needed, or let them be cleaned up
-                // The base TestCaseTearDown handles this, but we can't call it because it calls TestCaseFinish
-                
-                // Call parent's teardown but catch any errors from TestCaseFinish
-                try
-                {
-                    await base.TestCaseTearDown();
-                }
-                catch (IndexOutOfRangeException)
-                {
-                    // Expected - ignore the error from TestCaseFinish trying to access Arguments[0]
-                    TestContext.Progress.WriteLine("Ignored IndexOutOfRangeException from TestCaseFinish (expected for SpecFlow tests)");
-                }
-            }
-            catch (Exception ex)
-            {
-                TestContext.Progress.WriteLine($"Error in teardown: {ex.Message}");
-            }
-
-            TestContext.Progress.WriteLine($"Completed: {_scenarioContext.ScenarioInfo.Title}");
         }
     }
 }

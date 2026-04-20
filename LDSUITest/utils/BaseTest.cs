@@ -1,6 +1,7 @@
 ﻿using LDSTest.Shared;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
+using static Microsoft.Playwright.Assertions;
 using NUnit.Framework;
 using TestContext = NUnit.Framework.TestContext;
 
@@ -11,13 +12,13 @@ namespace LDSUITest.utils
     {
         public ExpectedResults ExpectedResults = null!;
         public bool Verbose = Boolean.Parse(TestContext.Parameters["verbose"] ?? "false");
-        public Results Results = new();  
+        public Results Results = null!;
+        public TestRail TestRail = null!;
         public DBServer DbServer = null!;       
         public bool GenerateExpectedResults;
         private int slowMo = 0;
         private bool headless = true;
         private string testName = null!;
-
 
         // Provide public read-only properties for external access
         public string databaseBackupFileName = string.Empty;
@@ -25,7 +26,7 @@ namespace LDSUITest.utils
         public string guid = string.Empty;
         public int defaultTimeoutInSeconds = 300;
 
-        public IPage Page { get; private set; } = null!;
+        public IPage Page { get; protected set; } = null!;
         private IBrowser? _customBrowser;
         private IBrowserContext? _customContext;
 
@@ -48,8 +49,8 @@ namespace LDSUITest.utils
         [SetUp]
         public virtual async Task TestCaseSetUp()
         {   
-            // Create fresh Results for each test
             Results = new Results();
+            TestRail = new TestRail();
 
             // Create ExpectedResults per test, not per fixture
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
@@ -113,6 +114,7 @@ namespace LDSUITest.utils
                 TestContext.Progress.WriteLine($"Error closing browser: {ex.Message}");
             }
 
+            // Use the captured TestCaseId
             TestCaseFinish();
             
             // Close ExpectedResults after each test
@@ -127,14 +129,8 @@ namespace LDSUITest.utils
             TestContext.Progress.WriteLine("TestTearDown");
         }
 
-        public void SetTestCaseId(string testCaseId)
-        {
-            TestContext.CurrentContext.Test.Arguments[0] = testCaseId;
-        }
-
         public void TestCaseFinish()
         {
-            int testCaseId = LDSTest.Shared.Context.GetTestCaseId();
             Results.Display();
 
             string errorMessages = Results.GetErrorMessages();
@@ -142,11 +138,11 @@ namespace LDSUITest.utils
             try
             {
                 Assert.That(Results.HasFailures(), Is.False, $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
-                TestRail.AddSuccessfulTestRailResult(testCaseId);
+                TestRail.AddSuccessfulTestRailResult();
             }
             catch (Exception)
             {
-                TestRail.AddUnSuccessfulTestRailResult(testCaseId, errorMessages);
+                TestRail.AddUnSuccessfulTestRailResult(errorMessages);
             }
         }
     }
