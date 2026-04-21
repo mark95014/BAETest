@@ -1,7 +1,6 @@
 ﻿using LDSTest.Shared;
 using Microsoft.Playwright;
 using Microsoft.Playwright.NUnit;
-using static Microsoft.Playwright.Assertions;
 using NUnit.Framework;
 using TestContext = NUnit.Framework.TestContext;
 
@@ -18,7 +17,7 @@ namespace LDSUITest.utils
         public bool GenerateExpectedResults;
         private int slowMo = 0;
         private bool headless = true;
-        private string testName = null!;
+        public string TestName = null!;
 
         // Provide public read-only properties for external access
         public string databaseBackupFileName = string.Empty;
@@ -43,18 +42,18 @@ namespace LDSUITest.utils
             GenerateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
             slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;          
             headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
-            testName = TestContext.CurrentContext.Test.Name;
+            TestName = TestNameProvider.GetTestName();
+            TestRail = new TestRail();
         }
 
         [SetUp]
         public virtual async Task TestCaseSetUp()
         {   
             Results = new Results();
-            TestRail = new TestRail();
 
             // Create ExpectedResults per test, not per fixture
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            ExpectedResults = new ExpectedResults(testName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
             
             slowMo = headless ? 0 : slowMo; // Disable slowMo when running in headless mode for faster execution

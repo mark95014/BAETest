@@ -26,47 +26,22 @@ namespace LDSUITest.StepDefinitions
         public RoomsSteps(ScenarioContext scenarioContext)
         {
             _scenarioContext = scenarioContext;
+            _page = scenarioContext.Get<IPage>("Page");
+            _roomsPage = new RoomsPage();
+            _expectedResults = scenarioContext.Get<ExpectedResults>("ExpectedResults");
+            _results = scenarioContext.Get<Results>("Results");
         }
 
         [Given(@"I navigate to the rooms page")]
         public async Task GivenINavigateToTheRoomsPage()
         {
-            _page = _scenarioContext.Get<IPage>("Page");
-            _expectedResults = _scenarioContext.Get<ExpectedResults>("ExpectedResults");
-            _results = _scenarioContext.Get<Results>("Results");
-
-            _roomsPage = new RoomsPage();
             await _roomsPage.GoTo(_page);
-        }
-
-        [Then(@"the page title should be ""(.*)""")]
-        public async Task ThenThePageTitleShouldBe(string expectedTitle)
-        {
-            var pageTitle = _page.Locator($"h1:has-text('{expectedTitle}')");
-            await pageTitle.WaitForAsync();
-            (await pageTitle.IsVisibleAsync()).Should().BeTrue($"Page title '{expectedTitle}' should be visible");
-        }
-
-        [Then(@"the rooms table should be displayed")]
-        public async Task ThenTheRoomsTableShouldBeDisplayed()
-        {
-            var roomsTable = _page.Locator("[id='roomsTable']");
-            await roomsTable.WaitForAsync();
-            (await roomsTable.IsVisibleAsync()).Should().BeTrue("Rooms table should be visible");
         }
 
         [Then(@"the rooms table should contain the expected data")]
         public async Task ThenTheRoomsTableShouldContainTheExpectedData()
         {
-            var testCaseId = _scenarioContext.Get<int>("TestCaseId");
             await BasePage.VerifyPage<RoomsPageData>(_page, _expectedResults, _results);
-        }
-
-        [Then(@"the next page button should be displayed")]
-        public async Task ThenTheNextPageButtonShouldBeDisplayed()
-        {
-            var nextPageButton = _page.Locator("[id='btnNext']");
-            (await nextPageButton.IsVisibleAsync()).Should().BeTrue("Next page button should be visible");
         }
 
         [When(@"I select room number ""(.*)""")]

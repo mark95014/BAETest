@@ -1,4 +1,4 @@
-Feature: Customers Management
+Feature: CustomersPageTest
     As a hotel administrator
     I want to view and filter customer information
     So that I can manage customer data effectively

@@ -32,14 +32,6 @@ namespace LDSUITest.StepDefinitions
             await _customersPage.GoTo(_page);
         }
 
-        [Then(@"the page title should be ""(.*)""")]
-        public async Task ThenThePageTitleShouldBe(string expectedTitle)
-        {
-            var pageTitle = _page.Locator($"h1:has-text('{expectedTitle}')");
-            await pageTitle.WaitForAsync();
-            (await pageTitle.IsVisibleAsync()).Should().BeTrue($"Page title '{expectedTitle}' should be visible");
-        }
-
         [Then(@"the customers table should be displayed")]
         public async Task ThenTheCustomersTableShouldBeDisplayed()
         {

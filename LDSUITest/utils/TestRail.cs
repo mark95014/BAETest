@@ -9,7 +9,7 @@ namespace LDSUITest.utils
 {
     public class TestRail
     {
-        private bool enableTestRail;
+        private bool enableTestRail = false;
         private readonly int testRailFailedStatus = 5;
         private readonly int testRailPassedStatus = 1;
         private readonly APIClient testRailClient = new("https://ssa.testrail.com/");
@@ -24,22 +24,22 @@ namespace LDSUITest.utils
 
         public string AddSuccessfulTestRailResult(string msg = "")
         {
-            if (enableTestRail) return AddTestRailResult(testCaseId, testRailPassedStatus, $"Test passed {msg}");
+            if (enableTestRail) return AddTestRailResult(testRailPassedStatus, $"Test passed {msg}");
             else return "";
         }
 
-        public string AddUnSuccessfulTestRailResult(int testCaseId, string msg)
+        public string AddUnSuccessfulTestRailResult(string msg)
         {
-            if (enableTestRail) return AddTestRailResult(testCaseId, testRailFailedStatus, msg);
+            if (enableTestRail) return AddTestRailResult(testRailFailedStatus, msg);
             else return "";
         }
 
-        private string AddTestRailResult(int caseId, int status, string message)
+        private string AddTestRailResult(int status, string message)
         {
             if (enableTestRail)
             {
                 var data = new Dictionary<string, object> { { "status_id", status }, { "comment", message } };
-                string endPoint = $"add_result_for_case/{testRailRunId}/{caseId}";
+                string endPoint = $"add_result_for_case/{testRailRunId}/{testCaseId}";
                 _ = (JObject)testRailClient.SendPost(endPoint, data);
             }
             return message;
@@ -69,6 +69,10 @@ namespace LDSUITest.utils
             else return 0;
         }
 
+        /// <summary>
+        /// This only works for NUnit tests since it relies on NUnit's TestContext for configuration. Figure another method for Gherkin tests.
+        /// </summary>
+        /// <param name="appVersion"></param>
         public void InitTestRail(string appVersion)
         {
             if (debug) TestContext.Progress.WriteLine($"NUnit.Framework.TestContext {NUnit.Framework.TestContext.Parameters}");

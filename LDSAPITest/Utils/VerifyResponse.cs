@@ -12,7 +12,7 @@ namespace LDSAPITest.Utils
             //var className = System.IO.Path.GetFileNameWithoutExtension(full);
             //var testName = TestContext.CurrentContext.Test.Name;
 
-            string dataLabel = expectedResults.MakeDataLabel(expectedResults.TestName, Context.GetTestCaseId());
+            string dataLabel = expectedResults.MakeDataLabel(expectedResults.TestName);
             JObject responseObject = JObject.FromObject(response);
 
             if (expectedResults.GenerateExpectedResults)

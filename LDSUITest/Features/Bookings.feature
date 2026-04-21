@@ -1,5 +1,5 @@
 @ui @bookings
-Feature: Hotel Bookings Management
+Feature: BookingsPageTest
   As a hotel manager
   I want to view and filter bookings
   So that I can manage customer reservations effectively

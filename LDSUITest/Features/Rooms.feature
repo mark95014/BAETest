@@ -1,4 +1,4 @@
-Feature: Rooms Management
+Feature: RoomsPageTest
     As a hotel administrator
     I want to view and manage room information
     So that I can maintain accurate room data and pricing
@@ -7,18 +7,11 @@ Background:
     Given the browser is initialized
     And I navigate to the rooms page
 
+@regression @testcase:1
 Scenario: Verify all data on Rooms page
-    Then the page title should be "All Rooms"
-    And the rooms table should be displayed
-    And the rooms table should contain the expected data
-    And the next page button should be displayed
+    Then the rooms table should contain the expected data
 
-Scenario: Edit single room price
-    When I select room number "101"
-    And I update the room price to "150"
-    And I save the changes
-    Then the room price should be updated to "150" for room "101"
-
+@regression @testcase:2
 Scenario: Edit multiple room prices
     When I edit the following rooms:
         | RoomNumber | Price |

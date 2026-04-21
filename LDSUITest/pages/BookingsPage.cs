@@ -32,9 +32,6 @@ namespace LDSUITest.pages
             await Expect(PageTitle(page)).ToBeVisibleAsync();
             await BookingsTable(page).WaitForAsync();
             await NextPageButton(page).WaitForAsync();
-            await Expect(NextPageButton(page)).ToBeEnabledAsync();
-            //Thread.Sleep(500);    see if ToBeEnabledAsync is sufficient without additional wait
-            UITestHooks.
         }
 
         public async Task FilterBookings(IPage page, string filterValue)

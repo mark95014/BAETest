@@ -40,14 +40,15 @@ namespace LDSUITest.Hooks
                 // Register test case ID with the provider
                 TestCaseIdProvider.SetTestCaseId(_testCaseId);
 
+                // Get feature title (this is the test name for SpecFlow)
+                var featureTitle = _featureContext.FeatureInfo.Title;
+                TestNameProvider.SetTestName(featureTitle);
+                TestContext.Progress.WriteLine($"[3] Feature title: {featureTitle}");
+
                 // Call BaseTest setup - this initializes parameters
-                TestContext.Progress.WriteLine("[3] Calling BaseSetup...");
+                TestContext.Progress.WriteLine("[4] Calling BaseSetup...");
                 BaseSetup();
-                TestContext.Progress.WriteLine("[4] BaseSetup completed");
-                
-                // Override test name with scenario title for SpecFlow
-                var scenarioTitle = $"{_featureContext.FeatureInfo.Title}_{_scenarioContext.ScenarioInfo.Title}";
-                TestContext.Progress.WriteLine($"[5] Scenario title: {scenarioTitle}");
+                TestContext.Progress.WriteLine("[5] BaseSetup completed");
                 
                 // For SpecFlow, manually initialize the browser
                 TestContext.Progress.WriteLine("[6] Initializing browser for SpecFlow...");
@@ -79,7 +80,8 @@ namespace LDSUITest.Hooks
                     ExpectedResults.Close();
                 }
                 
-                ExpectedResults = new ExpectedResults(scenarioTitle, expectedResultsFolder, GenerateExpectedResults);
+                // Use featureTitle (test name) for ExpectedResults file name
+                ExpectedResults = new ExpectedResults(featureTitle, expectedResultsFolder, GenerateExpectedResults);
                 ExpectedResults.Init();
                 TestContext.Progress.WriteLine("[9] ExpectedResults initialized");
 
@@ -90,6 +92,7 @@ namespace LDSUITest.Hooks
                 _scenarioContext.Add("ExpectedResults", ExpectedResults);
                 _scenarioContext.Add("Results", Results);
                 _scenarioContext.Add("TestCaseId", _testCaseId);
+
                 TestContext.Progress.WriteLine("[11] BeforeScenario completed successfully");
             }
             catch (Exception ex)
@@ -129,7 +132,7 @@ namespace LDSUITest.Hooks
                 if (Results != null)
                 {
                     TestContext.Progress.WriteLine("[TEARDOWN 3] Processing results...");
-                    Results.Display(_testCaseId); // Pass testCaseId as parameter
+                    Results.Display(); // Pass testCaseId as parameter
                     string errorMessages = Results.GetErrorMessages();
 
                     try
@@ -137,13 +140,13 @@ namespace LDSUITest.Hooks
                         if (Results.HasFailures())
                         {
                             TestContext.Progress.WriteLine($"[TEARDOWN 4] Test failed: {errorMessages}");
-                            TestRail.AddUnSuccessfulTestRailResult(_testCaseId, errorMessages);
+                            TestRail.AddUnSuccessfulTestRailResult(errorMessages);
                             Assert.Fail($"Scenario '{_scenarioContext.ScenarioInfo.Title}' Failed: {errorMessages}");
                         }
                         else
                         {
                             TestContext.Progress.WriteLine("[TEARDOWN 5] Test passed");
-                            TestRail.AddSuccessfulTestRailResult(_testCaseId);
+                            TestRail.AddSuccessfulTestRailResult();
                         }
                     }
                     catch (Exception ex)
