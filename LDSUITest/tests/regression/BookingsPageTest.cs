@@ -60,7 +60,7 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(VerifyBookingsFilterTestCases))]
         public async Task VerifyBookingsFilter(int testCaseId, string customerId)
         {
-            await _bookingsPage.FilterBookings(Page, customerId);
+            await _bookingsPage.FilterBookingsByCustomerId(Page, customerId);
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 

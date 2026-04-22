@@ -1,6 +1,7 @@
+using LDSTest.Shared;
+using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 using static Microsoft.Playwright.Assertions;
-using LDSUITest.Hooks;
 
 namespace LDSUITest.pages
 {
@@ -34,18 +35,23 @@ namespace LDSUITest.pages
             await NextPageButton(page).WaitForAsync();
         }
 
-        public async Task FilterBookings(IPage page, string filterValue)
+        public async Task FilterBookingsByCustomerId(IPage page, string customerId)
         {
-            await FilterCustomerIdInput(page).FillAsync(filterValue);
+            await FilterCustomerIdInput(page).FillAsync(customerId);
             await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
         }
 
-        public async Task FilterBookingsByCustomerName(IPage page, string filterValue)
+        public async Task FilterBookingsByCustomerName(IPage page, string customerName)
         {
-            await FilterCustomerNameInput(page).FillAsync(filterValue);
+            await FilterCustomerNameInput(page).FillAsync(customerName);
             await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
+        }
+
+        public async Task VerifyPage(IPage page, ExpectedResults expectedResults, Results results)
+        {
+            await BasePage.VerifyPage<BookingsPageData>(page, expectedResults, results);
         }
     }
 }

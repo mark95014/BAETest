@@ -1,4 +1,4 @@
-using LDSTest.Shared;
+﻿using LDSTest.Shared;
 using LDSUITest.utils;
 using Microsoft.Playwright;
 using NUnit.Framework;
@@ -7,169 +7,133 @@ using TechTalk.SpecFlow;
 namespace LDSUITest.Hooks
 {
     [Binding]
-    public class UITestHooks : BaseTest
+    public class UITestHooks
     {
-        public readonly ScenarioContext _scenarioContext;
-        public readonly FeatureContext _featureContext;
-        public int _testCaseId;
-        public IBrowser? _browser;
-        public IBrowserContext? _browserContext;
+        private readonly ScenarioContext _scenarioContext;
+        private readonly FeatureContext _featureContext;
+        private IBrowser? _browser;
+        private IBrowserContext? _browserContext;
+        
+        private IPage _page = null!;
+        private ExpectedResults _expectedResults = null!;
+        private Results _results = null!;
+        private TestRail _testRail = null!;
+        private bool _generateExpectedResults;
 
         public UITestHooks(ScenarioContext scenarioContext, FeatureContext featureContext)
         {
             _scenarioContext = scenarioContext;
             _featureContext = featureContext;
-        } 
+            
+            TestContext.Progress.WriteLine($"[CONSTRUCTOR] UITestHooks created for scenario: {scenarioContext.ScenarioInfo.Title}");
+        }
 
-        [BeforeScenario]
+        [BeforeScenario(Order = 0)]
         public async Task BeforeScenario()
         {
+            TestContext.Progress.WriteLine($"[BEFORE SCENARIO START] {_scenarioContext.ScenarioInfo.Title}");
+            
             try
             {
-                TestContext.Progress.WriteLine($"[1] Starting BeforeScenario for: {_scenarioContext.ScenarioInfo.Title}");
-
-                // Get test case ID from tags
+                // 1. Get test case ID
                 var testCaseTag = _scenarioContext.ScenarioInfo.Tags.FirstOrDefault(t => t.StartsWith("testcase:"));
-                _testCaseId = 0;
+                int testCaseId = 0;
                 if (testCaseTag != null)
                 {
-                    int.TryParse(testCaseTag.Replace("testcase:", ""), out _testCaseId);
+                    int.TryParse(testCaseTag.Replace("testcase:", ""), out testCaseId);
                 }
-                TestContext.Progress.WriteLine($"[2] Test case ID extracted: {_testCaseId}");
+                TestContext.Progress.WriteLine($"[BEFORE] Test case ID: {testCaseId}");
 
-                // Register test case ID with the provider
-                TestCaseIdProvider.SetTestCaseId(_testCaseId);
+                // 2. Set providers
+                TestCaseIdProvider.SetTestCaseId(testCaseId);
+                TestNameProvider.SetTestName(_featureContext.FeatureInfo.Title);
+                TestContext.Progress.WriteLine($"[BEFORE] Providers set");
 
-                // Get feature title (this is the test name for SpecFlow)
-                var featureTitle = _featureContext.FeatureInfo.Title;
-                TestNameProvider.SetTestName(featureTitle);
-                TestContext.Progress.WriteLine($"[3] Feature title: {featureTitle}");
-
-                // Call BaseTest setup - this initializes parameters
-                TestContext.Progress.WriteLine("[4] Calling BaseSetup...");
-                BaseSetup();
-                TestContext.Progress.WriteLine("[5] BaseSetup completed");
+                // 3. Initialize settings
+                _generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
+                _testRail = new TestRail();
+                TestContext.Progress.WriteLine($"[BEFORE] Settings initialized");
                 
-                // For SpecFlow, manually initialize the browser
-                TestContext.Progress.WriteLine("[6] Initializing browser for SpecFlow...");
-                
+                // 4. Create browser
                 var slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;
                 var headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
-                slowMo = headless ? 0 : slowMo;
-
+                
+                TestContext.Progress.WriteLine($"[BEFORE] Creating Playwright...");
                 var playwright = await Microsoft.Playwright.Playwright.CreateAsync();
+                
+                TestContext.Progress.WriteLine($"[BEFORE] Launching browser (headless: {headless})...");
                 _browser = await playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
                 {
                     Headless = headless,
-                    SlowMo = slowMo
+                    SlowMo = headless ? 0 : slowMo
                 });
                 
+                TestContext.Progress.WriteLine($"[BEFORE] Creating browser context...");
                 _browserContext = await _browser.NewContextAsync();
-                Page = await _browserContext.NewPageAsync();
                 
-                TestContext.Progress.WriteLine("[7] Browser initialized");
+                TestContext.Progress.WriteLine($"[BEFORE] Creating new page...");
+                _page = await _browserContext.NewPageAsync();
+                TestContext.Progress.WriteLine($"[BEFORE] Browser ready");
 
-                // Initialize Results
-                Results = new Results();
-
-                TestContext.Progress.WriteLine("[8] Initializing ExpectedResults...");
+                // 5. Create test objects
+                _results = new Results();
                 var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-                
-                if (ExpectedResults != null)
-                {
-                    ExpectedResults.Close();
-                }
-                
-                // Use featureTitle (test name) for ExpectedResults file name
-                ExpectedResults = new ExpectedResults(featureTitle, expectedResultsFolder, GenerateExpectedResults);
-                ExpectedResults.Init();
-                TestContext.Progress.WriteLine("[9] ExpectedResults initialized");
+                _expectedResults = new ExpectedResults(_featureContext.FeatureInfo.Title, expectedResultsFolder, _generateExpectedResults);
+                _expectedResults.Init();
+                TestContext.Progress.WriteLine($"[BEFORE] Test objects created");
 
-                // Store shared objects
-                TestContext.Progress.WriteLine("[10] Adding objects to ScenarioContext...");
-                _scenarioContext.Add("Page", Page);
-                _scenarioContext.Add("BaseTest", this);
-                _scenarioContext.Add("ExpectedResults", ExpectedResults);
-                _scenarioContext.Add("Results", Results);
-                _scenarioContext.Add("TestCaseId", _testCaseId);
-
-                TestContext.Progress.WriteLine("[11] BeforeScenario completed successfully");
+                // 6. Share via ScenarioContext
+                TestContext.Progress.WriteLine($"[BEFORE] Adding to ScenarioContext...");
+                _scenarioContext["Page"] = _page;
+                _scenarioContext["ExpectedResults"] = _expectedResults;
+                _scenarioContext["Results"] = _results;
+                _scenarioContext["TestCaseId"] = testCaseId;
+                
+                TestContext.Progress.WriteLine($"[BEFORE SCENARIO COMPLETE] {_scenarioContext.ScenarioInfo.Title}");
             }
             catch (Exception ex)
             {
-                TestContext.Progress.WriteLine($"[ERROR] Exception in BeforeScenario: {ex.GetType().Name}");
-                TestContext.Progress.WriteLine($"[ERROR] Message: {ex.Message}");
-                TestContext.Progress.WriteLine($"[ERROR] StackTrace: {ex.StackTrace}");
+                TestContext.Progress.WriteLine($"[BEFORE SCENARIO ERROR] {ex.GetType().Name}: {ex.Message}");
+                TestContext.Progress.WriteLine($"[BEFORE SCENARIO ERROR] Stack: {ex.StackTrace}");
                 throw;
             }
         }
 
-        [AfterScenario]
+        [AfterScenario(Order = 100)]
         public async Task AfterScenario()
         {
+            
             try
             {
-                TestContext.Progress.WriteLine("[TEARDOWN 1] Starting AfterScenario");
 
-                if (Page != null && !Page.IsClosed)
+                if (_page != null && !_page.IsClosed) await _page.CloseAsync();
+                
+                if (_browserContext != null) await _browserContext.CloseAsync();
+                
+                if (_browser != null) await _browser.CloseAsync();
+
+                _results?.Display();
+                string errorMessages = _results?.GetErrorMessages() ?? "";
+
+                if (_results?.HasFailures() == true)
                 {
-                    TestContext.Progress.WriteLine("[TEARDOWN 2] Closing page...");
-                    await Page.CloseAsync();
+                    _testRail?.AddUnSuccessfulTestRailResult(errorMessages);
+                    Assert.Fail($"Scenario Failed: {errorMessages}");
+                }
+                else
+                {
+                    _testRail?.AddSuccessfulTestRailResult();
                 }
 
-                // Close browser context and browser
-                if (_browserContext != null)
-                {
-                    await _browserContext.CloseAsync();
-                }
-
-                if (_browser != null)
-                {
-                    await _browser.CloseAsync();
-                }
-
-                // Handle Results and TestRail - pass testCaseId explicitly
-                if (Results != null)
-                {
-                    TestContext.Progress.WriteLine("[TEARDOWN 3] Processing results...");
-                    Results.Display(); // Pass testCaseId as parameter
-                    string errorMessages = Results.GetErrorMessages();
-
-                    try
-                    {
-                        if (Results.HasFailures())
-                        {
-                            TestContext.Progress.WriteLine($"[TEARDOWN 4] Test failed: {errorMessages}");
-                            TestRail.AddUnSuccessfulTestRailResult(errorMessages);
-                            Assert.Fail($"Scenario '{_scenarioContext.ScenarioInfo.Title}' Failed: {errorMessages}");
-                        }
-                        else
-                        {
-                            TestContext.Progress.WriteLine("[TEARDOWN 5] Test passed");
-                            TestRail.AddSuccessfulTestRailResult();
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        TestContext.Progress.WriteLine($"[TEARDOWN ERROR] TestRail reporting error: {ex.Message}");
-                    }
-                }
-
-                // Close ExpectedResults
-                TestContext.Progress.WriteLine("[TEARDOWN 6] Closing ExpectedResults...");
-                ExpectedResults?.Close();
-
-                TestContext.Progress.WriteLine($"[TEARDOWN 7] Completed: {_scenarioContext.ScenarioInfo.Title}");
+                _expectedResults?.Close();
             }
             catch (Exception ex)
             {
-                TestContext.Progress.WriteLine($"[TEARDOWN FATAL ERROR] {ex.GetType().Name}: {ex.Message}");
-                TestContext.Progress.WriteLine($"[TEARDOWN FATAL ERROR] StackTrace: {ex.StackTrace}");
-                // Don't rethrow - we're in cleanup
+                TestContext.Progress.WriteLine($"[AFTER SCENARIO ERROR] {ex.GetType().Name}: {ex.Message}");
             }
             finally
             {
-                // Always clear the test case ID
+                TestNameProvider.Clear();
                 TestCaseIdProvider.Clear();
             }
         }

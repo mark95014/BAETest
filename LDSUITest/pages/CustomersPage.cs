@@ -1,3 +1,4 @@
+using LDSTest.Shared;
 using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 
@@ -41,6 +42,11 @@ namespace LDSUITest.pages
             await FilterNameInput(page).FillAsync(filterValue);
             await ApplyFiltersButton(page).ClickAsync();
             await WaitForPageToLoad(page);
+        }
+
+        public async Task VerifyPage(IPage page, ExpectedResults expectedResults, Results results)
+        {
+            await BasePage.VerifyPage<CustomersPageData>(page, expectedResults, results);
         }
     }
 }
