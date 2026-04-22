@@ -1,4 +1,3 @@
-using FluentAssertions;
 using LDSTest.Shared;
 using LDSUITest.pages;
 using Microsoft.Playwright;
@@ -33,7 +32,6 @@ namespace LDSUITest.StepDefinitions
         {
             var rooms = table.CreateSet<Room>().ToList();
             await _roomsPage.EditRoomPrices(_page, rooms, _expectedResults, _results);
-            scenarioContext["EditedRooms"] = rooms.ToList();
         }
     }
 }
