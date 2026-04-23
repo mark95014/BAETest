@@ -13,14 +13,12 @@ namespace LDSTest.Shared
         public string FileName { get; }
         public string TestName;
         public readonly bool GenerateExpectedResults;
-        private readonly int testCaseId;
 
         public ExpectedResults(string testName, string expectedResultsFolder, bool generateExpectedResults)
         {
             TestName = testName;
             GenerateExpectedResults = generateExpectedResults;
             FileName = Path.Combine(expectedResultsFolder, $"{testName}.json");
-            testCaseId = TestCaseIdProvider.GetTestCaseId();
         }
 
         public void Init()
@@ -47,7 +45,7 @@ namespace LDSTest.Shared
 
         public string MakeDataLabel(string name)
         {
-            string prefix = name + "." + testCaseId;
+            string prefix = name + "." + TestCaseIdProvider.GetTestCaseId();
             string label;
 
             int count = Occurrences(prefix);
@@ -78,7 +76,6 @@ namespace LDSTest.Shared
             if (GenerateExpectedResults)
             {
                 File.AppendAllText(FileName, "\n}");
-                first = true;
             }
         }
     }

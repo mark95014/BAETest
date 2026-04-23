@@ -40,7 +40,7 @@ namespace LDSAPITest.StepDefinitions
             {
                 Id = 0,
                 Name = table.Rows[0]["Value"],
-                Bookings = null
+                Bookings = []
             };
             _scenarioContext.Add("NewCustomer", customer);
         }
@@ -49,7 +49,6 @@ namespace LDSAPITest.StepDefinitions
         public async Task WhenICreateANewCustomer()
         {
             var customer = _scenarioContext.Get<Customer>("NewCustomer");
-            customer.Bookings = [];
             _scenarioContext["Response"] = await PostAsync("CreateEditCustomer", customer);
             await new Database().ResetDatabase();
         }

@@ -9,7 +9,6 @@ namespace LDSAPITest.Hooks
     {
         private readonly ScenarioContext _scenarioContext;
         private readonly FeatureContext _featureContext;
-        private TestRail _testRail = new();
 
         public ApiTestHooks(ScenarioContext scenarioContext, FeatureContext featureContext)
         {
@@ -21,12 +20,28 @@ namespace LDSAPITest.Hooks
         public static async Task BeforeFeature(FeatureContext featureContext)
         {
             await new Database().ResetDatabase();
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            var generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
+
+            var results = new Results();
+            TestNameProvider.SetTestName(featureContext.FeatureInfo.Title);
+            var expectedResults = new ExpectedResults(TestNameProvider.GetTestName(), expectedResultsFolder, generateExpectedResults);
+            expectedResults.Init();
+
+            // Store the once-per-feature instances in the FeatureContext so they can be shared across scenarios
+            featureContext["TestRail"] = new TestRail();
+            featureContext["Results"] = results;
+            featureContext["ExpectedResults"] = expectedResults;
         }
 
         [AfterFeature]
         public static async Task AfterFeature(FeatureContext featureContext)
         {
             await new Database().ResetDatabase();
+            featureContext["TestRail"] = null;
+            featureContext["Results"] = null;
+            var expectedResults = featureContext["ExpectedResults"] as ExpectedResults;
+            expectedResults!.Close();
         }
 
         [BeforeScenario(Order = 0)]
@@ -34,9 +49,11 @@ namespace LDSAPITest.Hooks
         {
             try
             {
-                InitializeTestMetadata();
+                InitializeTestCaseId();
 
-                InitializeResultsAndExpectedResults();
+                // Save the shared objects from FeatureContext to ScenarioContext for easier access in step definitions
+                _scenarioContext["Results"] = _featureContext["Results"];
+                _scenarioContext["ExpectedResults"] = _featureContext["ExpectedResults"];
             }
             catch (Exception ex)
             {
@@ -47,28 +64,27 @@ namespace LDSAPITest.Hooks
         }
 
         [AfterScenario(Order = 100)]
-        public void AfterScenario()
+        public void AfterScenario(FeatureContext featureContext, ScenarioContext scenarioContext)
         {
             try
             {
 
-                var results = _scenarioContext.Get<Results>("Results");
-                var expectedResults = _scenarioContext.Get<ExpectedResults>("ExpectedResults");
+                var results = scenarioContext.Get<Results>("Results");
+                var expectedResults = scenarioContext.Get<ExpectedResults>("ExpectedResults");
+                var testRail = featureContext.Get<TestRail>("TestRail");
 
                 results.Display();
                 string errorMessages = results.GetErrorMessages() ?? "";
 
                 if (results.HasFailures())
                 {
-                    _testRail?.AddUnSuccessfulTestRailResult(errorMessages);
+                    testRail?.AddUnSuccessfulTestRailResult(errorMessages);
                     Assert.Fail($"Scenario Failed: {errorMessages}");
                 }
                 else
                 {
-                    _testRail?.AddSuccessfulTestRailResult();
+                    testRail?.AddSuccessfulTestRailResult();
                 }
-
-                expectedResults.Close();
             }
             catch (Exception ex)
             {
@@ -94,24 +110,15 @@ namespace LDSAPITest.Hooks
             return 0;
         }
 
-        private void InitializeTestMetadata()
+        private void InitializeTestCaseId()
         {
             TestCaseIdProvider.SetTestCaseId(ExtractTestCaseId());
-            TestNameProvider.SetTestName(_featureContext.FeatureInfo.Title);
-            _testRail = new TestRail();
         }
 
-        private void InitializeResultsAndExpectedResults()
+        private void SaveScenarioObjects()
         {
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            var generateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
-
-            var results = new Results();
-            var expectedResults = new ExpectedResults(TestNameProvider.GetTestName(), expectedResultsFolder, generateExpectedResults);
-            expectedResults.Init();
-
-            _scenarioContext["Results"] = results;
-            _scenarioContext["ExpectedResults"] = expectedResults;
+            _scenarioContext["Results"] = _featureContext["Results"];
+            _scenarioContext["ExpectedResults"] = _featureContext["ExpectedResults"];
         }
     }
 }

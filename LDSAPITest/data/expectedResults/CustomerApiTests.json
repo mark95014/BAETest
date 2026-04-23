@@ -1,4 +1,11 @@
 {
+"CustomerApiTests.13": {
+  "customer": {
+    "Id": 11,
+    "Name": "John Smith",
+    "Bookings": []
+  }
+},
 "CustomerApiTests.10": {
   "customers": [
     {
@@ -112,5 +119,19 @@
       ]
     }
   ]
+},
+"CustomerApiTests.11": {
+  "customer": {
+    "Id": 1,
+    "Name": "Alice Johnson",
+    "Bookings": []
+  }
+},
+"CustomerApiTests.12": {
+  "customer": {
+    "Id": 7,
+    "Name": "George Miller",
+    "Bookings": []
+  }
 }
 }
