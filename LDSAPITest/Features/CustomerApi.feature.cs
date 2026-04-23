@@ -20,23 +20,23 @@ namespace LDSAPITest.Features
     [System.CodeDom.Compiler.GeneratedCodeAttribute("TechTalk.SpecFlow", "3.9.0.0")]
     [System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     [NUnit.Framework.TestFixtureAttribute()]
-    [NUnit.Framework.DescriptionAttribute("BookingApiTests")]
-    public partial class BookingApiTestsFeature
+    [NUnit.Framework.DescriptionAttribute("CustomerApiTests")]
+    public partial class CustomerApiTestsFeature
     {
         
         private TechTalk.SpecFlow.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-#line 1 "BookingApi.feature"
+#line 1 "CustomerApi.feature"
 #line hidden
         
         [NUnit.Framework.OneTimeSetUpAttribute()]
         public virtual void FeatureSetup()
         {
             testRunner = TechTalk.SpecFlow.TestRunnerManager.GetTestRunner();
-            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "BookingApiTests", "  As an API client\r\n  I want to manage bookings via REST API\r\n  So that I can int" +
-                    "egrate with the hotel booking system", ProgrammingLanguage.CSharp, featureTags);
+            TechTalk.SpecFlow.FeatureInfo featureInfo = new TechTalk.SpecFlow.FeatureInfo(new System.Globalization.CultureInfo("en-US"), "Features", "CustomerApiTests", "  As an API client\r\n  I want to manage customers via REST API\r\n  So that I can in" +
+                    "tegrate with the hotel booking system", ProgrammingLanguage.CSharp, featureTags);
             testRunner.OnFeatureStart(featureInfo);
         }
         
@@ -74,86 +74,61 @@ namespace LDSAPITest.Features
             testRunner.CollectScenarioErrors();
         }
         
+        public virtual void FeatureBackground()
+        {
+#line 6
+  #line hidden
+        }
+        
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Get all bookings")]
+        [NUnit.Framework.DescriptionAttribute("Get all customers")]
         [NUnit.Framework.CategoryAttribute("smoke")]
-        [NUnit.Framework.CategoryAttribute("testcase:1")]
-        public void GetAllBookings()
+        [NUnit.Framework.CategoryAttribute("testcase:10")]
+        public void GetAllCustomers()
         {
             string[] tagsOfScenario = new string[] {
                     "smoke",
-                    "testcase:1"};
+                    "testcase:10"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all bookings", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 7
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 8
-    testRunner.When("I send a request to get all bookings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 9
-    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all customers", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 10
-    testRunner.And("the response should contain the expected bookings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+  this.ScenarioInitialize(scenarioInfo);
 #line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
             }
-            this.ScenarioCleanup();
-        }
-        
-        [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Get booking by ID 1")]
-        [NUnit.Framework.CategoryAttribute("regression")]
-        [NUnit.Framework.CategoryAttribute("testcase:2")]
-        public void GetBookingByID1()
-        {
-            string[] tagsOfScenario = new string[] {
-                    "regression",
-                    "testcase:2"};
-            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get booking by ID 1", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            else
+            {
+                this.ScenarioStart();
+#line 6
+  this.FeatureBackground();
+#line hidden
+#line 11
+    testRunner.When("I send a request to get all customers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 12
+    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
 #line 13
-  this.ScenarioInitialize(scenarioInfo);
-#line hidden
-            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                testRunner.SkipScenario();
-            }
-            else
-            {
-                this.ScenarioStart();
-#line 14
-    testRunner.When("I send a GET request to get booking with ID 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
-#line hidden
-#line 15
-    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 16
-    testRunner.And("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.And("the response should contain the expected customers", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Get booking by ID 7")]
+        [NUnit.Framework.DescriptionAttribute("Get customer by ID 1")]
         [NUnit.Framework.CategoryAttribute("regression")]
-        [NUnit.Framework.CategoryAttribute("testcase:5")]
-        public void GetBookingByID7()
+        [NUnit.Framework.CategoryAttribute("testcase:11")]
+        public void GetCustomerByID1()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
-                    "testcase:5"};
+                    "testcase:11"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get booking by ID 7", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 19
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get customer by ID 1", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 16
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -163,33 +138,73 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 20
-    testRunner.When("I send a GET request to get booking with ID 7", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 6
+  this.FeatureBackground();
 #line hidden
-#line 21
+#line 17
+    testRunner.When("I send a GET request to get customer with ID 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 18
     testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 22
-    testRunner.And("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 19
+    testRunner.And("the response should contain the expected customer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Create a new booking")]
+        [NUnit.Framework.DescriptionAttribute("Get customer by ID 7")]
+        [NUnit.Framework.CategoryAttribute("regression")]
+        [NUnit.Framework.CategoryAttribute("testcase:12")]
+        public void GetCustomerByID7()
+        {
+            string[] tagsOfScenario = new string[] {
+                    "regression",
+                    "testcase:12"};
+            System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get customer by ID 7", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 22
+  this.ScenarioInitialize(scenarioInfo);
+#line hidden
+            if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                testRunner.SkipScenario();
+            }
+            else
+            {
+                this.ScenarioStart();
+#line 6
+  this.FeatureBackground();
+#line hidden
+#line 23
+    testRunner.When("I send a GET request to get customer with ID 7", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line hidden
+#line 24
+    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 25
+    testRunner.And("the response should contain the expected customer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line hidden
+            }
+            this.ScenarioCleanup();
+        }
+        
+        [NUnit.Framework.TestAttribute()]
+        [NUnit.Framework.DescriptionAttribute("Create a new customer")]
         [NUnit.Framework.CategoryAttribute("regression")]
         [NUnit.Framework.CategoryAttribute("database")]
-        [NUnit.Framework.CategoryAttribute("testcase:3")]
-        public void CreateANewBooking()
+        [NUnit.Framework.CategoryAttribute("testcase:13")]
+        public void CreateANewCustomer()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "database",
-                    "testcase:3"};
+                    "testcase:13"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new booking", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 25
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new customer", null, tagsOfScenario, argumentsOfScenario, featureTags);
+#line 28
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -199,26 +214,29 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-                TechTalk.SpecFlow.Table table1 = new TechTalk.SpecFlow.Table(new string[] {
+#line 6
+  this.FeatureBackground();
+#line hidden
+                TechTalk.SpecFlow.Table table2 = new TechTalk.SpecFlow.Table(new string[] {
                             "Field",
                             "Value"});
-                table1.AddRow(new string[] {
-                            "CustomerId",
-                            "7"});
-                table1.AddRow(new string[] {
-                            "RoomNumber",
-                            "1007"});
-#line 26
-    testRunner.Given("I have a new booking with the following details:", ((string)(null)), table1, "Given ");
+                table2.AddRow(new string[] {
+                            "Name",
+                            "John Smith"});
+                table2.AddRow(new string[] {
+                            "Bookings",
+                            ""});
+#line 29
+    testRunner.Given("I have a new customer with the following details:", ((string)(null)), table2, "Given ");
 #line hidden
-#line 30
-    testRunner.When("I create a new booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
+#line 33
+    testRunner.When("I create a new customer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 31
+#line 34
     testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 32
-    testRunner.And("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 35
+    testRunner.And("the response should contain the expected customer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
             this.ScenarioCleanup();

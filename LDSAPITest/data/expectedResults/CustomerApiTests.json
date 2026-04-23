@@ -1,0 +1,116 @@
+{
+"CustomerApiTests.10": {
+  "customers": [
+    {
+      "Id": 1,
+      "Name": "Alice Johnson",
+      "Bookings": [
+        {
+          "Id": 1,
+          "CustomerId": 1,
+          "RoomNumber": 101
+        }
+      ]
+    },
+    {
+      "Id": 2,
+      "Name": "Bob Smith",
+      "Bookings": [
+        {
+          "Id": 2,
+          "CustomerId": 2,
+          "RoomNumber": 202
+        }
+      ]
+    },
+    {
+      "Id": 3,
+      "Name": "Charlie Davis",
+      "Bookings": [
+        {
+          "Id": 3,
+          "CustomerId": 3,
+          "RoomNumber": 303
+        }
+      ]
+    },
+    {
+      "Id": 4,
+      "Name": "Diana Roberts",
+      "Bookings": [
+        {
+          "Id": 4,
+          "CustomerId": 4,
+          "RoomNumber": 404
+        }
+      ]
+    },
+    {
+      "Id": 5,
+      "Name": "Ethan Brown",
+      "Bookings": [
+        {
+          "Id": 5,
+          "CustomerId": 5,
+          "RoomNumber": 505
+        }
+      ]
+    },
+    {
+      "Id": 6,
+      "Name": "Fiona Clark",
+      "Bookings": [
+        {
+          "Id": 6,
+          "CustomerId": 6,
+          "RoomNumber": 606
+        }
+      ]
+    },
+    {
+      "Id": 7,
+      "Name": "George Miller",
+      "Bookings": [
+        {
+          "Id": 7,
+          "CustomerId": 7,
+          "RoomNumber": 707
+        }
+      ]
+    },
+    {
+      "Id": 8,
+      "Name": "Hannah Wilson",
+      "Bookings": [
+        {
+          "Id": 8,
+          "CustomerId": 8,
+          "RoomNumber": 808
+        }
+      ]
+    },
+    {
+      "Id": 9,
+      "Name": "Ian Thompson",
+      "Bookings": [
+        {
+          "Id": 9,
+          "CustomerId": 9,
+          "RoomNumber": 909
+        }
+      ]
+    },
+    {
+      "Id": 10,
+      "Name": "Julia Martinez",
+      "Bookings": [
+        {
+          "Id": 10,
+          "CustomerId": 10,
+          "RoomNumber": 1010
+        }
+      ]
+    }
+  ]
+}
+}

@@ -1,6 +1,5 @@
 using LDSAPITest.Utils;
 using LDSTest.Shared;
-using System.Net;
 using System.Net.Http.Json;
 using TechTalk.SpecFlow;
 
@@ -10,7 +9,6 @@ namespace LDSAPITest.StepDefinitions
     public class BookingApiSteps : BaseApiTest
     {
         private readonly ScenarioContext _scenarioContext;
-        private HttpResponseMessage _response = null!;
         private readonly ExpectedResults _expectedResults = null!;
 
         public class Booking
@@ -43,40 +41,36 @@ namespace LDSAPITest.StepDefinitions
         public async Task WhenISendAPOSTRequestToCreateTheBooking()
         {
             var booking = _scenarioContext.Get<Booking>("NewBooking");
-            _response = await PostAsync("CreateEditBooking", booking);
+            _scenarioContext["Response"] = await PostAsync("CreateEditBooking", booking);
             await new Database().ResetDatabase();
         }
 
         [When(@"I send a request to get all bookings")]
         public async Task GetAllBookings()
         {
-            _response = await GetAsync("GetAllBookings");
+            _scenarioContext["Response"] = await GetAsync("GetAllBookings");
         }
 
         [When(@"I send a GET request to get booking with ID (.*)")]
         public async Task GetBookingById(int bookingId)
         {
-            _response = await GetAsync($"GetBooking/{bookingId}");
-        }
-
-        [Then(@"the response status should be (.*)")]
-        public async Task ThenTheResponseStatusShouldBe(HttpStatusCode httpStatusCode)
-        {
-            await AssertStatusCodeAsync(_response, httpStatusCode);
+            _scenarioContext["Response"] = await GetAsync($"GetBooking/{bookingId}");
         }
 
         [Then(@"the response should contain the expected booking")]
         public async Task ThenTheResponseShouldContainASingleBooking()
         {
-            var booking = await _response.Content.ReadFromJsonAsync<Booking>();
-            VerifyResponse.Verify(new { booking = booking }, _expectedResults);
+            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
+            var booking = await response.Content.ReadFromJsonAsync<Booking>();
+            VerifyResponse.Verify(new { booking }, _expectedResults);
         }
 
         [Then(@"the response should contain the expected bookings")]
         public async Task ThenTheResponseShouldContainAListOfBookings()
         {
 
-            var list = await _response.Content.ReadFromJsonAsync<List<Booking>>();
+            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
+            var list = await response.Content.ReadFromJsonAsync<List<Booking>>();
             VerifyResponse.Verify(new { bookings = list }, _expectedResults);
         }
     }

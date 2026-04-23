@@ -3,9 +3,6 @@ Feature: BookingApiTests
   I want to manage bookings via REST API
   So that I can integrate with the hotel booking system
 
-  Background:
-    Reset the database to a known state before each scenario
-
   @smoke @testcase:1
   Scenario: Get all bookings
     When I send a request to get all bookings
