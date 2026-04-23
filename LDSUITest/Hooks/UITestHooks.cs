@@ -25,9 +25,6 @@ namespace LDSUITest.Hooks
             _featureContext = featureContext;
         }
 
-        // -------------------------
-        // BEFORE SCENARIO
-        // -------------------------
         [BeforeScenario(Order = 0)]
         public async Task BeforeScenario()
         {

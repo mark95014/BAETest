@@ -1,7 +1,5 @@
-﻿using FluentAssertions;
-using LDSTest.Shared;
+﻿using LDSTest.Shared;
 using LDSUITest.pages;
-using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
 using TechTalk.SpecFlow;
 
@@ -11,7 +9,7 @@ namespace LDSUITest.StepDefinitions
     public class BookingsSteps(ScenarioContext scenarioContext)
     {
         private readonly IPage _page = scenarioContext.Get<IPage>("Page");
-        private BookingsPage _bookingsPage = new();
+        private readonly BookingsPage _bookingsPage = new();
         private readonly ExpectedResults _expectedResults = scenarioContext.Get<ExpectedResults>("ExpectedResults");
         private readonly Results _results = scenarioContext.Get<Results>("Results");
 

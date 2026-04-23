@@ -5,7 +5,7 @@ using TestContext = NUnit.Framework.TestContext;
 
 
 
-namespace LDSUITest.utils
+namespace LDSTest.Shared
 {
     public class TestRail
     {

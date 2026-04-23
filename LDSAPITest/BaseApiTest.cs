@@ -52,12 +52,18 @@ namespace LDSAPITest
             HttpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             HttpClient.DefaultRequestHeaders.Add("User-Agent", "LDSAPITest/1.0");
 
-            // Configure authentication
             ConfigureAuthentication();
 
-            // Initialize expected results
             TestName = TestContext.CurrentContext.Test.Name;
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"]!;
+        }
+
+        [SetUp]
+        public virtual void TestCaseSetUp()
+        {
+            //Results = new Results();
+
+            // Create ExpectedResults per test, not per fixture
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
         }
