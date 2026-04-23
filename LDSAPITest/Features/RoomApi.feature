@@ -3,9 +3,6 @@ Feature: RoomApiTests
   I want to manage rooms via REST API
   So that I can integrate with the hotel booking system
 
-  Background:
-    Reset the database to a known state before each scenario
-
   @smoke @testcase:20
   Scenario: Get all rooms
     When I send a request to get all rooms

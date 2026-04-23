@@ -1,6 +1,5 @@
 using LDSAPITest.Utils;
 using LDSTest.Shared;
-using System.Net;
 using System.Net.Http.Json;
 using TechTalk.SpecFlow;
 

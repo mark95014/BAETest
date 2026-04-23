@@ -74,12 +74,6 @@ namespace LDSAPITest.Features
             testRunner.CollectScenarioErrors();
         }
         
-        public virtual void FeatureBackground()
-        {
-#line 6
-  #line hidden
-        }
-        
         [NUnit.Framework.TestAttribute()]
         [NUnit.Framework.DescriptionAttribute("Get all rooms")]
         [NUnit.Framework.CategoryAttribute("smoke")]
@@ -91,7 +85,7 @@ namespace LDSAPITest.Features
                     "testcase:20"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get all rooms", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 10
+#line 7
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -101,16 +95,13 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 6
-  this.FeatureBackground();
-#line hidden
-#line 11
+#line 8
     testRunner.When("I send a request to get all rooms", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 12
+#line 9
     testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 13
+#line 10
     testRunner.And("the response should contain the expected rooms", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -128,7 +119,7 @@ namespace LDSAPITest.Features
                     "testcase:21"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get room by number 1001", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 16
+#line 13
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -138,16 +129,13 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 6
-  this.FeatureBackground();
-#line hidden
-#line 17
+#line 14
     testRunner.When("I send a GET request to get room with number 1001", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 18
+#line 15
     testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 19
+#line 16
     testRunner.And("the response should contain the expected room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -165,7 +153,7 @@ namespace LDSAPITest.Features
                     "testcase:22"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get room by number 1007", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 22
+#line 19
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -175,16 +163,13 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 6
-  this.FeatureBackground();
-#line hidden
-#line 23
+#line 20
     testRunner.When("I send a GET request to get room with number 1007", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 24
+#line 21
     testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 25
+#line 22
     testRunner.And("the response should contain the expected room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }
@@ -204,7 +189,7 @@ namespace LDSAPITest.Features
                     "testcase:23"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new room", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 28
+#line 25
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -214,9 +199,6 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 6
-  this.FeatureBackground();
-#line hidden
                 TechTalk.SpecFlow.Table table3 = new TechTalk.SpecFlow.Table(new string[] {
                             "Field",
                             "Value"});
@@ -226,16 +208,16 @@ namespace LDSAPITest.Features
                 table3.AddRow(new string[] {
                             "Price",
                             "150"});
-#line 29
+#line 26
     testRunner.Given("I have a new room with the following details:", ((string)(null)), table3, "Given ");
 #line hidden
-#line 33
+#line 30
     testRunner.When("I create a new room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 34
+#line 31
     testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 35
+#line 32
     testRunner.And("the response should contain the expected room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
             }

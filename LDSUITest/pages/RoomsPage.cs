@@ -56,9 +56,6 @@ namespace LDSUITest.pages
                 // Wait for the table to reload
                 await WaitForPageToLoad(page);
             }
-
-            // Reset the database to ensure test isolation
-            await new Database().ResetDatabase();
         }
 
         public async Task VerifyPage(IPage page, ExpectedResults expectedResults, Results results)

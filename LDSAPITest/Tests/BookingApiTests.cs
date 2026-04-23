@@ -9,7 +9,7 @@ using System.Net.Http.Json;
 namespace LDSAPITest.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.Self)]
+    [Parallelizable(ParallelScope.None)]
 
     public class BookingApiTests : BaseApiTest
     {

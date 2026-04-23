@@ -3,9 +3,6 @@ Feature: CustomerApiTests
   I want to manage customers via REST API
   So that I can integrate with the hotel booking system
 
-  Background:
-    Reset the database to a known state before each scenario
-
   @smoke @testcase:10
   Scenario: Get all customers
     When I send a request to get all customers
