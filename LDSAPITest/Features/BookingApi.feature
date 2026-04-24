@@ -30,3 +30,4 @@ Feature: BookingApiTests
     When I create a new booking
     Then the response status should be OK
     And the response should contain the expected booking
+    Then I reset the database to its initial state

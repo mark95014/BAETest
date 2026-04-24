@@ -220,6 +220,9 @@ namespace LDSAPITest.Features
 #line 32
     testRunner.And("the response should contain the expected customer", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
+#line 33
+    testRunner.Then("I reset the database to its initial state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

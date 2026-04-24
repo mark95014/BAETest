@@ -83,10 +83,7 @@ namespace LDSUITest.Features
 #line 7
 #line hidden
 #line 8
-    testRunner.Given("the browser is initialized", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
-#line hidden
-#line 9
-    testRunner.And("I navigate to the rooms page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.Given("I navigate to the rooms page", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Given ");
 #line hidden
         }
         
@@ -101,7 +98,7 @@ namespace LDSUITest.Features
                     "testcase:1"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Verify all data on Rooms page", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 12
+#line 11
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -114,7 +111,7 @@ this.ScenarioInitialize(scenarioInfo);
 #line 7
 this.FeatureBackground();
 #line hidden
-#line 13
+#line 12
     testRunner.Then("the rooms table should contain the expected data", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
@@ -132,7 +129,7 @@ this.FeatureBackground();
                     "testcase:2"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Edit multiple room prices", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 16
+#line 15
 this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -157,10 +154,10 @@ this.FeatureBackground();
                 table1.AddRow(new string[] {
                             "105",
                             "175"});
-#line 17
+#line 16
     testRunner.When("I edit the following rooms:", ((string)(null)), table1, "When ");
 #line hidden
-#line 22
+#line 21
     testRunner.Then("the rooms table should contain the expected data", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }

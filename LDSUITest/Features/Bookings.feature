@@ -5,8 +5,7 @@ Feature: BookingsPageTest
   So that I can manage customer reservations effectively
 
 Background:
-  Given the browser is initialized
-  And I navigate to the bookings page
+  Given I navigate to the bookings page
 
 @regression @testcase:1
 Scenario: Verify all data on Bookings page

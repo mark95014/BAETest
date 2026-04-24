@@ -86,7 +86,6 @@ namespace LDSUITest.tests.regression
             // Verify the entire table after all edits
             await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
 
-            // Reset the database to ensure test isolation
             await new Database().ResetDatabase();
         }
     }

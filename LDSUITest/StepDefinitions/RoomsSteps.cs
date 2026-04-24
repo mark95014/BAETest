@@ -32,7 +32,6 @@ namespace LDSUITest.StepDefinitions
         {
             var rooms = table.CreateSet<Room>().ToList();
             await _roomsPage.EditRoomPrices(_page, rooms, _expectedResults, _results);
-
             await new Database().ResetDatabase();
         }
     }

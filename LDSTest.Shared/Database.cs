@@ -2,7 +2,6 @@
 using Microsoft.Data.SqlClient;
 using TestContext = NUnit.Framework.TestContext;
 using NUnit.Framework;
-using NUnit.Framework.Internal;
 using LDSTest.Shared.utils;
 
 namespace LDSTest.Shared

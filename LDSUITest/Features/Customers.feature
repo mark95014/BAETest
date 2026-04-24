@@ -5,8 +5,7 @@ Feature: CustomersPageTest
     So that I can manage customer data effectively
 
 Background:
-    Given the browser is initialized
-    And I navigate to the customers page
+    Given I navigate to the customers page
 
 @testcase:1
 Scenario: Verify all data on Customers page

@@ -40,7 +40,6 @@ namespace LDSAPITest.StepDefinitions
         {
             var room = _scenarioContext.Get<Room>("NewRoom");
             _scenarioContext["Response"] = await PostAsync("CreateEditRoom", room);
-            await new Database().ResetDatabase();
         }
 
         [When(@"I send a request to get all rooms")]

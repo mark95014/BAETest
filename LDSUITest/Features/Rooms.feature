@@ -5,8 +5,7 @@ Feature: RoomsPageTest
     So that I can maintain accurate room data and pricing
 
 Background:
-    Given the browser is initialized
-    And I navigate to the rooms page
+    Given I navigate to the rooms page
 
 @regression @testcase:1
 Scenario: Verify all data on Rooms page
@@ -20,3 +19,4 @@ Scenario: Edit multiple room prices
         | 103        | 200   |
         | 105        | 175   |
     Then the rooms table should contain the expected data
+    #Then I reset the database to its initial state

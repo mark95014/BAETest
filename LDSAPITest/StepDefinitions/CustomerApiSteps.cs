@@ -50,7 +50,6 @@ namespace LDSAPITest.StepDefinitions
         {
             var customer = _scenarioContext.Get<Customer>("NewCustomer");
             _scenarioContext["Response"] = await PostAsync("CreateEditCustomer", customer);
-            await new Database().ResetDatabase();
         }
 
         [When(@"I send a request to get all customers")]

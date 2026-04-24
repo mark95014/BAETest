@@ -1,4 +1,5 @@
 using FluentAssertions;
+using LDSTest.Shared;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
@@ -22,6 +23,12 @@ namespace LDSUITest.StepDefinitions
             // This step is just for clarity in the feature file
             var page = _scenarioContext.Get<IPage>("Page");
             page.Should().NotBeNull("Browser should be initialized");
+        }
+
+        [Then(@"I reset the database to its initial state")]
+        public static async Task ResetTheDatabase()
+        {
+            await new Database().ResetDatabase();
         }
     }
 }

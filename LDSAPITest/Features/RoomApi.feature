@@ -30,3 +30,4 @@ Feature: RoomApiTests
     When I create a new room
     Then the response status should be OK
     And the response should contain the expected room
+    Then I reset the database to its initial state

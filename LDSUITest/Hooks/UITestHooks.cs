@@ -1,5 +1,4 @@
 ﻿using LDSTest.Shared;
-using LDSUITest.utils;
 using Microsoft.Playwright;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
@@ -25,6 +24,18 @@ namespace LDSUITest.Hooks
             _featureContext = featureContext;
         }
 
+        [BeforeFeature]
+        public static async Task BeforeFeature(FeatureContext featureContext)
+        {
+            await new Database().ResetDatabase();
+        }
+
+        [AfterFeature]
+        public static async Task AfterFeature(FeatureContext featureContext)
+        {
+            await new Database().ResetDatabase();
+        }
+
         [BeforeScenario(Order = 0)]
         public async Task BeforeScenario()
         {
@@ -45,9 +56,6 @@ namespace LDSUITest.Hooks
             }
         }
 
-        // -------------------------
-        // AFTER SCENARIO
-        // -------------------------
         [AfterScenario(Order = 100)]
         public async Task AfterScenario()
         {

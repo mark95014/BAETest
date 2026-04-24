@@ -42,7 +42,6 @@ namespace LDSAPITest.StepDefinitions
         {
             var booking = _scenarioContext.Get<Booking>("NewBooking");
             _scenarioContext["Response"] = await PostAsync("CreateEditBooking", booking);
-            await new Database().ResetDatabase();
         }
 
         [When(@"I send a request to get all bookings")]
