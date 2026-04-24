@@ -20,6 +20,15 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LDSTest.Shared", "LDSTest.Shared\LDSTest.Shared.csproj", "{7FEB53E0-F312-48F4-BB6F-9DDEC2615134}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SQL", "SQL", "{C085D8EA-8555-4BDE-93E4-2B4E0051992C}"
+	ProjectSection(SolutionItems) = preProject
+		..\HotelBooking\database\Booking_delete_all.sql = ..\HotelBooking\database\Booking_delete_all.sql
+		..\HotelBooking\database\Insert_Bookings.sql = ..\HotelBooking\database\Insert_Bookings.sql
+		..\HotelBooking\database\Insert_Customers.sql = ..\HotelBooking\database\Insert_Customers.sql
+		..\HotelBooking\database\Insert_Rooms.sql = ..\HotelBooking\database\Insert_Rooms.sql
+		..\HotelBooking\database\Reset_Database.sql = ..\HotelBooking\database\Reset_Database.sql
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -41,6 +50,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{C085D8EA-8555-4BDE-93E4-2B4E0051992C} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B793C9A-125C-4E16-A1F6-2D470DB2FC7E}
