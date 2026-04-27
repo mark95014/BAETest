@@ -90,13 +90,15 @@ namespace LDSAPITest.Tests
         public async Task CreateRoom_WithValidData_ShouldReturnCreatedRoom(int testCaseId, Room roomData)
         {
             var response = await PostAsync("CreateEditRoom", roomData);
-
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
 
-            var createdRoom = await response.Content.ReadFromJsonAsync<Room>();
-            VerifyResponse.Verify(new { room = createdRoom! }, ExpectedResults);
+            response = await GetAsync("GetAllRooms");
+            var rooms = await response.Content.ReadFromJsonAsync<List<Room>>();
+            VerifyResponse.Verify(new { rooms = rooms! }, ExpectedResults);
 
-            await new Database().ResetDatabase();
+            var room = rooms!.Find(b => b.RoomNumber == roomData.RoomNumber && b.RoomNumber == roomData.RoomNumber);
+            response = await DeleteAsync($"DeleteRoom/{room!.RoomNumber}");
+            await BaseApiTest.EnsureSuccessStatusCodeAsync(response);
         }
     }
 }

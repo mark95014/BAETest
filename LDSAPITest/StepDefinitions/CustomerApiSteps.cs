@@ -1,3 +1,4 @@
+using Azure;
 using LDSAPITest.Utils;
 using LDSTest.Shared;
 using System.Net;
@@ -42,42 +43,62 @@ namespace LDSAPITest.StepDefinitions
                 Name = table.Rows[0]["Value"],
                 Bookings = []
             };
-            _scenarioContext.Add("NewCustomer", customer);
+            _scenarioContext.Add("Customer", customer);
         }
 
         [When(@"I create a new customer")]
-        public async Task WhenICreateANewCustomer()
+        public async Task CreateANewCustomer()
         {
-            var customer = _scenarioContext.Get<Customer>("NewCustomer");
-            _scenarioContext["Response"] = await PostAsync("CreateEditCustomer", customer);
+            var customer = _scenarioContext.Get<Customer>("Customer");
+            var response = await PostAsync("CreateEditCustomer", customer);
+            customer = await response.Content.ReadFromJsonAsync<Customer>();
+            await BaseApiTest.EnsureSuccessStatusCodeAsync(response);
+            _scenarioContext["Customer"] = customer; // Update the customer with the ID returned from the API
         }
 
+        [Then(@"I delete the customer just created")]
+        public async Task DeleteTheCustomerJustCreated()
+        {
+            var customer = _scenarioContext.Get<Customer>("Customer");
+            var response = await DeleteAsync($"DeleteCustomer/{customer!.Id}");
+            await BaseApiTest.EnsureSuccessStatusCodeAsync(response);
+        }
+            
         [When(@"I send a request to get all customers")]
         public async Task GetAllCustomers()
         {
-            _scenarioContext["Response"] = await GetAsync("GetAllCustomers");
+            var response = await GetAsync("GetAllCustomers");
+            await AssertStatusCodeAsync(response, HttpStatusCode.OK);
+            _scenarioContext["Response"] = response;
         }
 
-        [When(@"I send a GET request to get customer with ID (.*)")]
+        [When(@"I send a request to get customer with ID (.*)")]
         public async Task GetCustomerById(int customerId)
         {
-            _scenarioContext["Response"] = await GetAsync($"GetCustomer/{customerId}");
+            var response = await GetAsync($"GetCustomer/{customerId}");
+            _scenarioContext["Response"] = response;
+            _scenarioContext["Customer"] = await response.Content.ReadFromJsonAsync<Customer>();
         }
 
         [Then(@"the response should contain the expected customer")]
-        public async Task ThenTheResponseShouldContainASingleCustomer()
+        public void VerifyCustomer()
         {
-            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
-            var customer = await response.Content.ReadFromJsonAsync<Customer>();
+            var customer = _scenarioContext.Get<Customer>("Customer");
             VerifyResponse.Verify(new { customer }, _expectedResults);
         }
 
         [Then(@"the response should contain the expected customers")]
-        public async Task ThenTheResponseShouldContainAListOfCustomers()
+        public async Task VerifyListOfCustomers()
         {
             var response = _scenarioContext.Get<HttpResponseMessage>("Response");
             var list = await response.Content.ReadFromJsonAsync<List<Customer>>();
             VerifyResponse.Verify(new { customers = list }, _expectedResults);
+        }
+
+        [Then(@"the response should contain the expected customers plus the new customer")]
+        public async Task VerifyModifiedList()
+        {
+            await VerifyListOfCustomers();
         }
     }
 }

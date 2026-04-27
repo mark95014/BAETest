@@ -57,8 +57,6 @@ namespace LDSTest.Shared
             {
                 Assert.Fail($"Failed to reset database: {ex.Message}");
             }
-
-            await Task.Delay(5000);
         }
 
 
@@ -154,7 +152,6 @@ namespace LDSTest.Shared
                     TestContext.Progress.WriteLine($"Jobs count = {jobCount}");
                 }
 
-                Thread.Sleep(10000);
                 loopCount++;
             }
         }

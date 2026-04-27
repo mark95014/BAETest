@@ -99,10 +99,7 @@ namespace LDSAPITest.Features
     testRunner.When("I send a request to get all bookings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
 #line 9
-    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 10
-    testRunner.And("the response should contain the expected bookings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+    testRunner.Then("the response should contain the expected list of bookings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -119,7 +116,7 @@ namespace LDSAPITest.Features
                     "testcase:2"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get booking by ID 1", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 13
+#line 12
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -129,14 +126,11 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 14
+#line 13
     testRunner.When("I send a GET request to get booking with ID 1", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 15
-    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 16
-    testRunner.And("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 14
+    testRunner.Then("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -153,7 +147,7 @@ namespace LDSAPITest.Features
                     "testcase:5"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Get booking by ID 7", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 19
+#line 17
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -163,14 +157,11 @@ namespace LDSAPITest.Features
             else
             {
                 this.ScenarioStart();
-#line 20
+#line 18
     testRunner.When("I send a GET request to get booking with ID 7", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 21
-    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
-#line hidden
-#line 22
-    testRunner.And("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 19
+    testRunner.Then("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();
@@ -189,7 +180,7 @@ namespace LDSAPITest.Features
                     "testcase:3"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
             TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new booking", null, tagsOfScenario, argumentsOfScenario, featureTags);
-#line 25
+#line 22
   this.ScenarioInitialize(scenarioInfo);
 #line hidden
             if ((TagHelper.ContainsIgnoreTag(tagsOfScenario) || TagHelper.ContainsIgnoreTag(featureTags)))
@@ -208,20 +199,20 @@ namespace LDSAPITest.Features
                 table1.AddRow(new string[] {
                             "RoomNumber",
                             "1007"});
-#line 26
+#line 23
     testRunner.Given("I have a new booking with the following details:", ((string)(null)), table1, "Given ");
 #line hidden
-#line 30
+#line 27
     testRunner.When("I create a new booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 31
-    testRunner.Then("the response status should be OK", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 28
+    testRunner.When("I send a request to get all bookings", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "When ");
 #line hidden
-#line 32
-    testRunner.And("the response should contain the expected booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
+#line 29
+    testRunner.Then("the response should contain the original list of bookings plus the new booking", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
-#line 33
-    testRunner.Then("I reset the database to its initial state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line 30
+    testRunner.Then("I delete the booking just created", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

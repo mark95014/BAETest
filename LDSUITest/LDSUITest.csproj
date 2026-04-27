@@ -65,6 +65,7 @@
   <ItemGroup>
     <!-- Shared Test Utilities -->
     <ProjectReference Include="..\LDSTest.Shared\LDSTest.Shared.csproj" />
+	<ProjectReference Include="..\LDSAPITest\LDSAPITest.csproj" />
   </ItemGroup>
 
 </Project>

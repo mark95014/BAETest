@@ -1,4 +1,3 @@
-using LDSTest.Shared;
 using System.Net;
 using TechTalk.SpecFlow;
 
@@ -16,10 +15,11 @@ namespace LDSAPITest.StepDefinitions
             await BaseApiTest.AssertStatusCodeAsync(response, httpStatusCode);
         }
 
-        [Then(@"I reset the database to its initial state")]
-        public static async Task ResetTheDatabase()
+        [Then(@"the response status should be successful")]
+        public async Task ThenTheResponseStatusShouldBeSuccessful()
         {
-            await new Database().ResetDatabase();
+            var response = _scenarioContext.Get<HttpResponseMessage>("Response");
+            await BaseApiTest.EnsureSuccessStatusCodeAsync(response);
         }
     }
 }

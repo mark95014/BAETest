@@ -6,20 +6,17 @@ Feature: CustomerApiTests
   @smoke @testcase:10
   Scenario: Get all customers
     When I send a request to get all customers
-    Then the response status should be OK
-    And the response should contain the expected customers
+    Then the response should contain the expected customers
 
   @regression @testcase:11
   Scenario: Get customer by ID 1
-    When I send a GET request to get customer with ID 1
-    Then the response status should be OK
-    And the response should contain the expected customer
+    When I send a request to get customer with ID 1
+    Then the response should contain the expected customer
 
   @regression @testcase:12
   Scenario: Get customer by ID 7
-    When I send a GET request to get customer with ID 7
-    Then the response status should be OK
-    And the response should contain the expected customer
+    When I send a request to get customer with ID 7
+    Then the response should contain the expected customer
 
   @regression @database @testcase:13
   Scenario: Create a new customer
@@ -28,6 +25,6 @@ Feature: CustomerApiTests
       | Name  | John Smith |
       | Bookings | |
     When I create a new customer
-    Then the response status should be OK
-    And the response should contain the expected customer
-    Then I reset the database to its initial state
+    When I send a request to get all customers
+    Then the response should contain the expected customers plus the new customer
+    Then I delete the customer just created

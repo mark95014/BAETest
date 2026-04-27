@@ -14,6 +14,7 @@ namespace LDSAPITest
     public abstract class BaseApiTest
     {
         public required ExpectedResults ExpectedResults;
+        public required Results Results;
         public required string TestName;
 
         // Implement in the future. public Results Results { get; } = new Results();
@@ -55,22 +56,24 @@ namespace LDSAPITest
             ConfigureAuthentication();
 
             TestName = TestContext.CurrentContext.Test.Name;
+
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults.Init();
+
+            //new Database().ResetDatabase().GetAwaiter().GetResult();  manually reset the database
         }
 
         [SetUp]
         public virtual void TestCaseSetUp()
         {
-            //Results = new Results();
-
-            // Create ExpectedResults per test, not per fixture
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
-            ExpectedResults.Init();
+            Results = new Results();
         }
 
         [OneTimeTearDown]
         public virtual void BaseOneTimeTearDown()
         {
+            //new Database().ResetDatabase().GetAwaiter().GetResult();
             ExpectedResults.Close();
             HttpClient?.Dispose();
             LogInfo("=== API Test Teardown Complete ===");

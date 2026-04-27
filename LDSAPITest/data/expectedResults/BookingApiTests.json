@@ -1,10 +1,62 @@
 {
 "BookingApiTests.3": {
-  "booking": {
-    "Id": 0,
-    "CustomerId": 7,
-    "RoomNumber": 1007
-  }
+  "bookings": [
+    {
+      "Id": 1,
+      "CustomerId": 1,
+      "RoomNumber": 101
+    },
+    {
+      "Id": 2,
+      "CustomerId": 2,
+      "RoomNumber": 202
+    },
+    {
+      "Id": 3,
+      "CustomerId": 3,
+      "RoomNumber": 303
+    },
+    {
+      "Id": 4,
+      "CustomerId": 4,
+      "RoomNumber": 404
+    },
+    {
+      "Id": 5,
+      "CustomerId": 5,
+      "RoomNumber": 505
+    },
+    {
+      "Id": 6,
+      "CustomerId": 6,
+      "RoomNumber": 606
+    },
+    {
+      "Id": 7,
+      "CustomerId": 7,
+      "RoomNumber": 707
+    },
+    {
+      "Id": 8,
+      "CustomerId": 8,
+      "RoomNumber": 808
+    },
+    {
+      "Id": 9,
+      "CustomerId": 9,
+      "RoomNumber": 909
+    },
+    {
+      "Id": 10,
+      "CustomerId": 10,
+      "RoomNumber": 1010
+    },
+    {
+      "Id": 11,
+      "CustomerId": 7,
+      "RoomNumber": 1007
+    }
+  ]
 },
 "BookingApiTests.1": {
   "bookings": [

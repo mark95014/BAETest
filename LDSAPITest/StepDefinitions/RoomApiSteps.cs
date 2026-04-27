@@ -42,6 +42,13 @@ namespace LDSAPITest.StepDefinitions
             _scenarioContext["Response"] = await PostAsync("CreateEditRoom", room);
         }
 
+        [Then(@"I delete the room I just created to reset the database to its initial state")]
+        public async Task DeleteTheRoomJustCreated()
+        {
+            var room = _scenarioContext.Get<Room>("NewRoom");
+            _scenarioContext["Response"] = await DeleteAsync($"DeleteRoom/{room.RoomNumber}");
+        }
+
         [When(@"I send a request to get all rooms")]
         public async Task GetAllRooms()
         {

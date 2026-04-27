@@ -221,7 +221,10 @@ namespace LDSAPITest.Features
     testRunner.And("the response should contain the expected room", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "And ");
 #line hidden
 #line 33
-    testRunner.Then("I reset the database to its initial state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+    testRunner.Then("I delete the room I just created to reset the database to its initial state", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
+#line 34
+    testRunner.Then("the response status should be successful", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
             }
             this.ScenarioCleanup();

@@ -69,7 +69,7 @@ namespace LDSAPITest.Tests
 
         [Test]
         [TestCaseSource(nameof(GetAllBookingsTestCases))]
-        public async Task GetAllBookings_ShouldReturnListOfBookings(int testCaseId)
+        public async Task GetAllBookings(int testCaseId)
         {
             var response = await GetAsync("GetAllBookings");
 
@@ -101,13 +101,15 @@ namespace LDSAPITest.Tests
         public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId, Booking bookingData)
         {
             var response = await PostAsync("CreateEditBooking", bookingData);
-
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
-        
-            var createdBooking = await response.Content.ReadFromJsonAsync<Booking>();
-            VerifyResponse.Verify(new { booking = createdBooking! }, ExpectedResults);
 
-            await new Database().ResetDatabase();
+            response = await GetAsync("GetAllBookings");
+            var bookings = await response.Content.ReadFromJsonAsync<List<Booking>>();
+            VerifyResponse.Verify(new { bookings = bookings! }, ExpectedResults);
+
+            var booking = bookings!.Find(b => b.CustomerId == bookingData.CustomerId && b.RoomNumber == bookingData.RoomNumber);
+            response = await DeleteAsync($"DeleteBooking/{booking!.Id}");
+            await BaseApiTest.EnsureSuccessStatusCodeAsync(response);
         }
     }
 }

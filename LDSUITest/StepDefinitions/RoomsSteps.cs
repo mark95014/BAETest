@@ -1,6 +1,9 @@
+using LDSAPITest;
+using LDSAPITest.Tests;
 using LDSTest.Shared;
 using LDSUITest.pages;
 using Microsoft.Playwright;
+using System.Net;
 using TechTalk.SpecFlow;
 using TechTalk.SpecFlow.Assist;
 using static LDSUITest.pages.RoomsPage;
@@ -32,7 +35,6 @@ namespace LDSUITest.StepDefinitions
         {
             var rooms = table.CreateSet<Room>().ToList();
             await _roomsPage.EditRoomPrices(_page, rooms, _expectedResults, _results);
-            await new Database().ResetDatabase();
         }
     }
 }

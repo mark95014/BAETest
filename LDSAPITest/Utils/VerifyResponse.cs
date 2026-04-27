@@ -8,9 +8,7 @@ namespace LDSAPITest.Utils
     {
         public static void Verify(object response, ExpectedResults expectedResults)
         {
-            //var full = TestContext.CurrentContext.Test.ClassName;
-            //var className = System.IO.Path.GetFileNameWithoutExtension(full);
-            //var testName = TestContext.CurrentContext.Test.Name;
+            
 
             string dataLabel = expectedResults.MakeDataLabel(expectedResults.TestName);
             JObject responseObject = JObject.FromObject(response);

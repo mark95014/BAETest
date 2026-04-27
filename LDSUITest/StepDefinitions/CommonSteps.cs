@@ -1,7 +1,6 @@
 using FluentAssertions;
 using LDSTest.Shared;
 using Microsoft.Playwright;
-using NUnit.Framework;
 using TechTalk.SpecFlow;
 
 namespace LDSUITest.StepDefinitions
