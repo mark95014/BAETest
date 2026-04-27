@@ -71,7 +71,6 @@ namespace LDSAPITest
         [OneTimeTearDown]
         public virtual void BaseOneTimeTearDown()
         {
-            //new Database().ResetDatabase().GetAwaiter().GetResult();
             ExpectedResults.Close();
             HttpClient?.Dispose();
             LogInfo("=== API Test Teardown Complete ===");

@@ -51,6 +51,7 @@ namespace LDSTest.Shared
                     await insertBookingsCmd.ExecuteNonQueryAsync();
                 }
 
+                Thread.Sleep(5000); // Small delay to ensure all SQL commands are fully processed before tests start
                 TestContext.WriteLine("Database reset successfully");
             }
             catch (Exception ex)
