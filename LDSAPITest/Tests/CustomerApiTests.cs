@@ -99,13 +99,15 @@ namespace LDSAPITest.Tests
         public async Task CreateCustomer_WithValidData_ShouldReturnCreatedCustomer(int testCaseId, Customer customerData)
         {
             var response = await PostAsync("CreateEditCustomer", customerData);
-
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
 
-            var createdCustomer = await response.Content.ReadFromJsonAsync<Customer>();
-            VerifyResponse.Verify(new { customer = createdCustomer! }, ExpectedResults);
-
-            await new Database().ResetDatabase();
+            response = await GetAsync("GetAllCustomers");
+            var customers = await response.Content.ReadFromJsonAsync<List<Customer>>();
+            VerifyResponse.Verify(new { customers = customers! }, ExpectedResults);
+    
+            var createdCustomer = customers!.Find(c => c.Name == customerData.Name);
+            response = await DeleteAsync($"DeleteCustomer/{createdCustomer!.Id}");
+            await BaseApiTest.EnsureSuccessStatusCodeAsync(response);
         }
     }
 }

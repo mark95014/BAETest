@@ -60,8 +60,6 @@ namespace LDSAPITest
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
-
-            //new Database().ResetDatabase().GetAwaiter().GetResult();  manually reset the database
         }
 
         [SetUp]
