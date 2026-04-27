@@ -1,4 +1,3 @@
-Feature: RoomApiTests
   As an API client
   I want to manage rooms via REST API
   So that I can integrate with the hotel booking system
@@ -6,7 +5,7 @@ Feature: RoomApiTests
   @smoke @testcase:20
   Scenario: Get all rooms
     When I send a request to get all rooms
-    Then the response should contain the expected rooms
+    Then the response should contain the expected list of rooms
 
   @regression @testcase:21
   Scenario: Get room by number 1001
