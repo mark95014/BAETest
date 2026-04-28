@@ -100,6 +100,10 @@ namespace LDSAPITest.Tests
         [TestCaseSource(nameof(CreateBookingTestCases))]
         public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId, Booking bookingData)
         {
+            // This is necessary because the expected results for this test case reference a specific booking ID, which is generated when the booking is created.
+            await new Database().ResetDatabase();
+            Thread.Sleep(1000); // Wait for the database reset to complete
+
             var response = await PostAsync("CreateEditBooking", bookingData);
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);
 
