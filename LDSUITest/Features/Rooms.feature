@@ -19,3 +19,4 @@ Scenario: Edit multiple room prices
         | 103        | 200   |
         | 105        | 175   |
     Then the rooms table should contain the expected data
+    Then I restore the original prices

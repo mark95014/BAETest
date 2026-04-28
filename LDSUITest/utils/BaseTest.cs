@@ -31,7 +31,6 @@ namespace LDSUITest.utils
 
         public BaseTest()
         {
-            //Page = null!; // Will be properly initialized in TestCaseSetUp
         }
 
         [OneTimeSetUp]

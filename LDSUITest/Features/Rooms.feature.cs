@@ -160,6 +160,9 @@ this.FeatureBackground();
 #line 21
     testRunner.Then("the rooms table should contain the expected data", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
 #line hidden
+#line 22
+    testRunner.Then("I restore the original prices", ((string)(null)), ((TechTalk.SpecFlow.Table)(null)), "Then ");
+#line hidden
             }
             this.ScenarioCleanup();
         }

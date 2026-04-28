@@ -1,12 +1,11 @@
-using Azure;
 using LDSTest.Shared;
-using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using Microsoft.Playwright;
+using static Microsoft.Playwright.Assertions;
 
 namespace LDSUITest.pages
 {
-    internal class RoomsPage : BasePage
+    public class RoomsPage : BasePage
     {
         protected override string RelativePath => "/rooms";
 
@@ -21,12 +20,16 @@ namespace LDSUITest.pages
             internal const string pageTitle = "h1:has-text('All Rooms')";
             internal const string roomsTable = "[id='roomsTable']";
             internal const string nextPageButton = "[id='btnNext']";
+            internal const string priceInput = "[id='price']";
+            internal const string saveButton = ".btn-save";
         }
 
         // Pre-initialized locators
         private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
         private static ILocator RoomsTable(IPage page) => page.Locator(Selectors.roomsTable);
         private static ILocator NextPageButton(IPage page) => page.Locator(Selectors.nextPageButton);
+        private static ILocator PriceInput(IPage page) => page.Locator(Selectors.priceInput);
+        private static ILocator SaveButton(IPage page) => page.Locator(Selectors.saveButton);
 
         public override async Task WaitForPageToLoad(IPage page)
         {
@@ -37,7 +40,7 @@ namespace LDSUITest.pages
             Thread.Sleep(500); // Additional wait to ensure all dynamic content is fully loaded and interactive
         }
 
-        public async Task EditRoomPrices(IPage page, List<Room> rooms, ExpectedResults expectedResults, Results results)
+        public async Task EditRoomPrices(IPage page, List<Room> rooms)
         {
             foreach (var room in rooms)
             {
@@ -50,8 +53,11 @@ namespace LDSUITest.pages
                 await row.ClickAsync();
 
                 // Edit the price
-                await page.Locator("[id='price']").FillAsync(newPrice);
-                await page.Locator(".btn-save").ClickAsync();
+                // Clear may execute before the price loads, so we wait for the input to have a value before clearing it
+                await Expect(PriceInput(page)).Not.ToHaveValueAsync("");
+                await PriceInput(page).ClearAsync();
+                await PriceInput(page).FillAsync(newPrice);
+                await SaveButton(page).ClickAsync();
 
                 // Wait for the table to reload
                 await WaitForPageToLoad(page);

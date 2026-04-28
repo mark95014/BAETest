@@ -1,3 +1,4 @@
+using Azure;
 using LDSAPITest;
 using LDSAPITest.Tests;
 using LDSTest.Shared;
@@ -28,13 +29,29 @@ namespace LDSUITest.StepDefinitions
         public async Task ThenTheRoomsTableShouldContainTheExpectedData()
         {
             await _roomsPage.VerifyPage(_page, _expectedResults, _results);
+            await GivenINavigateToTheRoomsPage();
         }
 
         [When(@"I edit the following rooms:")]
         public async Task WhenIEditTheFollowingRooms(Table table)
         {
             var rooms = table.CreateSet<Room>().ToList();
-            await _roomsPage.EditRoomPrices(_page, rooms, _expectedResults, _results);
+            await _roomsPage.EditRoomPrices(_page, rooms);
+            await GivenINavigateToTheRoomsPage();
+        }
+
+        [Then(@"I restore the original prices")]
+        public async Task ThenIRestoreTheOriginalPrices()
+        {
+            var originalRooms = new List<RoomsPage.Room>
+                {
+                    new() { RoomNumber = 101, Price = 75 },
+                    new() { RoomNumber = 103, Price = 78 },
+                    new() { RoomNumber = 105, Price = 85 }
+                };
+
+            await _roomsPage.EditRoomPrices(_page, originalRooms); // Revert changes to original values
+            await GivenINavigateToTheRoomsPage();
         }
     }
 }

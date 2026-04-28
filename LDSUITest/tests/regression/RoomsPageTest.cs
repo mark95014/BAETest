@@ -1,4 +1,3 @@
-using LDSTest.Shared;
 using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
@@ -16,13 +15,6 @@ namespace LDSUITest.tests.regression
     {
         private RoomsPage _roomsPage = null!;
 
-        // Test data model
-        public class Room
-        {
-            public int RoomNumber { get; set; }
-            public int Price { get; set; }
-        }
-
         // Test data source for VerifyRoomsPage
         private static IEnumerable VerifyRoomsPageTestCases
         {
@@ -38,7 +30,7 @@ namespace LDSUITest.tests.regression
         {
             get
             {
-                yield return new TestCaseData(2, new List<Room>
+                yield return new TestCaseData(2, new List<RoomsPage.Room>
                 {
                     new() { RoomNumber = 101, Price = 150 },
                     new() { RoomNumber = 103, Price = 200 },
@@ -63,30 +55,24 @@ namespace LDSUITest.tests.regression
 
         [NonParallelizable]
         [TestCaseSource(nameof(VerifyEditRoomFunctionalityTestCases))]
-        public async Task VerifyEditRoomFunctionality(int testCaseId, List<Room> rooms)
+        public async Task VerifyEditRoomFunctionality(int testCaseId, List<RoomsPage.Room> rooms)
         {
-            foreach (var room in rooms)
-            {
-                // Use the properties directly
-                string roomNumber = room.RoomNumber.ToString();
-                string newPrice = room.Price.ToString();
-
-                // Find the row with the matching room number in the specific column
-                var row = Page.Locator($"[id='roomsTable'] tbody tr:has(td:nth-child(1):text-is('{roomNumber}'))");
-                await row.ClickAsync();
-
-                // Edit the price
-                await Page.Locator("[id='price']").FillAsync(newPrice);
-                await Page.Locator(".btn-save").ClickAsync();
-
-                // Wait for the table to reload
-                await _roomsPage.WaitForPageToLoad(Page);
-            }
+            RoomsPage roomsPage = new RoomsPage();
+            await roomsPage.EditRoomPrices(Page, rooms);
 
             // Verify the entire table after all edits
             await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
 
-            await new Database().ResetDatabase();
+            await roomsPage.GoTo(Page);
+
+            var originalRooms = new List<RoomsPage.Room>
+                {
+                    new() { RoomNumber = 101, Price = 75 },
+                    new() { RoomNumber = 103, Price = 78 },
+                    new() { RoomNumber = 105, Price = 85 }
+                };
+
+            await roomsPage.EditRoomPrices(Page, originalRooms); // Revert changes to original values
         }
     }
 }

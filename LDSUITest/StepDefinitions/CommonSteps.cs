@@ -23,11 +23,5 @@ namespace LDSUITest.StepDefinitions
             var page = _scenarioContext.Get<IPage>("Page");
             page.Should().NotBeNull("Browser should be initialized");
         }
-
-        [Then(@"I reset the database to its initial state")]
-        public static async Task ResetTheDatabase()
-        {
-            await new Database().ResetDatabase();
-        }
     }
 }
