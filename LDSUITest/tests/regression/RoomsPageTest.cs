@@ -26,7 +26,7 @@ namespace LDSUITest.tests.regression
         }
 
         // Test data source for VerifyEditRoomFunctionality
-        private static IEnumerable VerifyEditRoomFunctionalityTestCases
+        private static IEnumerable EditRoomTestCases
         {
             get
             {
@@ -54,8 +54,8 @@ namespace LDSUITest.tests.regression
         }
 
         [NonParallelizable]
-        [TestCaseSource(nameof(VerifyEditRoomFunctionalityTestCases))]
-        public async Task VerifyEditRoomFunctionality(int testCaseId, List<RoomsPage.Room> rooms)
+        [TestCaseSource(nameof(EditRoomTestCases))]
+        public async Task EditRoom(int testCaseId, List<RoomsPage.Room> rooms)
         {
             RoomsPage roomsPage = new RoomsPage();
             await roomsPage.EditRoomPrices(Page, rooms);

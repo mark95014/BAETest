@@ -168,18 +168,18 @@ namespace LDSAPITest.Features
         }
         
         [NUnit.Framework.TestAttribute()]
-        [NUnit.Framework.DescriptionAttribute("Create a new room")]
+        [NUnit.Framework.DescriptionAttribute("Create room")]
         [NUnit.Framework.CategoryAttribute("regression")]
         [NUnit.Framework.CategoryAttribute("database")]
         [NUnit.Framework.CategoryAttribute("testcase:23")]
-        public void CreateANewRoom()
+        public void CreateRoom()
         {
             string[] tagsOfScenario = new string[] {
                     "regression",
                     "database",
                     "testcase:23"};
             System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new System.Collections.Specialized.OrderedDictionary();
-            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create a new room", null, tagsOfScenario, argumentsOfScenario, featureTags);
+            TechTalk.SpecFlow.ScenarioInfo scenarioInfo = new TechTalk.SpecFlow.ScenarioInfo("Create room", null, tagsOfScenario, argumentsOfScenario, featureTags);
 #line 22
   this.ScenarioInitialize(scenarioInfo);
 #line hidden

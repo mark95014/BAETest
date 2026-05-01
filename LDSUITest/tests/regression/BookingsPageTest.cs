@@ -14,7 +14,7 @@ namespace LDSUITest.tests.regression
         private BookingsPage _bookingsPage = null!;
 
         // TestCase input
-        private static IEnumerable VerifyBookingsPageTestCases
+        private static IEnumerable BookingsPageTestCases
         {
             get
             {
@@ -23,7 +23,7 @@ namespace LDSUITest.tests.regression
             }
         }
 
-        private static IEnumerable VerifyBookingsFilterTestCases
+        private static IEnumerable FilterByCustomerIdTestCases
         {
             get
             {
@@ -32,7 +32,7 @@ namespace LDSUITest.tests.regression
             }
         }
 
-        private static IEnumerable VerifyBookingsFilterByCustomerNameTestCases
+        private static IEnumerable FilterByCustomerNameTestCases
         {
             get
             {
@@ -51,21 +51,21 @@ namespace LDSUITest.tests.regression
         // DON'T REMOVE testCaseId parameter. It gets set in TestContext by NUnit when the TestCaseSource()'s are invoked.
         // It is retrieved from TestContext and used later by the ExpectedResults and Results classes.
 
-        [TestCaseSource(nameof(VerifyBookingsPageTestCases))]
+        [TestCaseSource(nameof(BookingsPageTestCases))]
         public async Task VerifyBookingsPage(int testCaseId)
         {
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 
-        [TestCaseSource(nameof(VerifyBookingsFilterTestCases))]
-        public async Task VerifyBookingsFilter(int testCaseId, string customerId)
+        [TestCaseSource(nameof(FilterByCustomerIdTestCases))]
+        public async Task FilterByCustomerId(int testCaseId, string customerId)
         {
             await _bookingsPage.FilterBookingsByCustomerId(Page, customerId);
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }
 
-        [TestCaseSource(nameof(VerifyBookingsFilterByCustomerNameTestCases))]
-        public async Task VerifyBookingsFilterByCustomerName(int testCaseId, string customerName)
+        [TestCaseSource(nameof(FilterByCustomerNameTestCases))]
+        public async Task FilterByCustomerName(int testCaseId, string customerName)
         {
             await _bookingsPage.FilterBookingsByCustomerName(Page, customerName);
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);

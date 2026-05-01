@@ -228,34 +228,6 @@ namespace LDSAPITest
         #region Response Helper Methods
 
         /// <summary>
-        /// Deserializes the response content to the specified type.
-        /// </summary>
-        //public async Task<T?> DeserializeResponseAsync<T>(HttpResponseMessage response)
-        //{
-        //    var content = await response.Content.ReadAsStringAsync();
-
-        //    if (Verbose)
-        //    {
-        //        LogInfo($"Response Content:\n{content}");
-        //    }
-
-        //    if (string.IsNullOrWhiteSpace(content))
-        //    {
-        //        return default;
-        //    }
-
-        //    try
-        //    {
-        //        return JsonConvert.DeserializeObject<T>(content);
-        //    }
-        //    catch (JsonException ex)
-        //    {
-        //        LogInfo($"Failed to deserialize response: {ex.Message}");
-        //        throw;
-        //    }
-        //}
-
-        /// <summary>
         /// Gets the response content as a string.
         /// </summary>
         public async Task<string> GetResponseContentAsync(HttpResponseMessage response)

@@ -34,21 +34,21 @@
     
     <!-- Database servers -->
     <Parameter name="local.databaseServer" value="." />
-    <Parameter name="qa.databaseServer" value="qadb.bae.com" />
-    <Parameter name="uat.databaseServer" value="uatdb.bae.com" />
-    <Parameter name="stg.databaseServer" value="stgdb.bae.com" />
-    <Parameter name="prod.databaseServer" value="db.bae.com" />
+    <Parameter name="qa.databaseServer" value="qadb.ssa.gov" />
+    <Parameter name="uat.databaseServer" value="uatdb.ssa.gov" />
+    <Parameter name="stg.databaseServer" value="stgdb.ssa.gov" />
+    <Parameter name="prod.databaseServer" value="db.ssa.gov" />
     
     <!-- API Test specific parameters -->
     <!-- TODO: Update these URLs to match your actual API endpoints -->
-    <Parameter name="apiBaseURL" value="https://api-{environment}.bae.com/api/" />
+    <Parameter name="apiBaseURL" value="https://api-{environment}.ssa.gov/api/" />
     
     <Parameter name="local.apiBaseURL" value="https://localhost:7031/api/HotelBooking/" />
-    <Parameter name="qa.apiBaseURL" value="https://api-qa.bae.com/api/" />
-    <Parameter name="dev.apiBaseURL" value="https://api-dev.bae.com/api/" />
-    <Parameter name="uat.apiBaseURL" value="https://api-uat.bae.com/api/" />
-    <Parameter name="stg.apiBaseURL" value="https://api-stg.bae.com/api/" />
-    <Parameter name="prod.apiBaseURL" value="https://api-prod.bae.com/api/" />
+    <Parameter name="qa.apiBaseURL" value="https://api-qa.ssa.gov/api/" />
+    <Parameter name="dev.apiBaseURL" value="https://api-dev.ssa.gov/api/" />
+    <Parameter name="uat.apiBaseURL" value="https://api-uat.ssa.gov/api/" />
+    <Parameter name="stg.apiBaseURL" value="https://api-stg.ssa.gov/api/" />
+    <Parameter name="prod.apiBaseURL" value="https://api-prod.ssa.gov/api/" />
     
     <!-- API Configuration -->
     <Parameter name="apiTimeout" value="30"/> <!-- API request timeout in seconds -->
@@ -56,7 +56,7 @@
     <Parameter name="apiRetryDelayMs" value="1000"/> <!-- Delay between retries in milliseconds -->
     
     <!-- API Authentication -->
-    <Parameter name="apiUsername" value="BAEQAAutomation"/>
+    <Parameter name="apiUsername" value="SSAQAAutomation"/>
     <Parameter name="apiPassword" value="ToBeDetermined"/>
     <Parameter name="apiAuthType" value="None"/> <!-- Basic, Bearer, ApiKey, or None -->
     <Parameter name="apiBearerToken" value=""/> <!-- If using Bearer token authentication -->

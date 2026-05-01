@@ -19,7 +19,7 @@ Feature: RoomApiTests
     Then the response should contain the expected room
 
   @regression @database @testcase:23
-  Scenario: Create a new room
+  Scenario: Create room
     Given I have a new room with the following details:
       | Field      | Value |
       | RoomNumber | 2001  |

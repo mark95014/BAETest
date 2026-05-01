@@ -67,7 +67,7 @@ namespace LDSAPITest.Tests
 
         [Test]
         [TestCaseSource(nameof(GetAllCustomersTestCases))]
-        public async Task GetAllCustomers_ShouldReturnListOfCustomers(int testCaseId)
+        public async Task GetAllCustomers(int testCaseId)
         {
             var response = await GetAsync("GetAllCustomers");
 
@@ -82,7 +82,7 @@ namespace LDSAPITest.Tests
         }
 
         [TestCaseSource(nameof(GetCustomerByIdTestCases))]
-        public async Task GetCustomerById_WithValidId_ShouldReturnCustomer(int testCaseId, Customer customerInput)
+        public async Task GetCustomerById(int testCaseId, Customer customerInput)
         {
             int customerId = customerInput.Id;
 
@@ -96,7 +96,7 @@ namespace LDSAPITest.Tests
 
         [NonParallelizable]
         [TestCaseSource(nameof(CreateCustomerTestCases))]
-        public async Task CreateCustomer_WithValidData_ShouldReturnCreatedCustomer(int testCaseId, Customer customerData)
+        public async Task CreateCustomer(int testCaseId, Customer customerData)
         {
             var response = await PostAsync("CreateEditCustomer", customerData);
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);

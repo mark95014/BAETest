@@ -19,7 +19,7 @@ namespace LDSUITest.pages
         // Navigate to this page and wait for it to load
         public async Task GoTo(IPage page)
         {
-            await page.GotoAsync(Url);
+            await page.GotoAsync(Url, new PageGotoOptions { WaitUntil = WaitUntilState.Load });
             await WaitForPageToLoad(page);
         }
 

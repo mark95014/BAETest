@@ -19,7 +19,7 @@ Feature: BookingApiTests
     Then the response should contain the expected booking
 
   @regression @database @testcase:3
-  Scenario: Create a new booking
+  Scenario: CreateBooking
     Given I have a new booking with the following details:
       | Field       | Value |
       | CustomerId  | 7     |

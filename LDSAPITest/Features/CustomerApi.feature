@@ -19,7 +19,7 @@ Feature: CustomerApiTests
     Then the response should contain the expected customer
 
   @regression @database @testcase:13
-  Scenario: Create a new customer
+  Scenario: Create customer
     Given I have a new customer with the following details:
       | Field | Value      |
       | Name  | John Smith |

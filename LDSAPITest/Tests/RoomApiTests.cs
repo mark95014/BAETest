@@ -58,7 +58,7 @@ namespace LDSAPITest.Tests
 
         [Test]
         [TestCaseSource(nameof(GetAllRoomsTestCases))]
-        public async Task GetAllRooms_ShouldReturnListOfRooms(int testCaseId)
+        public async Task GetAllRooms(int testCaseId)
         {
             var response = await GetAsync("GetAllRooms");
 
@@ -73,7 +73,7 @@ namespace LDSAPITest.Tests
         }
 
         [TestCaseSource(nameof(GetRoomByNumberTestCases))]
-        public async Task GetRoomByNumber_WithValidNumber_ShouldReturnRoom(int testCaseId, Room roomInput)
+        public async Task GetRoomByNumber(int testCaseId, Room roomInput)
         {
             int roomNumber = roomInput.RoomNumber;
 
@@ -87,7 +87,7 @@ namespace LDSAPITest.Tests
 
         [NonParallelizable]
         [TestCaseSource(nameof(CreateRoomTestCases))]
-        public async Task CreateRoom_WithValidData_ShouldReturnCreatedRoom(int testCaseId, Room roomData)
+        public async Task CreateRoom(int testCaseId, Room roomData)
         {
             var response = await PostAsync("CreateEditRoom", roomData);
             response.StatusCode.Should().BeOneOf(HttpStatusCode.Created, HttpStatusCode.OK);

@@ -84,7 +84,7 @@ namespace LDSAPITest.Tests
         }
 
         [TestCaseSource(nameof(GetBookingByIdTestCases))]
-        public async Task GetBookingById_WithValidId_ShouldReturnBooking(int testCaseId, Booking bookingInput)
+        public async Task GetBookingById(int testCaseId, Booking bookingInput)
         {
             int bookingId = bookingInput.Id;
 
@@ -98,7 +98,7 @@ namespace LDSAPITest.Tests
 
         [NonParallelizable]
         [TestCaseSource(nameof(CreateBookingTestCases))]
-        public async Task CreateBooking_WithValidData_ShouldReturnCreatedBooking(int testCaseId, Booking bookingData)
+        public async Task CreateBooking(int testCaseId, Booking bookingData)
         {
             // This is necessary because the expected results for this test case reference a specific booking ID, which is generated when the booking is created.
             await new Database().ResetDatabase();
