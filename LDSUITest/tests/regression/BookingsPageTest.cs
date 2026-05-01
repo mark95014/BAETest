@@ -7,7 +7,7 @@ using System.Collections;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.Self)]
+    [Parallelizable(ParallelScope.All)]
 
     public class BookingsPageTest : BaseTest
     {
@@ -16,29 +16,17 @@ namespace LDSUITest.tests.regression
         // TestCase input
         private static IEnumerable BookingsPageTestCases
         {
-            get
-            {
-                yield return new TestCaseData(1)
-                    .SetDescription("Verify all data on Bookings page");
-            }
+            get { yield return new TestCaseData(1).SetDescription("Verify all data on Bookings page"); }
         }
 
         private static IEnumerable FilterByCustomerIdTestCases
         {
-            get
-            {
-                yield return new TestCaseData(2, "7")
-                    .SetDescription("Verify filter functionality on Bookings page");
-            }
+            get { yield return new TestCaseData(2, "7").SetDescription("Verify filter functionality on Bookings page"); }
         }
 
         private static IEnumerable FilterByCustomerNameTestCases
         {
-            get
-            {
-                yield return new TestCaseData(3, "son")
-                    .SetDescription("Verify filter by customer name containing 'son'");
-            }
+            get { yield return new TestCaseData(3, "son").SetDescription("Verify filter by customer name containing 'son'"); }
         }
 
         [SetUp]
@@ -60,6 +48,7 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(FilterByCustomerIdTestCases))]
         public async Task FilterByCustomerId(int testCaseId, string customerId)
         {
+            Console.WriteLine($"Headless: {TestContext.Parameters["Playwright.LaunchOptions.Headless"]}");
             await _bookingsPage.FilterBookingsByCustomerId(Page, customerId);
             await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
         }

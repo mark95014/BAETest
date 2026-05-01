@@ -7,25 +7,18 @@ using System.Collections;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    // This test modifies the database and should not be run in parallel with other tests.
-    // This will be solved when I implement each test having its own database copy.
-    [Parallelizable(ParallelScope.None)]
+    [Parallelizable(ParallelScope.None)] // EditRoom() modifies the database, so it should not be run in parallel with other tests cases or tests.
 
     public class RoomsPageTest : BaseTest
     {
         private RoomsPage _roomsPage = null!;
 
-        // Test data source for VerifyRoomsPage
+        // Test data sources
         private static IEnumerable VerifyRoomsPageTestCases
         {
-            get
-            {
-                yield return new TestCaseData(1)
-                    .SetDescription("Verify all data on Rooms page");
-            }
+            get { yield return new TestCaseData(1).SetDescription("Verify all data on Rooms page"); }
         }
 
-        // Test data source for VerifyEditRoomFunctionality
         private static IEnumerable EditRoomTestCases
         {
             get
