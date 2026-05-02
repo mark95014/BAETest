@@ -32,23 +32,15 @@ namespace LDSAPITest.Tests
         // Test data source for GetAllBookings
         private static IEnumerable GetAllBookingsTestCases
         {
-            get
-            {
-                yield return new TestCaseData(1)
-                    .SetDescription("Get all bookings");
-            }
+            get { yield return new TestCaseData(1).SetDescription("Get all bookings"); }
         }
 
         // Test data source for GetBookingById
         private static IEnumerable GetBookingByIdTestCases
         {
-            get
-            {
-                yield return new TestCaseData(2, new Booking { Id = 1 })
-                    .SetDescription("Get booking by ID 1");
-                
-                yield return new TestCaseData(5, new Booking { Id = 7 })
-                    .SetDescription("Get booking by ID 7");
+            get { 
+                yield return new TestCaseData(2, new Booking { Id = 1 }).SetDescription("Get booking by ID 1");
+                yield return new TestCaseData(5, new Booking { Id = 7 }).SetDescription("Get booking by ID 7");
             }
         }
 

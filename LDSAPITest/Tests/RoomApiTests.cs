@@ -1,6 +1,5 @@
 using FluentAssertions;
 using LDSAPITest.Utils;
-using LDSTest.Shared;
 using NUnit.Framework;
 using System.Collections;
 using System.Net;
@@ -9,7 +8,7 @@ using System.Net.Http.Json;
 namespace LDSAPITest.Tests
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.Self)]
+    [Parallelizable(ParallelScope.None)]
     public class RoomApiTests : BaseApiTest
     {
         // Data models
@@ -24,8 +23,7 @@ namespace LDSAPITest.Tests
         {
             get
             {
-                yield return new TestCaseData(20)
-                    .SetDescription("Get all rooms");
+                yield return new TestCaseData(20).SetDescription("Get all rooms");
             }
         }
 
@@ -34,25 +32,17 @@ namespace LDSAPITest.Tests
         {
             get
             {
-                yield return new TestCaseData(21, new Room { RoomNumber = 1001 })
-                    .SetDescription("Get room by number 1001");
-
-                yield return new TestCaseData(22, new Room { RoomNumber = 1007 })
-                    .SetDescription("Get room by number 1007");
+                yield return new TestCaseData(21, new Room { RoomNumber = 1001 }).SetDescription("Get room by number 1001");
+                yield return new TestCaseData(22, new Room { RoomNumber = 1007 }).SetDescription("Get room by number 1007");
             }
         }
 
         // Test data source for CreateRoom
         private static IEnumerable CreateRoomTestCases
         {
-            get
-            {
-                yield return new TestCaseData(23, new Room 
-                { 
-                    RoomNumber = 2001,
-                    Price = 150
-                })
-                .SetDescription("Create new room");
+            get 
+            { 
+                yield return new TestCaseData(23, new Room { RoomNumber = 2001, Price = 150 }).SetDescription("Create new room");
             }
         }
 
