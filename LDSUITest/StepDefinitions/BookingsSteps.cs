@@ -1,4 +1,5 @@
-﻿using LDSTest.Shared;
+﻿using LDSAPITest;
+using LDSTest.Shared;
 using LDSUITest.pages;
 using Microsoft.Playwright;
 using TechTalk.SpecFlow;
@@ -6,7 +7,7 @@ using TechTalk.SpecFlow;
 namespace LDSUITest.StepDefinitions
 {
     [Binding]
-    public class BookingsSteps(ScenarioContext scenarioContext)
+    public class BookingsSteps(ScenarioContext scenarioContext) : BaseApiTest
     {
         private readonly IPage _page = scenarioContext.Get<IPage>("Page");
         private readonly BookingsPage _bookingsPage = new();

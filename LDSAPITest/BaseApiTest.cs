@@ -11,6 +11,9 @@ namespace LDSAPITest
     /// Base class for all API tests. Provides HttpClient configuration, authentication,
     /// and common helper methods.
     /// </summary>
+    /// 
+    [TestFixture]
+    [Parallelizable(ParallelScope.None)]
     public abstract class BaseApiTest
     {
         public required ExpectedResults ExpectedResults;
