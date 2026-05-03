@@ -38,7 +38,6 @@ namespace LDSUITest.tests.regression
 
         // DON'T REMOVE testCaseId parameter. It gets set in TestContext by NUnit when the TestCaseSource()'s are invoked.
         // It is retrieved from TestContext and used later by the ExpectedResults and Results classes.
-
         [TestCaseSource(nameof(BookingsPageTestCases))]
         public async Task VerifyBookingsPage(int testCaseId)
         {
@@ -46,6 +45,7 @@ namespace LDSUITest.tests.regression
         }
 
         [TestCaseSource(nameof(FilterByCustomerIdTestCases))]
+        [Category("Filter")]
         public async Task FilterByCustomerId(int testCaseId, string customerId)
         {
             Console.WriteLine($"Headless: {TestContext.Parameters["Playwright.LaunchOptions.Headless"]}");
@@ -54,6 +54,7 @@ namespace LDSUITest.tests.regression
         }
 
         [TestCaseSource(nameof(FilterByCustomerNameTestCases))]
+        [Category("Filter")]
         public async Task FilterByCustomerName(int testCaseId, string customerName)
         {
             await _bookingsPage.FilterBookingsByCustomerName(Page, customerName);

@@ -6,6 +6,12 @@
 		<ResultsDirectory>.\TestResults</ResultsDirectory>
 	</RunConfiguration>
 
+	<LoggerRunSettings>
+		<Loggers>
+			<Logger friendlyName="trx" enabled="true" />
+		</Loggers>
+	</LoggerRunSettings>
+
 	<!-- Parameters used by tests at runtime -->
 	<TestRunParameters>
 

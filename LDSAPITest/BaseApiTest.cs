@@ -39,11 +39,6 @@ namespace LDSAPITest
             ApiTimeout = int.Parse(TestContext.Parameters["apiTimeout"]!);
             ApiBaseUrl = TestContext.Parameters[$"{Environment}.apiBaseURL"]!;
 
-            LogInfo("=== API Test Setup ===");
-            LogInfo($"Environment: {Environment}");
-            LogInfo($"API Base URL: {ApiBaseUrl}");
-            LogInfo($"Timeout: {ApiTimeout}s");
-
             // Initialize HttpClient
             HttpClient = new HttpClient
             {
