@@ -17,7 +17,6 @@ namespace LDSAPITest
     public abstract class BaseApiTest
     {
         public required ExpectedResults ExpectedResults;
-        public required Results Results;
         public required string TestName;
 
         // Implement in the future. public Results Results { get; } = new Results();
@@ -63,7 +62,6 @@ namespace LDSAPITest
         [SetUp]
         public virtual void TestCaseSetUp()
         {
-            Results = new Results();
         }
 
         [OneTimeTearDown]

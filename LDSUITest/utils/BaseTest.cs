@@ -33,15 +33,15 @@ namespace LDSUITest.utils
             GenerateExpectedResults = Boolean.Parse(TestContext.Parameters["generateExpectedResults"] ?? "false");
             TestName = TestNameProvider.GetTestName();
             TestRail = new TestRail();
+            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
+            ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
+            ExpectedResults.Init();
         }
 
         [SetUp]
         public virtual async Task TestCaseSetUp()
         {   
             Results = new Results();
-            var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
-            ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
-            ExpectedResults.Init();
             
             await Task.CompletedTask;
         }
