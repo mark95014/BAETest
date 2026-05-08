@@ -62,4 +62,8 @@
     <ProjectReference Include="..\LDSTest.Shared\LDSTest.Shared.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="TestResults\" />
+  </ItemGroup>
+
 </Project>
