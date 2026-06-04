@@ -1,57 +1,31 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RunSettings>
-	<!-- Configurations that affect the Test Framework -->
-	<RunConfiguration>
-		<!-- Path relative to solution directory -->
-		<ResultsDirectory>.\TestResults</ResultsDirectory>
-	</RunConfiguration>
-
-	<LoggerRunSettings>
-		<Loggers>
-			<Logger friendlyName="trx" enabled="true" />
-		</Loggers>
-	</LoggerRunSettings>
-
-	<!-- Parameters used by tests at runtime -->
-	<TestRunParameters>
-
-		<Parameter name="headless" value="true"/>
-		<Parameter name="slowMo" value="0"/>
-		<Parameter name="verbose" value="false"/>
-		<Parameter name="enableTestRail" value="false"/>
-		<Parameter name="environment" value="local"/>
-		
-		<Parameter name="databaseUserName" value="SSAAutomation"/>
-		<Parameter name="databasePassword" value="Passwordyou"/>
-		<Parameter name="databaseRootName" value="SSA_QATEMPLATE"/>
-		<Parameter name="ssaPassword" value="Password4you"/>
-		<Parameter name="generateExpectedResults" value="false"/>
-		<Parameter name="testRailRunId" value="285348"/>
-		
-		<!-- TestRail parameters-->
-		<!-- Put the test run id from a previous run here and your test will add results to it.-->
-		<Parameter name="milestoneId" value="2533"/>
-		<Parameter name="projectId" value="51"/>
-
-		<!-- The test will use the database server which corresponds to the environment setting above.-->
-		<Parameter name="local.databaseServer" value="." />
-		<Parameter name="qa.databaseServer" value="qadb.ssa.gov" />
-		<Parameter name="uat.databaseServer" value="uatdb.ssa.gov" />
-		<Parameter name="stg.databaseServer" value="stgdb.ssa.gov" />
-		<Parameter name="prod.databaseServer" value="proddb.ssa.gov" />
-
-		<!-- Web Base URLs for UI Tests -->
-		<Parameter name="local.webBaseURL" value="https://localhost:7031" />
-		<Parameter name="qa.webBaseURL" value="https://lds-qa.ssa.gov" />
-		<Parameter name="uat.webBaseURL" value="https://lds-uat.ssa.gov" />
-		<Parameter name="stg.webBaseURL" value="https://lds-stg.ssa.gov" />
-		<Parameter name="prod.webBaseURL" value="https://lds.ssa.gov" />
-
-		<!-- Connection string for local SQL Server database -->
-		<Parameter name="ConnectionString" value="Server=MARK-HP-LAPTOP;Database=BookingDb;Integrated Security=true;TrustServerCertificate=True;" />
-		<Parameter name="SqlScriptsPath" value="C:\Users\mark9\source\repos\HotelBooking\database" />
-
-
-
-	</TestRunParameters>
+  <RunConfiguration>
+    <ResultsDirectory>.\TestResults</ResultsDirectory>
+    <TargetPlatform>x64</TargetPlatform>
+  </RunConfiguration>
+  
+  <NUnit>
+    <NumberOfTestWorkers>4</NumberOfTestWorkers>
+    <DefaultTimeout>120000</DefaultTimeout>
+    <InternalTraceLevel>Off</InternalTraceLevel>
+  </NUnit>
+  
+  <TestRunParameters>
+    <Parameter name="verbose" value="false" />
+    <Parameter name="generateExpectedResults" value="false" />
+    <Parameter name="expectedResultsFolder" value="../../../data/expectedResults" />
+    <Parameter name="enableTestRail" value="false" />
+    <Parameter name="testRailRunId" value="" />
+    <Parameter name="projectId" value="1" />
+    <Parameter name="milestoneId" value="1" />
+    <Parameter name="environment" value="dev" />
+    
+    <!-- Selenium Configuration -->
+    <Parameter name="browser" value="chrome" />
+    <Parameter name="headless" value="false" />
+    
+    <!-- Web base URL for dev environment -->
+    <Parameter name="dev.webBaseURL" value="https://localhost:7031" />
+  </TestRunParameters>
 </RunSettings>

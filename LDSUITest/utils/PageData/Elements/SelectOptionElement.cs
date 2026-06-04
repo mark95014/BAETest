@@ -1,45 +1,50 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public class SelectOptionElement : SimpleElement
     {
-        public SelectOptionElement(ILocator locator) : base(locator)
+        public SelectOptionElement(IWebDriver driver, By locator) : base(driver, locator)
         {
         }
 
-        public async Task SelectByValueAsync(string value)
+        public void SelectByValue(string value)
         {
-            await Locator.SelectOptionAsync(value);
+            var selectElement = new SelectElement(Driver.FindElement(Locator));
+            selectElement.SelectByValue(value);
         }
 
-        public async Task SelectByLabelAsync(string label)
+        public void SelectByLabel(string label)
         {
-            await Locator.SelectOptionAsync(new SelectOptionValue { Label = label });
+            var selectElement = new SelectElement(Driver.FindElement(Locator));
+            selectElement.SelectByText(label);
         }
 
-        public async Task SelectByIndexAsync(int index)
+        public void SelectByIndex(int index)
         {
-            await Locator.SelectOptionAsync(new SelectOptionValue { Index = index });
+            var selectElement = new SelectElement(Driver.FindElement(Locator));
+            selectElement.SelectByIndex(index);
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
             // Get the selected option's value
-            Data = await Locator.InputValueAsync();
+            var selectElement = new SelectElement(Driver.FindElement(Locator));
+            Data = selectElement.SelectedOption.GetAttribute("value") ?? string.Empty;
         }
 
-        public async Task<string> GetSelectedTextAsync()
+        public string GetSelectedText()
         {
             // Get the selected option's text (visible label)
-            var selectedOption = Locator.Locator("option:checked");
-            return await selectedOption.TextContentAsync() ?? string.Empty;
+            var selectElement = new SelectElement(Driver.FindElement(Locator));
+            return selectElement.SelectedOption.Text ?? string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            await GetAsync();
+            Get();
             string actualValue = Data?.ToString() ?? "";
             string expectedValue = expected?.ToString() ?? "";
 
@@ -47,18 +52,23 @@ namespace LDSUITest.utils.PageData.Elements
             return new Result(actualValue == expectedValue, message);
         }
 
-        public async Task<Result> VerifySelectedTextAsync(string name, string expectedText)
+        public Result VerifySelectedText(string name, string expectedText)
         {
             try
             {
-                var selectedOption = Locator.Locator("option:checked");
-                await Assertions.Expect(selectedOption).ToHaveTextAsync(expectedText);
-                return new Result(true, $"{name}: selected text matches '{expectedText}'");
+                var actualText = GetSelectedText();
+                bool passed = actualText == expectedText;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: selected text matches '{expectedText}'");
+                }
+
+                return new Result(false, $"{name}: expected '{expectedText}', actual '{actualText}'");
             }
             catch (Exception ex)
             {
-                var actualText = await GetSelectedTextAsync();
-                return new Result(false, $"{name}: expected '{expectedText}', actual '{actualText}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying selected text. {ex.Message}");
             }
         }
     }

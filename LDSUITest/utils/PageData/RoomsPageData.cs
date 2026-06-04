@@ -1,4 +1,5 @@
 using LDSUITest.utils.PageData.Elements;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData
 {
@@ -10,9 +11,8 @@ namespace LDSUITest.utils.PageData
         // Constructor or initialization will set these values before use
         protected override void InitializeElements()
         {
-            // Update these selectors to match your actual page
-            Title = new TextElement(Page.Locator("h1:has-text('All Rooms')"));
-            RoomsTable = new TableElement(Page.Locator("[id='roomsTable']"));
+            Title = new TextElement(Driver, By.CssSelector("body > h1"));
+            RoomsTable = new TableElement(Driver, By.Id("roomsTable"));
         }
     }
 }

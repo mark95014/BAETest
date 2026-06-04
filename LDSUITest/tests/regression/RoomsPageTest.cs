@@ -1,4 +1,4 @@
-using LDSUITest.pages;
+﻿using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
@@ -34,38 +34,38 @@ namespace LDSUITest.tests.regression
         }
 
         [SetUp]
-        public async Task Setup()
+        public void Setup()  // Changed: removed async Task
         {
             _roomsPage = new RoomsPage();
-            await _roomsPage.GoTo(Page);
+            _roomsPage.GoTo(Driver);  // Changed: Page → Driver, removed await
         }
 
         [TestCaseSource(nameof(VerifyRoomsPageTestCases))]
-        public async Task VerifyRoomsPage(int testCaseId)
+        public void VerifyRoomsPage(int testCaseId)  // Changed: removed async Task
         {
-            await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
+            BasePage.VerifyPage<RoomsPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
         }
 
         [NonParallelizable]
         [TestCaseSource(nameof(EditRoomTestCases))]
-        public async Task EditRoom(int testCaseId, List<RoomsPage.Room> rooms)
+        public void EditRoom(int testCaseId, List<RoomsPage.Room> rooms)  // Changed: removed async Task
         {
             RoomsPage roomsPage = new RoomsPage();
-            await roomsPage.EditRoomPrices(Page, rooms);
+            roomsPage.EditRoomPrices(Driver, rooms);  // Changed: Page → Driver, removed await
 
             // Verify the entire table after all edits
-            await BasePage.VerifyPage<RoomsPageData>(Page, ExpectedResults, Results);
+            BasePage.VerifyPage<RoomsPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
 
-            await roomsPage.GoTo(Page);
+            roomsPage.GoTo(Driver);  // Changed: Page → Driver, removed await
 
             var originalRooms = new List<RoomsPage.Room>
-                {
-                    new() { RoomNumber = 101, Price = 75 },
-                    new() { RoomNumber = 103, Price = 78 },
-                    new() { RoomNumber = 105, Price = 85 }
-                };
+            {
+                new() { RoomNumber = 101, Price = 75 },
+                new() { RoomNumber = 103, Price = 78 },
+                new() { RoomNumber = 105, Price = 85 }
+            };
 
-            await roomsPage.EditRoomPrices(Page, originalRooms); // Revert changes to original values
+            roomsPage.EditRoomPrices(Driver, originalRooms); // Changed: Page → Driver, removed await - Revert changes to original values
         }
     }
 }

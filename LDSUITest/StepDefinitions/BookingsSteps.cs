@@ -1,7 +1,7 @@
 ﻿using LDSAPITest;
 using LDSTest.Shared;
 using LDSUITest.pages;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
 namespace LDSUITest.StepDefinitions
@@ -9,33 +9,33 @@ namespace LDSUITest.StepDefinitions
     [Binding]
     public class BookingsSteps(ScenarioContext scenarioContext) : BaseApiTest
     {
-        private readonly IPage _page = scenarioContext.Get<IPage>("Page");
+        private readonly IWebDriver _driver = scenarioContext.Get<IWebDriver>("Driver");
         private readonly BookingsPage _bookingsPage = new();
         private readonly ExpectedResults _expectedResults = scenarioContext.Get<ExpectedResults>("ExpectedResults");
         private readonly Results _results = scenarioContext.Get<Results>("Results");
 
         [Given(@"I navigate to the bookings page")]
-        public async Task GivenINavigateToTheBookingsPage()
+        public void GivenINavigateToTheBookingsPage()
         {
-            await _bookingsPage.GoTo(_page);
+            _bookingsPage.GoTo(_driver);
         }
 
         [When(@"I filter bookings by customer ID ""(.*)""")]
-        public async Task WhenIFilterBookingsByCustomerID(string customerId)
+        public void WhenIFilterBookingsByCustomerID(string customerId)
         {
-            await _bookingsPage.FilterBookingsByCustomerId(_page, customerId);
+            _bookingsPage.FilterBookingsByCustomerId(_driver, customerId);
         }
 
         [When(@"I filter bookings by customer name ""(.*)""")]
-        public async Task WhenIFilterBookingsByCustomerName(string customerName)
+        public void WhenIFilterBookingsByCustomerName(string customerName)
         {
-            await _bookingsPage.FilterBookingsByCustomerName(_page, customerName);
+            _bookingsPage.FilterBookingsByCustomerName(_driver, customerName);
         }
 
         [Then(@"the bookings table should contain the expected data")]
-        public async Task ThenThePageDataShouldBeVerifiedAgainstExpectedResults()
+        public void ThenThePageDataShouldBeVerifiedAgainstExpectedResults()
         {
-            await _bookingsPage.VerifyPage(_page, _expectedResults, _results);
+            _bookingsPage.VerifyPage(_driver, _expectedResults, _results);
         }
     }
 }

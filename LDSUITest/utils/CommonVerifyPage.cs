@@ -7,9 +7,9 @@ namespace LDSUITest.utils
 {
     public class CommonVerifyPage
     {
-        public async Task Verify(BasePageData data, ExpectedResults expectedResults, Results results)
+        public void Verify(BasePageData data, ExpectedResults expectedResults, Results results)
         {
-            await data.Get();
+            data.Get();
 
             string dataLabel = expectedResults.MakeDataLabel(data);
 
@@ -21,7 +21,7 @@ namespace LDSUITest.utils
             {
                 JObject _expectedResults = JsonConvert.DeserializeObject<JObject>(File.ReadAllText(expectedResults.FileName))!;
                 JObject expectedResult = (JObject)_expectedResults[dataLabel]!;
-                await data.Verify(expectedResult, dataLabel, results);
+                data.Verify(expectedResult, dataLabel, results);
             }
         }
     }

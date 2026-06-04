@@ -1,6 +1,6 @@
 using LDSTest.Shared;
 using LDSUITest.utils.PageData;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.pages
 {
@@ -10,43 +10,46 @@ namespace LDSUITest.pages
 
         internal static class Selectors
         {
-            internal const string pageTitle = "h1:has-text('All Customers')";
-            internal const string customersTable = "[id='customersTable']";
-            internal const string filterIdInput = "[id='filterId']";
-            internal const string filterNameInput = "[id='filterName']";
-            internal const string applyFiltersButton = "button:has-text('Apply Filters')";
+            internal static By PageTitle = By.CssSelector("h1");
+            internal static By CustomersTable = By.Id("customersTable");
+            internal static By FilterIdInput = By.Id("filterId");
+            internal static By FilterNameInput = By.Id("filterName");
+            internal static By ApplyFiltersButton = By.XPath("//button[contains(text(), 'Apply Filters')]");
         }
 
-        // Pre-initialized locators
-        private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
-        private static ILocator CustomersTable(IPage page) => page.Locator(Selectors.customersTable);
-        private static ILocator FilterIdInput(IPage page) => page.Locator(Selectors.filterIdInput);
-        private static ILocator FilterNameInput(IPage page) => page.Locator(Selectors.filterNameInput);
-        private static ILocator ApplyFiltersButton(IPage page) => page.Locator(Selectors.applyFiltersButton);
-
-        public override async Task WaitForPageToLoad(IPage page)
+        public override void WaitForPageToLoad(IWebDriver driver)
         {
-            await PageTitle(page).WaitForAsync();
-            await CustomersTable(page).WaitForAsync();
+            WaitForElement(driver, Selectors.PageTitle);
+            WaitForElement(driver, Selectors.CustomersTable);
         }
 
-        public async Task FilterCustomersById(IPage page, string filterValue)
+        public void FilterCustomersById(IWebDriver driver, string filterValue)
         {
-            await FilterIdInput(page).FillAsync(filterValue);
-            await ApplyFiltersButton(page).ClickAsync();
-            await WaitForPageToLoad(page);
+            var filterIdInput = driver.FindElement(Selectors.FilterIdInput);
+            filterIdInput.Clear();
+            filterIdInput.SendKeys(filterValue);
+
+            var applyButton = driver.FindElement(Selectors.ApplyFiltersButton);
+            applyButton.Click();
+
+            WaitForPageToLoad(driver);
         }
 
-        public async Task FilterCustomersByName(IPage page, string filterValue)
+        public void FilterCustomersByName(IWebDriver driver, string filterValue)
         {
-            await FilterNameInput(page).FillAsync(filterValue);
-            await ApplyFiltersButton(page).ClickAsync();
-            await WaitForPageToLoad(page);
+            var filterNameInput = driver.FindElement(Selectors.FilterNameInput);
+            filterNameInput.Clear();
+            filterNameInput.SendKeys(filterValue);
+
+            var applyButton = driver.FindElement(Selectors.ApplyFiltersButton);
+            applyButton.Click();
+
+            WaitForPageToLoad(driver);
         }
 
-        public async Task VerifyPage(IPage page, ExpectedResults expectedResults, Results results)
+        public void VerifyPage(IWebDriver driver, ExpectedResults expectedResults, Results results)
         {
-            await BasePage.VerifyPage<CustomersPageData>(page, expectedResults, results);
+            BasePage.VerifyPage<CustomersPageData>(driver, expectedResults, results);
         }
     }
 }

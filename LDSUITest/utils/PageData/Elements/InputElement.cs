@@ -1,85 +1,106 @@
 using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public class InputElement : SimpleElement
     {
-        public InputElement(ILocator locator) : base(locator)
+        public InputElement(IWebDriver driver, By locator) : base(driver, locator)
         {
         }
 
-        public async Task FillAsync(string value)
+        public void Fill(string value)
         {
-            await Locator.FillAsync(value);
+            var element = Driver.FindElement(Locator);
+            element.Clear();
+            element.SendKeys(value);
         }
 
-        public async Task ClearAsync()
+        public void Clear()
         {
-            await Locator.ClearAsync();
+            Driver.FindElement(Locator).Clear();
         }
 
-        public async Task TypeAsync(string text, int delayMs = 0)
+        public void Type(string text, int delayMs = 0)
         {
             // Type with delay between keystrokes (useful for testing autocomplete, etc.)
+            var element = Driver.FindElement(Locator);
             foreach (char c in text)
             {
-                await Locator.PressAsync(c.ToString());
+                element.SendKeys(c.ToString());
                 if (delayMs > 0)
                 {
-                    await Task.Delay(delayMs);
+                    Thread.Sleep(delayMs);
                 }
             }
         }
 
-        public async Task PressAsync(string key)
+        public void Press(string key)
         {
-            await Locator.PressAsync(key);
+            Driver.FindElement(Locator).SendKeys(key);
         }
 
-        public async Task PressSequentiallyAsync(string text)
+        public void PressSequentially(string text)
         {
-            await Locator.PressSequentiallyAsync(text);
+            var element = Driver.FindElement(Locator);
+            foreach (char c in text)
+            {
+                element.SendKeys(c.ToString());
+            }
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            Data = await Locator.InputValueAsync();
+            Data = Driver.FindElement(Locator).GetAttribute("value") ?? string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            string actualValue = await Locator.InputValueAsync();
+            string actualValue = Driver.FindElement(Locator).GetAttribute("value") ?? string.Empty;
             string expectedValue = expected?.ToString() ?? "";
 
             var message = $"{name}: value='{actualValue}', expected='{expectedValue}'";
             return new Result(actualValue == expectedValue, message);
         }
 
-        public async Task<Result> VerifyValueAsync(string name, string expected)
+        public Result VerifyValue(string name, string expected)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveValueAsync(expected);
-                return new Result(true, $"{name}: value matches '{expected}'");
+                var actual = Driver.FindElement(Locator).GetAttribute("value");
+                bool passed = actual == expected;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: value matches '{expected}'");
+                }
+
+                return new Result(false, $"{name}: expected '{expected}', actual '{actual}'");
             }
             catch (Exception ex)
             {
-                var actual = await Locator.InputValueAsync();
-                return new Result(false, $"{name}: expected '{expected}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying value. {ex.Message}");
             }
         }
 
-        public async Task<Result> VerifyPlaceholderAsync(string name, string expectedPlaceholder)
+        public Result VerifyPlaceholder(string name, string expectedPlaceholder)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveAttributeAsync("placeholder", expectedPlaceholder);
-                return new Result(true, $"{name}: placeholder matches '{expectedPlaceholder}'");
+                var actual = Driver.FindElement(Locator).GetAttribute("placeholder");
+                bool passed = actual == expectedPlaceholder;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: placeholder matches '{expectedPlaceholder}'");
+                }
+
+                return new Result(false, $"{name}: expected '{expectedPlaceholder}', actual '{actual}'");
             }
             catch (Exception ex)
             {
-                return new Result(false, $"{name}: {ex.Message}");
+                return new Result(false, $"{name}: error verifying placeholder. {ex.Message}");
             }
         }
     }

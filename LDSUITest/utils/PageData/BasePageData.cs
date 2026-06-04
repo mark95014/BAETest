@@ -1,5 +1,5 @@
 using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Reflection;
@@ -9,50 +9,48 @@ namespace LDSUITest.utils.PageData
     public abstract class BasePageData
     {
         [JsonIgnore]
-        public IPage Page { get; set; } = null!;
+        public IWebDriver Driver { get; set; } = null!;
 
-        public void Initialize(IPage page)
+        public void Initialize(IWebDriver driver)
         {
-            Page = page ?? throw new ArgumentNullException(nameof(page));
+            Driver = driver ?? throw new ArgumentNullException(nameof(driver));
             InitializeElements();
         }
 
         protected abstract void InitializeElements();
 
-        public async Task Get()
+        public void Get()
         {
             PropertyInfo[] properties = GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
             {
-                if (property != null && property.Name != nameof(Page))
+                if (property != null && property.Name != nameof(Driver))
                 {
-                    MethodInfo? method = property.PropertyType.GetMethod("GetAsync");
+                    MethodInfo? method = property.PropertyType.GetMethod("Get");
                     if (method != null)
                     {
-                        var task = (Task)method.Invoke(property.GetValue(this), [])!;
-                        await task;
+                        method.Invoke(property.GetValue(this), []);
                     }
                 }
             }
         }
 
-        public async Task Verify(JObject expectedResult, string dataLabel, Results results)
+        public void Verify(JObject expectedResult, string dataLabel, Results results)
         {
             PropertyInfo[] properties = GetType().GetProperties();
 
             foreach (PropertyInfo property in properties)
             {
-                if (property != null && property.Name != nameof(Page) && expectedResult[property.Name] != null)
+                if (property != null && property.Name != nameof(Driver) && expectedResult[property.Name] != null)
                 {
                     JObject expectedObject = (JObject)expectedResult[property.Name]!;
                     Object expected = expectedObject["Data"]!;
-                    MethodInfo? verifyMethod = property.PropertyType.GetMethod("VerifyAsync");
+                    MethodInfo? verifyMethod = property.PropertyType.GetMethod("Verify");
                     if (verifyMethod != null)
                     {
                         string dataName = dataLabel + "." + property.Name;
-                        var task = (Task<Result>)verifyMethod.Invoke(property.GetValue(this), [dataName, expected])!;
-                        Result result = await task;
+                        Result result = (Result)verifyMethod.Invoke(property.GetValue(this), [dataName, expected])!;
                         results.Add(result);
                     }
                 }

@@ -1,74 +1,91 @@
 using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Interactions;
 
 namespace LDSUITest.utils.PageData.Elements
 {
-    public class ButtonElement(ILocator locator) : SimpleElement(locator)
+    public class ButtonElement : SimpleElement
     {
-        public async Task ClickAsync()
+        public ButtonElement(IWebDriver driver, By locator) : base(driver, locator)
         {
-            await Locator.ClickAsync();
         }
 
-        public async Task DoubleClickAsync()
+        public void Click()
         {
-            await Locator.DblClickAsync();
+            Driver.FindElement(Locator).Click();
         }
 
-        public async Task HoverAsync()
+        public void DoubleClick()
         {
-            await Locator.HoverAsync();
+            var element = Driver.FindElement(Locator);
+            var actions = new Actions(Driver);
+            actions.DoubleClick(element).Perform();
         }
 
-        public override async Task GetAsync()
+        public void Hover()
+        {
+            var element = Driver.FindElement(Locator);
+            var actions = new Actions(Driver);
+            actions.MoveToElement(element).Perform();
+        }
+
+        public override void Get()
         {
             // Get button state (enabled/disabled)
-            Data = await Locator.IsEnabledAsync();
+            Data = Driver.FindElement(Locator).Enabled;
         }
 
-        public async Task<string> GetTextAsync()
+        public string GetText()
         {
-            return await Locator.TextContentAsync() ?? string.Empty;
+            return Driver.FindElement(Locator).Text ?? string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
             bool expectedEnabled = Convert.ToBoolean(expected);
-            bool actualEnabled = await Locator.IsEnabledAsync();
+            bool actualEnabled = Driver.FindElement(Locator).Enabled;
 
             var message = $"{name}: enabled={actualEnabled}, expected={expectedEnabled}";
             return new Result(actualEnabled == expectedEnabled, message);
         }
 
-        public async Task<Result> VerifyEnabledAsync(string name, bool shouldBeEnabled = true)
+        public Result VerifyEnabled(string name, bool shouldBeEnabled = true)
         {
             try
             {
-                if (shouldBeEnabled)
-                    await Assertions.Expect(Locator).ToBeEnabledAsync();
-                else
-                    await Assertions.Expect(Locator).ToBeDisabledAsync();
+                bool actualEnabled = Driver.FindElement(Locator).Enabled;
+                bool passed = actualEnabled == shouldBeEnabled;
 
-                return new Result(true, $"{name}: enabled state is correct");
+                if (passed)
+                {
+                    return new Result(true, $"{name}: enabled state is correct");
+                }
+
+                return new Result(false, $"{name}: expected enabled={shouldBeEnabled}, actual={actualEnabled}");
             }
             catch (Exception ex)
             {
-                var actual = await Locator.IsEnabledAsync();
-                return new Result(false, $"{name}: expected enabled={shouldBeEnabled}, actual={actual}. {ex.Message}");
+                return new Result(false, $"{name}: error checking enabled state. {ex.Message}");
             }
         }
 
-        public async Task<Result> VerifyTextAsync(string name, string expectedText)
+        public Result VerifyText(string name, string expectedText)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveTextAsync(expectedText);
-                return new Result(true, $"{name}: text matches '{expectedText}'");
+                var actualText = Driver.FindElement(Locator).Text;
+                bool passed = actualText == expectedText;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: text matches '{expectedText}'");
+                }
+
+                return new Result(false, $"{name}: expected '{expectedText}', actual '{actualText}'");
             }
             catch (Exception ex)
             {
-                var actual = await Locator.TextContentAsync();
-                return new Result(false, $"{name}: expected '{expectedText}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying text. {ex.Message}");
             }
         }
     }

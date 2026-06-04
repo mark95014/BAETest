@@ -1,55 +1,61 @@
 using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public class LinkElement : SimpleElement
     {
-        public LinkElement(ILocator locator) : base(locator)
+        public LinkElement(IWebDriver driver, By locator) : base(driver, locator)
         {
         }
 
-        public async Task ClickAsync()
+        public void Click()
         {
-            await Locator.ClickAsync();
+            Driver.FindElement(Locator).Click();
         }
 
-        public async Task ClickAndWaitForNavigationAsync()
+        public void ClickAndWaitForNavigation()
         {
-            await Locator.ClickAsync();
-            // Navigation is automatically waited for in Playwright
+            Driver.FindElement(Locator).Click();
+            // In Selenium, you might want to add explicit wait logic here if needed
         }
 
-        public async Task<string> GetHrefAsync()
+        public string GetHref()
         {
-            return await Locator.GetAttributeAsync("href") ?? string.Empty;
+            return Driver.FindElement(Locator).GetAttribute("href") ?? string.Empty;
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            Data = await Locator.TextContentAsync() ?? string.Empty;
+            Data = Driver.FindElement(Locator).Text ?? string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            string actualText = await Locator.TextContentAsync() ?? string.Empty;
+            string actualText = Driver.FindElement(Locator).Text ?? string.Empty;
             string expectedText = expected?.ToString() ?? "";
 
             var message = $"{name}: text='{actualText}', expected='{expectedText}'";
             return new Result(actualText?.Trim() == expectedText?.Trim(), message);
         }
 
-        public async Task<Result> VerifyHrefAsync(string name, string expectedHref)
+        public Result VerifyHref(string name, string expectedHref)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveAttributeAsync("href", expectedHref);
-                return new Result(true, $"{name}: href matches '{expectedHref}'");
+                var actual = GetHref();
+                bool passed = actual == expectedHref;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: href matches '{expectedHref}'");
+                }
+
+                return new Result(false, $"{name}: expected href '{expectedHref}', actual '{actual}'");
             }
             catch (Exception ex)
             {
-                var actual = await GetHrefAsync();
-                return new Result(false, $"{name}: expected href '{expectedHref}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying href. {ex.Message}");
             }
         }
     }

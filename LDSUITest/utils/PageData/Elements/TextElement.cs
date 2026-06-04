@@ -1,5 +1,5 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
@@ -7,20 +7,21 @@ namespace LDSUITest.utils.PageData.Elements
     {
         public string? Regex { get; set; }
 
-        public TextElement(ILocator locator) : base(locator)
+        public TextElement(IWebDriver driver, By locator) : base(driver, locator)
         {
         }
 
-        public TextElement(ILocator locator, string defaultValue = "", string? regex = null) 
-            : base(locator)
+        public TextElement(IWebDriver driver, By locator, string defaultValue = "", string? regex = null) 
+            : base(driver, locator)
         {
             Data = defaultValue;
             Regex = regex;
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            var textContent = await Locator.TextContentAsync();
+            var element = Driver.FindElement(Locator);
+            var textContent = element.Text;
             
             if (!string.IsNullOrEmpty(Regex) && textContent != null)
             {
@@ -33,10 +34,8 @@ namespace LDSUITest.utils.PageData.Elements
             }
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
-        {
-            await GetAsync();
-            
+        public override Result Verify(string name, object expected)
+        {            
             bool passed = Data?.ToString() == expected?.ToString();
             
             return new Result(passed, $"{name}: Expected '{expected}', Actual '{Data}'");

@@ -1,5 +1,5 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
@@ -7,19 +7,19 @@ namespace LDSUITest.utils.PageData.Elements
     {
         private readonly string _attributeName;
 
-        public ElementAttribute(ILocator locator, string attributeName) : base(locator)
+        public ElementAttribute(IWebDriver driver, By locator, string attributeName) : base(driver, locator)
         {
             _attributeName = attributeName ?? throw new ArgumentNullException(nameof(attributeName));
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            Data = await Locator.GetAttributeAsync(_attributeName) ?? string.Empty;
+            Data = Driver.FindElement(Locator).GetAttribute(_attributeName) ?? string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            await GetAsync();
+            Get();
 
             string actualValue = Data?.ToString() ?? "";
             string expectedValue = expected?.ToString() ?? "";
@@ -28,23 +28,29 @@ namespace LDSUITest.utils.PageData.Elements
             return new Result(actualValue == expectedValue, message);
         }
 
-        public async Task<Result> VerifyAttributeAsync(string name, string expectedValue)
+        public Result VerifyAttribute(string name, string expectedValue)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveAttributeAsync(_attributeName, expectedValue);
-                return new Result(true, $"{name}: attribute '{_attributeName}' matches '{expectedValue}'");
+                var actual = Driver.FindElement(Locator).GetAttribute(_attributeName);
+                bool passed = actual == expectedValue;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: attribute '{_attributeName}' matches '{expectedValue}'");
+                }
+
+                return new Result(false, $"{name}: expected '{expectedValue}', actual '{actual}'");
             }
             catch (Exception ex)
             {
-                var actual = await Locator.GetAttributeAsync(_attributeName);
-                return new Result(false, $"{name}: expected '{expectedValue}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying attribute. {ex.Message}");
             }
         }
 
-        public async Task<Result> VerifyAttributeContainsAsync(string name, string expectedSubstring)
+        public Result VerifyAttributeContains(string name, string expectedSubstring)
         {
-            await GetAsync();
+            Get();
             string actualValue = Data?.ToString() ?? "";
             bool contains = actualValue.Contains(expectedSubstring);
 

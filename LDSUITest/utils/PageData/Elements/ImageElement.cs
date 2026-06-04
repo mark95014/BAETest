@@ -1,72 +1,91 @@
 using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public class ImageElement : SimpleElement
     {
-        public ImageElement(ILocator locator) : base(locator)
+        public ImageElement(IWebDriver driver, By locator) : base(driver, locator)
         {
         }
 
-        public async Task<string> GetSrcAsync()
+        public string GetSrc()
         {
-            return await Locator.GetAttributeAsync("src") ?? string.Empty;
+            return Driver.FindElement(Locator).GetAttribute("src") ?? string.Empty;
         }
 
-        public async Task<string> GetAltAsync()
+        public string GetAlt()
         {
-            return await Locator.GetAttributeAsync("alt") ?? string.Empty;
+            return Driver.FindElement(Locator).GetAttribute("alt") ?? string.Empty;
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            Data = await GetSrcAsync();
+            Data = GetSrc();
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            string actualSrc = await GetSrcAsync();
+            string actualSrc = GetSrc();
             string expectedSrc = expected?.ToString() ?? "";
 
             var message = $"{name}: src='{actualSrc}', expected='{expectedSrc}'";
             return new Result(actualSrc == expectedSrc, message);
         }
 
-        public async Task<Result> VerifySrcAsync(string name, string expectedSrc)
+        public Result VerifySrc(string name, string expectedSrc)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveAttributeAsync("src", expectedSrc);
-                return new Result(true, $"{name}: src matches '{expectedSrc}'");
+                var actual = GetSrc();
+                bool passed = actual == expectedSrc;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: src matches '{expectedSrc}'");
+                }
+
+                return new Result(false, $"{name}: expected src '{expectedSrc}', actual '{actual}'");
             }
             catch (Exception ex)
             {
-                var actual = await GetSrcAsync();
-                return new Result(false, $"{name}: expected src '{expectedSrc}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying src. {ex.Message}");
             }
         }
 
-        public async Task<Result> VerifyAltAsync(string name, string expectedAlt)
+        public Result VerifyAlt(string name, string expectedAlt)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveAttributeAsync("alt", expectedAlt);
-                return new Result(true, $"{name}: alt text matches '{expectedAlt}'");
+                var actual = GetAlt();
+                bool passed = actual == expectedAlt;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: alt text matches '{expectedAlt}'");
+                }
+
+                return new Result(false, $"{name}: expected alt '{expectedAlt}', actual '{actual}'");
             }
             catch (Exception ex)
             {
-                var actual = await GetAltAsync();
-                return new Result(false, $"{name}: expected alt '{expectedAlt}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying alt. {ex.Message}");
             }
         }
 
-        public async Task<Result> VerifyVisibleAsync(string name)
+        public Result VerifyVisible(string name)
         {
             try
             {
-                await Assertions.Expect(Locator).ToBeVisibleAsync();
-                return new Result(true, $"{name}: image is visible");
+                var element = Driver.FindElement(Locator);
+                bool isVisible = element.Displayed;
+
+                if (isVisible)
+                {
+                    return new Result(true, $"{name}: image is visible");
+                }
+
+                return new Result(false, $"{name}: image not visible");
             }
             catch (Exception ex)
             {

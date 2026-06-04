@@ -1,5 +1,5 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
@@ -7,34 +7,36 @@ namespace LDSUITest.utils.PageData.Elements
     {
         private readonly string _attribute;
 
-        public ValueElement(ILocator locator, string attribute = "value") : base(locator)
+        public ValueElement(IWebDriver driver, By locator, string attribute = "value") : base(driver, locator)
         {
             _attribute = attribute;
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
+            var element = Driver.FindElement(Locator);
+            
             if (_attribute == "value")
             {
-                Data = await Locator.InputValueAsync();
+                Data = element.GetAttribute("value") ?? string.Empty;
             }
             else if (_attribute == "text" || _attribute == "textContent")
             {
-                Data = await Locator.TextContentAsync() ?? string.Empty;
+                Data = element.Text ?? string.Empty;
             }
             else if (_attribute == "innerText")
             {
-                Data = await Locator.InnerTextAsync();
+                Data = element.GetAttribute("innerText") ?? element.Text ?? string.Empty;
             }
             else
             {
-                Data = await Locator.GetAttributeAsync(_attribute) ?? string.Empty;
+                Data = element.GetAttribute(_attribute) ?? string.Empty;
             }
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            await GetAsync();
+            Get();
             string actualValue = Data?.ToString() ?? "";
             string expectedValue = expected?.ToString() ?? "";
 
@@ -42,17 +44,24 @@ namespace LDSUITest.utils.PageData.Elements
             return new Result(actualValue == expectedValue, message);
         }
 
-        public async Task<Result> VerifyAttributeAsync(string name, string expectedValue)
+        public Result VerifyAttribute(string name, string expectedValue)
         {
             try
             {
-                await Assertions.Expect(Locator).ToHaveAttributeAsync(_attribute, expectedValue);
-                return new Result(true, $"{name}: {_attribute} matches '{expectedValue}'");
+                Get();
+                string actualValue = Data?.ToString() ?? "";
+                bool passed = actualValue == expectedValue;
+
+                if (passed)
+                {
+                    return new Result(true, $"{name}: {_attribute} matches '{expectedValue}'");
+                }
+
+                return new Result(false, $"{name}: expected '{expectedValue}', actual '{actualValue}'");
             }
             catch (Exception ex)
             {
-                var actual = await Locator.GetAttributeAsync(_attribute);
-                return new Result(false, $"{name}: expected '{expectedValue}', actual '{actual}'. {ex.Message}");
+                return new Result(false, $"{name}: error verifying attribute. {ex.Message}");
             }
         }
     }

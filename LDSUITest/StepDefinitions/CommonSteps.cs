@@ -1,6 +1,6 @@
 using FluentAssertions;
 using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 using TechTalk.SpecFlow;
 
 namespace LDSUITest.StepDefinitions
@@ -20,8 +20,8 @@ namespace LDSUITest.StepDefinitions
         {
             // Browser is already initialized in UITestHooks
             // This step is just for clarity in the feature file
-            var page = _scenarioContext.Get<IPage>("Page");
-            page.Should().NotBeNull("Browser should be initialized");
+            var driver = _scenarioContext.Get<IWebDriver>("Driver");
+            driver.Should().NotBeNull("Browser should be initialized");
         }
     }
 }

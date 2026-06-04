@@ -1,73 +1,89 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 
 namespace LDSUITest.utils.PageData.Elements
 {
-    public class ColumnHeaderElement(ILocator locator) : SimpleElement(locator)
+    public class ColumnHeaderElement : SimpleElement
     {
-        public async Task ClickAsync()
+        public ColumnHeaderElement(IWebDriver driver, By locator) : base(driver, locator)
         {
-            await Locator.ClickAsync();
         }
 
-        public async Task SortAscendingAsync()
+        public void Click()
         {
-            await ClickAsync();
+            Driver.FindElement(Locator).Click();
+        }
+
+        public void SortAscending()
+        {
+            Click();
             // Wait for sort indicator
-            var ascIndicator = Locator.Locator(".tg-sort-asc, .sort-asc, [aria-sort='ascending']");
-            await ascIndicator.WaitForAsync();
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            wait.Until(d =>
+            {
+                var element = d.FindElement(Locator);
+                var ascIndicators = element.FindElements(By.CssSelector(".tg-sort-asc, .sort-asc, [aria-sort='ascending']"));
+                return ascIndicators.Count > 0;
+            });
         }
 
-        public async Task SortDescendingAsync()
+        public void SortDescending()
         {
             // Click twice for descending (or check current state)
-            var currentSort = await GetSortDirectionAsync();
+            var currentSort = GetSortDirection();
 
             if (currentSort == "none")
             {
-                await ClickAsync();
-                await ClickAsync();
+                Click();
+                Click();
             }
             else if (currentSort == "ascending")
             {
-                await ClickAsync();
+                Click();
             }
 
-            var descIndicator = Locator.Locator(".tg-sort-desc, .sort-desc, [aria-sort='descending']");
-            await descIndicator.WaitForAsync();
+            var wait = new WebDriverWait(Driver, TimeSpan.FromSeconds(10));
+            wait.Until(d =>
+            {
+                var element = d.FindElement(Locator);
+                var descIndicators = element.FindElements(By.CssSelector(".tg-sort-desc, .sort-desc, [aria-sort='descending']"));
+                return descIndicators.Count > 0;
+            });
         }
 
-        public async Task<string> GetSortDirectionAsync()
+        public string GetSortDirection()
         {
-            var ariaSort = await Locator.GetAttributeAsync("aria-sort");
+            var element = Driver.FindElement(Locator);
+            var ariaSort = element.GetAttribute("aria-sort");
             if (ariaSort != null) return ariaSort;
 
-            var ascExists = await Locator.Locator(".tg-sort-asc, .sort-asc").CountAsync() > 0;
+            var ascExists = element.FindElements(By.CssSelector(".tg-sort-asc, .sort-asc")).Count > 0;
             if (ascExists) return "ascending";
 
-            var descExists = await Locator.Locator(".tg-sort-desc, .sort-desc").CountAsync() > 0;
+            var descExists = element.FindElements(By.CssSelector(".tg-sort-desc, .sort-desc")).Count > 0;
             if (descExists) return "descending";
 
             return "none";
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            Data = await Locator.TextContentAsync() ?? string.Empty;
+            Data = Driver.FindElement(Locator).Text ?? string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            string actualText = await Locator.TextContentAsync() ?? string.Empty;
+            string actualText = Driver.FindElement(Locator).Text ?? string.Empty;
             string expectedText = expected?.ToString() ?? "";
 
             var message = $"{name}: column header='{actualText}', expected='{expectedText}'";
             return new Result(actualText?.Trim() == expectedText?.Trim(), message);
         }
 
-        public async Task<Result> VerifySortDirectionAsync(string name, string expectedDirection)
+        public Result VerifySortDirection(string name, string expectedDirection)
         {
-            var actualDirection = await GetSortDirectionAsync();
+            var actualDirection = GetSortDirection();
             var message = $"{name}: sort direction='{actualDirection}', expected='{expectedDirection}'";
             return new Result(actualDirection == expectedDirection, message);
         }

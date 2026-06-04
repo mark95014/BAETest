@@ -1,8 +1,9 @@
+using OpenQA.Selenium;
+using OpenQA.Selenium.Support.UI;
 using LDSTest.Shared;
-using LDSUITest.utils;
 using LDSUITest.utils.PageData;
-using Microsoft.Playwright;
-using NUnit.Framework;
+using LDSUITest.utils;
+using TestContext = NUnit.Framework.TestContext;
 
 namespace LDSUITest.pages
 {
@@ -16,25 +17,47 @@ namespace LDSUITest.pages
         // Full URL constructed from base URL + relative path
         protected string Url => $"{WebBaseUrl}{RelativePath}";
 
-        // Navigate to this page and wait for it to load
-        public async Task GoTo(IPage page)
+        // Navigate to this page and wait for it to load (NO MORE ASYNC)
+        public void GoTo(IWebDriver driver)
         {
-            await page.GotoAsync(Url, new PageGotoOptions { WaitUntil = WaitUntilState.Load });
-            await WaitForPageToLoad(page);
+            driver.Navigate().GoToUrl(Url);
+            WaitForPageToLoad(driver);
         }
 
-        // Wait for page-specific elements to be ready.
-        // Each page must implement this to wait for its key elements.
-        public abstract Task WaitForPageToLoad(IPage page);
+        // Wait for page-specific elements to be ready (NO MORE ASYNC)
+        // Each page must implement this to wait for its key elements
+        public abstract void WaitForPageToLoad(IWebDriver driver);
 
-        // Verify page data against expected results.
-        // <typeparam name="TPageData">The PageData type to use for verification</typeparam>
-        public static async Task VerifyPage<TPageData>(IPage page, ExpectedResults expectedResults, Results results) where TPageData : BasePageData, new()
+        // Verify page data against expected results (NO MORE ASYNC)
+        public static void VerifyPage<TPageData>(IWebDriver driver, ExpectedResults expectedResults, Results results) 
+            where TPageData : BasePageData, new()
         {
             var pageData = new TPageData();
-            pageData.Initialize(page);
+            pageData.Initialize(driver);
             var verifier = new CommonVerifyPage();
-            await verifier.Verify(pageData, expectedResults, results);
+            verifier.Verify(pageData, expectedResults, results);
+        }
+
+        /// <summary>
+        /// Wait for an element to be visible
+        /// </summary>
+        protected void WaitForElement(IWebDriver driver, By locator, int timeoutSeconds = 10)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutSeconds));
+            wait.Until(d => d.FindElement(locator).Displayed);
+        }
+
+        /// <summary>
+        /// Wait for an element to be clickable
+        /// </summary>
+        protected void WaitForElementClickable(IWebDriver driver, By locator, int timeoutSeconds = 10)
+        {
+            var wait = new WebDriverWait(driver, TimeSpan.FromSeconds(timeoutSeconds));
+            wait.Until(d =>
+            {
+                var element = d.FindElement(locator);
+                return element.Displayed && element.Enabled;
+            });
         }
     }
 }

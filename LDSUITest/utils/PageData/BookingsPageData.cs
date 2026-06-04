@@ -1,4 +1,5 @@
 using LDSUITest.utils.PageData.Elements;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData
 {
@@ -9,8 +10,8 @@ namespace LDSUITest.utils.PageData
 
         protected override void InitializeElements()
         {
-            Title = new TextElement(Page.Locator("h1:has-text('All Bookings')"));
-            BookingsTable = new TableElement(Page.Locator("[id='bookingsTable']"));
+            Title = new TextElement(Driver, By.CssSelector("h1"));//body > h1
+            BookingsTable = new TableElement(Driver, By.Id("bookingsTable"));
         }
     }
 }

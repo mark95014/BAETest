@@ -7,58 +7,63 @@ using System.Collections;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
-
     public class BookingsPageTest : BaseTest
     {
-        private BookingsPage _bookingsPage = null!;
-
-        // TestCase input
         private static IEnumerable BookingsPageTestCases
         {
-            get { yield return new TestCaseData(1).SetDescription("Verify all data on Bookings page"); }
+            get
+            {
+                yield return new TestCaseData(1)
+                    .SetDescription("Verify all data on Bookings page");
+            }
         }
 
         private static IEnumerable FilterByCustomerIdTestCases
         {
-            get { yield return new TestCaseData(2, "7").SetDescription("Verify filter functionality on Bookings page"); }
+            get
+            {
+                yield return new TestCaseData(2, "7")
+                    .SetDescription("Verify filter functionality on Bookings page");
+            }
         }
 
         private static IEnumerable FilterByCustomerNameTestCases
         {
-            get { yield return new TestCaseData(3, "son").SetDescription("Verify filter by customer name containing 'son'"); }
+            get
+            {
+                yield return new TestCaseData(3, "son")
+                    .SetDescription("Verify filter by customer name containing 'son'");
+            }
         }
 
-        [SetUp]
-        public async Task Setup()
+        private BookingsPage NavigateToBookingsPage()
         {
-            _bookingsPage = new BookingsPage();
-            await _bookingsPage.GoTo(Page);
+            var bookingsPage = new BookingsPage();
+            bookingsPage.GoTo(Driver);  // No await!
+            return bookingsPage;
         }
 
-        // DON'T REMOVE testCaseId parameter. It gets set in TestContext by NUnit when the TestCaseSource()'s are invoked.
-        // It is retrieved from TestContext and used later by the ExpectedResults and Results classes.
         [TestCaseSource(nameof(BookingsPageTestCases))]
-        public async Task VerifyBookingsPage(int testCaseId)
+        public void VerifyBookingsPage(int testCaseId)  // No async!
         {
-            await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
+            NavigateToBookingsPage();
+            BasePage.VerifyPage<BookingsPageData>(Driver, ExpectedResults, Results);
         }
 
         [TestCaseSource(nameof(FilterByCustomerIdTestCases))]
-        [Category("Filter")]
-        public async Task FilterByCustomerId(int testCaseId, string customerId)
+        public void FilterByCustomerId(int testCaseId, string customerId)  // No async!
         {
-            Console.WriteLine($"Headless: {TestContext.Parameters["Playwright.LaunchOptions.Headless"]}");
-            await _bookingsPage.FilterBookingsByCustomerId(Page, customerId);
-            await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
+            var bookingsPage = NavigateToBookingsPage();
+            bookingsPage.FilterBookingsByCustomerId(Driver, customerId);
+            BasePage.VerifyPage<BookingsPageData>(Driver, ExpectedResults, Results);
         }
 
         [TestCaseSource(nameof(FilterByCustomerNameTestCases))]
-        [Category("Filter")]
-        public async Task FilterByCustomerName(int testCaseId, string customerName)
+        public void FilterByCustomerName(int testCaseId, string customerName)  // No async!
         {
-            await _bookingsPage.FilterBookingsByCustomerName(Page, customerName);
-            await BasePage.VerifyPage<BookingsPageData>(Page, ExpectedResults, Results);
+            var bookingsPage = NavigateToBookingsPage();
+            bookingsPage.FilterBookingsByCustomerName(Driver, customerName);
+            BasePage.VerifyPage<BookingsPageData>(Driver, ExpectedResults, Results);
         }
     }
 }

@@ -1,7 +1,10 @@
-﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+﻿using OpenQA.Selenium;
+using OpenQA.Selenium.Chrome;
+using WebDriverManager;
+using WebDriverManager.DriverConfigs.Impl;
 using NUnit.Framework;
 using TechTalk.SpecFlow;
+using LDSTest.Shared;
 
 namespace LDSUITest.Hooks
 {
@@ -11,11 +14,7 @@ namespace LDSUITest.Hooks
         private readonly ScenarioContext _scenarioContext;
         private readonly FeatureContext _featureContext;
 
-        private IPlaywright? _playwright;
-        private IBrowser? _browser;
-        private IBrowserContext? _browserContext;
-        private IPage _page = null!;
-
+        private IWebDriver _driver = null!;
         private TestRail _testRail = new();
 
         public UITestHooks(ScenarioContext scenarioContext, FeatureContext featureContext)
@@ -25,27 +24,25 @@ namespace LDSUITest.Hooks
         }
 
         [BeforeFeature]
-        public static async Task BeforeFeature(FeatureContext featureContext)
+        public static async Task BeforeFeatureAsync(FeatureContext featureContext)
         {
             await new Database().ResetDatabase();
         }
 
         [AfterFeature]
-        public static async Task AfterFeature(FeatureContext featureContext)
+        public static async Task AfterFeatureAsync(FeatureContext featureContext)
         {
             await new Database().ResetDatabase();
         }
 
         [BeforeScenario(Order = 0)]
-        public async Task BeforeScenario()
+        public void BeforeScenario()
         {
             try
             {
                 InitializeTestMetadata();
-
-                await InitializePlaywrightAndBrowser();
+                InitializeSeleniumBrowser();
                 InitializeResultsAndExpectedResults();
-
                 StoreScenarioObjects();
             }
             catch (Exception ex)
@@ -57,16 +54,16 @@ namespace LDSUITest.Hooks
         }
 
         [AfterScenario(Order = 100)]
-        public async Task AfterScenario()
+        public void AfterScenario()
         {
             try
             {
-                await CleanupBrowser();
+                CleanupBrowser();
 
                 var results = _scenarioContext.Get<Results>("Results");
                 var expectedResults = _scenarioContext.Get<ExpectedResults>("ExpectedResults");
 
-                await CaptureFailureScreenshotIfNeeded();
+                CaptureFailureScreenshotIfNeeded();
 
                 results.Display();
                 string errorMessages = results.GetErrorMessages() ?? "";
@@ -114,21 +111,32 @@ namespace LDSUITest.Hooks
             _testRail = new TestRail();
         }
 
-        private async Task InitializePlaywrightAndBrowser()
+        private void InitializeSeleniumBrowser()
         {
-            var slowMo = int.TryParse(TestContext.Parameters["slowMo"], out int slowMoValue) ? slowMoValue : 0;
-            var headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "true");
+            var headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "false");
+            var browserType = TestContext.Parameters["browser"] ?? "chrome";
 
-            _playwright = await Playwright.CreateAsync();
-
-            _browser = await _playwright.Chromium.LaunchAsync(new BrowserTypeLaunchOptions
+            switch (browserType.ToLower())
             {
-                Headless = headless,
-                SlowMo = headless ? 0 : slowMo
-            });
+                case "chrome":
+                    new DriverManager().SetUpDriver(new ChromeConfig());
+                    var chromeOptions = new ChromeOptions();
+                    if (headless)
+                    {
+                        chromeOptions.AddArgument("--headless=new");
+                    }
+                    chromeOptions.AddArgument("--no-sandbox");
+                    chromeOptions.AddArgument("--disable-dev-shm-usage");
+                    chromeOptions.AddArgument("--ignore-certificate-errors");
+                    _driver = new ChromeDriver(chromeOptions);
+                    break;
 
-            _browserContext = await _browser.NewContextAsync();
-            _page = await _browserContext.NewPageAsync();
+                default:
+                    throw new ArgumentException($"Unsupported browser: {browserType}");
+            }
+
+            _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            _driver.Manage().Window.Maximize();
         }
 
         private void InitializeResultsAndExpectedResults()
@@ -146,23 +154,39 @@ namespace LDSUITest.Hooks
 
         private void StoreScenarioObjects()
         {
-            _scenarioContext["Page"] = _page;
+            _scenarioContext["Driver"] = _driver;
         }
 
-        private async Task CleanupBrowser()
+        private void CleanupBrowser()
         {
-            if (_page != null && !_page.IsClosed) await _page.CloseAsync();
-            if (_browserContext != null) await _browserContext.CloseAsync();
-            if (_browser != null) await _browser.CloseAsync();
-            _playwright?.Dispose();
-        }
-
-        private async Task CaptureFailureScreenshotIfNeeded()
-        {
-            if (_scenarioContext.TestError != null && _page != null)
+            try
             {
-                var screenshotPath = Path.Combine("screenshots", $"{_featureContext.FeatureInfo.Title}.png");
-                await _page.ScreenshotAsync(new() { Path = screenshotPath });
+                _driver?.Quit();
+                _driver?.Dispose();
+            }
+            catch (Exception ex)
+            {
+                TestContext.Progress.WriteLine($"[CLEANUP ERROR] {ex.Message}");
+            }
+        }
+
+        private void CaptureFailureScreenshotIfNeeded()
+        {
+            if (_scenarioContext.TestError != null && _driver != null)
+            {
+                try
+                {
+                    var screenshotDriver = (ITakesScreenshot)_driver;
+                    var screenshot = screenshotDriver.GetScreenshot();
+                    
+                    var screenshotPath = Path.Combine("screenshots", $"{_featureContext.FeatureInfo.Title}.png");
+                    Directory.CreateDirectory(Path.GetDirectoryName(screenshotPath)!);
+                    screenshot.SaveAsFile(screenshotPath);
+                }
+                catch (Exception ex)
+                {
+                    TestContext.Progress.WriteLine($"[SCREENSHOT ERROR] {ex.Message}");
+                }
             }
         }
     }

@@ -1,19 +1,21 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public abstract class Element
     {
-        protected ILocator Locator { get; }
+        protected By Locator { get; }
+        protected IWebDriver Driver { get; }
         public object Data { get; set; } = null!;
 
-        protected Element(ILocator locator)
+        protected Element(IWebDriver driver, By locator)
         {
+            Driver = driver ?? throw new ArgumentNullException(nameof(driver));
             Locator = locator ?? throw new ArgumentNullException(nameof(locator));
         }
 
-        public abstract Task GetAsync();
-        public abstract Task<Result> VerifyAsync(string name, object expected);
+        public abstract void Get();
+        public abstract Result Verify(string name, object expected);
     }
 }

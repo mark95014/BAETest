@@ -1,34 +1,33 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
     public class LegendElement : Element
     {
-        public LegendElement(ILocator locator) : base(locator)
+        public LegendElement(IWebDriver driver, By locator) : base(driver, locator)
         {
         }
 
-        public override async Task GetAsync()
+        public override void Get()
         {
             // Get all legend items (typically a list of items with labels and colors)
-            var items = Locator.Locator(".legend-item, .legend > li, [class*='legend'] > *");
-            var itemCount = await items.CountAsync();
+            var legendContainer = Driver.FindElement(Locator);
+            var items = legendContainer.FindElements(By.CssSelector(".legend-item, .legend > li, [class*='legend'] > *"));
 
             var legendData = new Dictionary<string, string>();
 
-            for (int i = 0; i < itemCount; i++)
+            foreach (var item in items)
             {
-                var item = items.Nth(i);
-                var label = await item.TextContentAsync();
+                var label = item.Text;
 
                 // Get color/style (e.g., background-color, border-color)
-                var colorIndicator = item.Locator(".color, .swatch, [class*='indicator']");
+                var colorIndicators = item.FindElements(By.CssSelector(".color, .swatch, [class*='indicator']"));
                 string color = "";
 
-                if (await colorIndicator.CountAsync() > 0)
+                if (colorIndicators.Count > 0)
                 {
-                    color = await colorIndicator.First.GetAttributeAsync("style") ?? "";
+                    color = colorIndicators[0].GetAttribute("style") ?? "";
                 }
 
                 legendData[label?.Trim() ?? string.Empty] = color;
@@ -37,22 +36,21 @@ namespace LDSUITest.utils.PageData.Elements
             Data = legendData;
         }
 
-        public async Task<string> GetLegendItemColorAsync(string label)
+        public string GetLegendItemColor(string label)
         {
-            var items = Locator.Locator(".legend-item, .legend > li");
-            var itemCount = await items.CountAsync();
+            var legendContainer = Driver.FindElement(Locator);
+            var items = legendContainer.FindElements(By.CssSelector(".legend-item, .legend > li"));
 
-            for (int i = 0; i < itemCount; i++)
+            foreach (var item in items)
             {
-                var item = items.Nth(i);
-                var itemLabel = await item.TextContentAsync();
+                var itemLabel = item.Text;
 
                 if (itemLabel?.Trim() == label)
                 {
-                    var colorIndicator = item.Locator(".color, .swatch, [class*='indicator']");
-                    if (await colorIndicator.CountAsync() > 0)
+                    var colorIndicators = item.FindElements(By.CssSelector(".color, .swatch, [class*='indicator']"));
+                    if (colorIndicators.Count > 0)
                     {
-                        return await colorIndicator.First.GetAttributeAsync("style") ?? "";
+                        return colorIndicators[0].GetAttribute("style") ?? "";
                     }
                 }
             }
@@ -60,9 +58,9 @@ namespace LDSUITest.utils.PageData.Elements
             return string.Empty;
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
-            await GetAsync();
+            Get();
 
             if (expected is Dictionary<string, string> expectedLegend)
             {
@@ -92,19 +90,17 @@ namespace LDSUITest.utils.PageData.Elements
             return new Result(false, $"{name}: expected data is not in the correct format (Dictionary<string, string>)");
         }
 
-        public async Task<Result> VerifyLegendItemExistsAsync(string name, string label)
+        public Result VerifyLegendItemExists(string name, string label)
         {
-            await GetAsync();
+            Get();
             var legendData = Data as Dictionary<string, string>;
 
             if (legendData!.ContainsKey(label))
             {
                 return new Result(true, $"{name}: legend item '{label}' exists");
             }
-            else
-            {
-                return new Result(false, $"{name}: legend item '{label}' not found. Available items: {string.Join(", ", legendData.Keys)}");
-            }
+
+            return new Result(false, $"{name}: legend item '{label}' not found");
         }
     }
 }

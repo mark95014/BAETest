@@ -1,14 +1,12 @@
+using OpenQA.Selenium;
 using LDSTest.Shared;
 using LDSUITest.utils.PageData;
-using Microsoft.Playwright;
-using static Microsoft.Playwright.Assertions;
 
 namespace LDSUITest.pages
 {
     public class RoomsPage : BasePage
     {
         protected override string RelativePath => "/rooms";
-
         public class Room
         {
             public int RoomNumber { get; set; }
@@ -17,56 +15,46 @@ namespace LDSUITest.pages
 
         internal static class Selectors
         {
-            internal const string pageTitle = "h1:has-text('All Rooms')";
-            internal const string roomsTable = "[id='roomsTable']";
-            internal const string nextPageButton = "[id='btnNext']";
-            internal const string priceInput = "[id='price']";
-            internal const string saveButton = ".btn-save";
+            internal static By PageTitle = By.CssSelector("body > h1')");
+            internal static By RoomsTable = By.Id("roomsTable");
+            internal static By NextPageButton = By.Id("btnNext");
         }
 
-        // Pre-initialized locators
-        private static ILocator PageTitle(IPage page) => page.Locator(Selectors.pageTitle);
-        private static ILocator RoomsTable(IPage page) => page.Locator(Selectors.roomsTable);
-        private static ILocator NextPageButton(IPage page) => page.Locator(Selectors.nextPageButton);
-        private static ILocator PriceInput(IPage page) => page.Locator(Selectors.priceInput);
-        private static ILocator SaveButton(IPage page) => page.Locator(Selectors.saveButton);
-
-        public override async Task WaitForPageToLoad(IPage page)
+        public override void WaitForPageToLoad(IWebDriver driver)
         {
-            await PageTitle(page).WaitForAsync();
-            await RoomsTable(page).WaitForAsync();
-            await NextPageButton(page).WaitForAsync();
-            await NextPageButton(page).IsEnabledAsync(); // Ensure the button is enabled, indicating the table is fully loaded and interactive
-            Thread.Sleep(500); // Additional wait to ensure all dynamic content is fully loaded and interactive
+            //WaitForElement(driver, Selectors.PageTitle);
+            WaitForElement(driver, Selectors.RoomsTable);
+            WaitForElementClickable(driver, Selectors.NextPageButton);
+            Thread.Sleep(500);
         }
 
-        public async Task EditRoomPrices(IPage page, List<Room> rooms)
+        public void EditRoomPrices(IWebDriver driver, List<Room> rooms)
         {
             foreach (var room in rooms)
             {
-                // Use the properties directly
                 string roomNumber = room.RoomNumber.ToString();
                 string newPrice = room.Price.ToString();
 
-                // Find the row with the matching room number in the specific column
-                var row = page.Locator($"[id='roomsTable'] tbody tr:has(td:nth-child(1):text-is('{roomNumber}'))");
-                await row.ClickAsync();
+                // Find the row with the matching room number
+                var row = driver.FindElement(By.XPath($"//table[@id='roomsTable']//tr[td[1][text()='{roomNumber}']]"));
+                row.Click();
 
                 // Edit the price
-                // Clear may execute before the price loads, so we wait for the input to have a value before clearing it
-                await Expect(PriceInput(page)).Not.ToHaveValueAsync("");
-                await PriceInput(page).ClearAsync();
-                await PriceInput(page).FillAsync(newPrice);
-                await SaveButton(page).ClickAsync();
+                var priceInput = driver.FindElement(By.Id("price"));
+                priceInput.Clear();
+                priceInput.SendKeys(newPrice);
+
+                var saveButton = driver.FindElement(By.CssSelector(".btn-save"));
+                saveButton.Click();
 
                 // Wait for the table to reload
-                await WaitForPageToLoad(page);
+                WaitForPageToLoad(driver);
             }
         }
 
-        public async Task VerifyPage(IPage page, ExpectedResults expectedResults, Results results)
+        public void VerifyPage(IWebDriver driver, ExpectedResults expectedResults, Results results)
         {
-            await BasePage.VerifyPage<RoomsPageData>(page, expectedResults, results);
+            BasePage.VerifyPage<RoomsPageData>(driver, expectedResults, results);
         }
     }
 }

@@ -1,60 +1,80 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 
 namespace LDSUITest.utils.PageData.Elements
 {
-    public class CheckboxElement(ILocator locator) : SimpleElement(locator)
+    public class CheckboxElement : SimpleElement
     {
-        public async Task CheckAsync()
+        public CheckboxElement(IWebDriver driver, By locator) : base(driver, locator)
         {
-            await Locator.CheckAsync();
         }
 
-        public async Task UncheckAsync()
+        public void Check()
         {
-            await Locator.UncheckAsync();
+            var element = Driver.FindElement(Locator);
+            if (!element.Selected)
+            {
+                element.Click();
+            }
         }
 
-        public async Task SetCheckedAsync(bool shouldBeChecked)
+        public void Uncheck()
         {
-            await Locator.SetCheckedAsync(shouldBeChecked);
+            var element = Driver.FindElement(Locator);
+            if (element.Selected)
+            {
+                element.Click();
+            }
         }
 
-        public async Task ToggleAsync()
+        public void SetChecked(bool shouldBeChecked)
         {
-            bool isChecked = await Locator.IsCheckedAsync();
-            await SetCheckedAsync(!isChecked);
+            if (shouldBeChecked)
+            {
+                Check();
+            }
+            else
+            {
+                Uncheck();
+            }
         }
 
-        public override async Task GetAsync()
+        public void Toggle()
         {
-            Data = await Locator.IsCheckedAsync();
+            Driver.FindElement(Locator).Click();
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override void Get()
+        {
+            Data = Driver.FindElement(Locator).Selected;
+        }
+
+        public override Result Verify(string name, object expected)
         {
             bool expectedChecked = Convert.ToBoolean(expected);
-            bool actualChecked = await Locator.IsCheckedAsync();
+            bool actualChecked = Driver.FindElement(Locator).Selected;
 
             var message = $"{name}: checked={actualChecked}, expected={expectedChecked}";
             return new Result(actualChecked == expectedChecked, message);
         }
 
-        public async Task<Result> VerifyCheckedAsync(string name, bool shouldBeChecked = true)
+        public Result VerifyChecked(string name, bool shouldBeChecked = true)
         {
             try
             {
-                if (shouldBeChecked)
-                    await Assertions.Expect(Locator).ToBeCheckedAsync();
-                else
-                    await Assertions.Expect(Locator).Not.ToBeCheckedAsync();
+                bool actualChecked = Driver.FindElement(Locator).Selected;
+                bool passed = actualChecked == shouldBeChecked;
 
-                return new Result(true, $"{name}: checked state is correct");
+                if (passed)
+                {
+                    return new Result(true, $"{name}: checked state is correct");
+                }
+
+                return new Result(false, $"{name}: expected checked={shouldBeChecked}, actual={actualChecked}");
             }
             catch (Exception ex)
             {
-                var actual = await Locator.IsCheckedAsync();
-                return new Result(false, $"{name}: expected checked={shouldBeChecked}, actual={actual}. {ex.Message}");
+                return new Result(false, $"{name}: error checking checkbox state. {ex.Message}");
             }
         }
     }

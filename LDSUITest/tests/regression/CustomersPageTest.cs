@@ -1,4 +1,4 @@
-using LDSUITest.pages;
+﻿using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
@@ -8,7 +8,6 @@ namespace LDSUITest.tests.regression
 {
     [TestFixture]
     [Parallelizable(ParallelScope.All)]
-
     public class CustomersPageTest : BaseTest
     {
         private CustomersPage _customersPage = null!;
@@ -30,30 +29,30 @@ namespace LDSUITest.tests.regression
         }
 
         [SetUp]
-        public async Task Setup()
+        public void Setup()
         {
             _customersPage = new CustomersPage();
-            await _customersPage.GoTo(Page);
+            _customersPage.GoTo(Driver);  // Changed: Page → Driver, removed await
         }
 
         [TestCaseSource(nameof(VerifyCustomersPageTestCases))]
-        public async Task VerifyCustomersPage(int testCaseId)
+        public void VerifyCustomersPage(int testCaseId)  // Changed: removed async Task
         {
-            await BasePage.VerifyPage<CustomersPageData>(Page, ExpectedResults, Results);
+            BasePage.VerifyPage<CustomersPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
         }
 
         [TestCaseSource(nameof(VerifyCustomersFilterByIdTestCases))]
-        public async Task VerifyCustomersFilterById(int testCaseId, string customerId)
+        public void VerifyCustomersFilterById(int testCaseId, string customerId)  // Changed: removed async Task
         {
-            await _customersPage.FilterCustomersById(Page, customerId);
-            await BasePage.VerifyPage<CustomersPageData>(Page, ExpectedResults, Results);
+            _customersPage.FilterCustomersById(Driver, customerId);  // Changed: Page → Driver, removed await
+            BasePage.VerifyPage<CustomersPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
         }
 
         [TestCaseSource(nameof(VerifyCustomersFilterByNameTestCases))]
-        public async Task VerifyCustomersFilterByName(int testCaseId, string customerName)
+        public void VerifyCustomersFilterByName(int testCaseId, string customerName)  // Changed: removed async Task
         {
-            await _customersPage.FilterCustomersByName(Page, customerName);
-            await BasePage.VerifyPage<CustomersPageData>(Page, ExpectedResults, Results);
+            _customersPage.FilterCustomersByName(Driver, customerName);  // Changed: Page → Driver, removed await
+            BasePage.VerifyPage<CustomersPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
         }
     }
 }

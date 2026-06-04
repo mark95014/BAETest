@@ -1,14 +1,18 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 using System.Text.RegularExpressions;
 
 namespace LDSUITest.utils.PageData.Elements
 {
-    public class CurrentTimestampElement(ILocator locator) : TextElement(locator)
+    public class CurrentTimestampElement : TextElement
     {
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public CurrentTimestampElement(IWebDriver driver, By locator) : base(driver, locator)
         {
-            await GetAsync();
+        }
+
+        public override Result Verify(string name, object expected)
+        {
+            Get();
 
             string actualTimestamp = Data?.ToString() ?? "";
 

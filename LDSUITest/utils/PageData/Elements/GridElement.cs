@@ -1,5 +1,5 @@
 ﻿using LDSTest.Shared;
-using Microsoft.Playwright;
+using OpenQA.Selenium;
 using Newtonsoft.Json;
 
 namespace LDSUITest.utils.PageData.Elements
@@ -8,106 +8,103 @@ namespace LDSUITest.utils.PageData.Elements
     {
         protected Results Results { get; }
 
-        protected GridElement(ILocator locator, Results results) : base(locator)
+        protected GridElement(IWebDriver driver, By locator, Results results) : base(driver, locator)
         {
             Results = results;
         }
 
-        public abstract Task GetCellAsync(ILocator cellLocator, List<object> row, int columnNumber);
-        public abstract Task<Result> VerifyCellAsync(object actualResult, object expectedResult, string msg, int columnNumber);
+        public abstract void GetCell(IWebElement cellElement, List<object> row, int columnNumber);
+        public abstract Result VerifyCell(object actualResult, object expectedResult, string msg, int columnNumber);
 
-        public override async Task GetAsync()
+        public override void Get()
         {
-            await GetGridAsync();
+            GetGrid();
         }
 
-        private async Task GetGridAsync()
+        private void GetGrid()
         {
             var gridData = new List<List<object>>();
+            var container = Driver.FindElement(Locator);
 
             // Check for pagination
-            var pageCountLocator = Locator.Locator("*[id*=pagecount]");
-            var pageCountExists = await pageCountLocator.CountAsync() > 0;
-
-            if (pageCountExists)
+            try
             {
-                // Paginated grid
-                var pageCountText = await pageCountLocator.TextContentAsync();
-                int pageCount = int.Parse(pageCountText ?? "1");
+                var pageCountElement = container.FindElement(By.CssSelector("*[id*=pagecount]"));
+                var pageCountText = pageCountElement.Text;
+                int pageCount = int.Parse(pageCountText);
                 if (pageCount <= 0) pageCount = 1;
 
-                var nextPageButton = Locator.Locator("*[id*=page-next]");
+                var nextPageButton = container.FindElement(By.CssSelector("*[id*=page-next]"));
 
                 for (int i = 0; i < pageCount; i++)
                 {
-                    await GetPageAsync(gridData);
+                    GetPage(gridData, container);
 
                     if (i < pageCount - 1)
                     {
-                        await nextPageButton.ClickAsync();
-                        await Task.Delay(500); // Wait for page to load
+                        nextPageButton.Click();
+                        Thread.Sleep(500);
                     }
                 }
             }
-            else
+            catch (NoSuchElementException)
             {
                 // Single page grid
-                await GetPageAsync(gridData);
+                GetPage(gridData, container);
             }
 
             Data = gridData;
         }
 
-        private async Task GetPageAsync(List<List<object>> gridData)
+        private void GetPage(List<List<object>> gridData, IWebElement container)
         {
-            await Task.Delay(500); // Allow grid to render
+            Thread.Sleep(500); // Allow grid to render
 
-            var rows = Locator.Locator("div.tg-row, tr, [role='row']");
-            var rowCount = await rows.CountAsync();
+            var rows = container.FindElements(By.CssSelector("div.tg-row, tr, [role='row']"));
 
-            NUnit.Framework.TestContext.Progress.WriteLine($"GetPageAsync: number of rows = {rowCount}");
+            NUnit.Framework.TestContext.Progress.WriteLine($"GetPage: number of rows = {rows.Count}");
 
-            for (int i = 0; i < rowCount; i++)
+            foreach (var row in rows)
             {
-                var row = rows.Nth(i);
-                var cells = row.Locator("div.tg-cell, td, [role='cell']");
-                var cellCount = await cells.CountAsync();
+                var cells = row.FindElements(By.CssSelector("div.tg-cell, td, [role='cell']"));
 
-                NUnit.Framework.TestContext.Progress.WriteLine($"GetPageAsync: number of cells = {cellCount}");
+                NUnit.Framework.TestContext.Progress.WriteLine($"GetPage: number of cells = {cells.Count}");
 
                 var rowData = new List<object>();
 
-                for (int j = 0; j < cellCount; j++)
+                for (int j = 0; j < cells.Count; j++)
                 {
-                    var cell = cells.Nth(j);
-                    await GetCellAsync(cell, rowData, j);
+                    GetCell(cells[j], rowData, j);
                 }
 
                 gridData.Add(rowData);
             }
         }
 
-        public async Task<int> GetRowCountAsync()
+        public int GetRowCount()
         {
-            var rows = Locator.Locator("div.tg-row, tr, [role='row']");
-            return await rows.CountAsync();
+            var container = Driver.FindElement(Locator);
+            var rows = container.FindElements(By.CssSelector("div.tg-row, tr, [role='row']"));
+            return rows.Count;
         }
 
-        public ILocator GetRow(int index)
+        public IWebElement GetRow(int index)
         {
-            var rows = Locator.Locator("div.tg-row, tr, [role='row']");
-            return rows.Nth(index);
+            var container = Driver.FindElement(Locator);
+            var rows = container.FindElements(By.CssSelector("div.tg-row, tr, [role='row']"));
+            return rows[index];
         }
 
-        public ILocator GetCell(int row, int column)
+        public IWebElement GetCell(int row, int column)
         {
-            var rows = Locator.Locator("div.tg-row, tr, [role='row']");
-            var targetRow = rows.Nth(row);
-            var cells = targetRow.Locator("div.tg-cell, td, [role='cell']");
-            return cells.Nth(column);
+            var container = Driver.FindElement(Locator);
+            var rows = container.FindElements(By.CssSelector("div.tg-row, tr, [role='row']"));
+            var targetRow = rows[row];
+            var cells = targetRow.FindElements(By.CssSelector("div.tg-cell, td, [role='cell']"));
+            return cells[column];
         }
 
-        public override async Task<Result> VerifyAsync(string name, object expected)
+        public override Result Verify(string name, object expected)
         {
             List<List<object>> expectedResult = JsonConvert.DeserializeObject<List<List<object>>>(expected.ToString()!)!;
 
@@ -145,7 +142,7 @@ namespace LDSUITest.utils.PageData.Elements
                                 else
                                 {
                                     string msg = $"{name}: actual= {actualData[rowNum][colNum]} expected= {expectedCell}";
-                                    var result = await VerifyCellAsync(actualData[rowNum][colNum], expectedCell, msg, colNum);
+                                    var result = VerifyCell(actualData[rowNum][colNum], expectedCell, msg, colNum);
                                     Results.Add(result);
                                 }
                             }
