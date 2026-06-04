@@ -11,7 +11,7 @@ using TestContext = NUnit.Framework.TestContext;
 namespace LDSUITest.utils
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
+    [Parallelizable(ParallelScope.None)]
     public abstract class BaseTest
     {
         // Test framework objects
@@ -90,6 +90,8 @@ namespace LDSUITest.utils
 
             // Close ExpectedResults
             ExpectedResults?.Close();
+
+            Thread.Sleep(5000);
         }
 
         [OneTimeTearDown]

@@ -7,7 +7,7 @@ using System.Collections;
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.All)]
+    [Parallelizable(ParallelScope.None)]
     public class CustomersPageTest : BaseTest
     {
         private CustomersPage _customersPage = null!;
