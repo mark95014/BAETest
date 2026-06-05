@@ -11,10 +11,10 @@ using TestContext = NUnit.Framework.TestContext;
 namespace LDSUITest.utils
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
+    [Parallelizable(ParallelScope.All)] // Allow parallel execution
     public abstract class BaseTest
     {
-        // Test framework objects
+        // Instance fields - NUnit creates a new instance per test
         public ExpectedResults ExpectedResults = null!;
         public Results Results = null!;
         public TestRail TestRail = null!;
@@ -31,11 +31,9 @@ namespace LDSUITest.utils
         public string databaseName = string.Empty;
         public string guid = string.Empty;
 
-        public IWebDriver Driver { get; private set; } = null!;
-
         // Configuration from .runsettings
-        private string _browserType = "chrome";
-        private bool _headless = false;
+        protected string _browserType = "chrome";
+        protected bool _headless = false;
 
         [OneTimeSetUp]
         public virtual void BaseSetup()
@@ -46,7 +44,7 @@ namespace LDSUITest.utils
             _browserType = TestContext.Parameters["browser"] ?? "chrome";
             _headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "false");
             TestName = TestNameProvider.GetTestName();
-            //TestRail = new TestRail();
+            TestRail = new TestRail();
         }
 
         [SetUp]
@@ -57,16 +55,6 @@ namespace LDSUITest.utils
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
-
-            // Create WebDriver based on browser type
-            //IWebDriver Driver = new ChromeDriver();
-            Driver = CreateWebDriver(_browserType, _headless);
-            
-            // Set implicit wait
-            Driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
-            
-            // Maximize window
-            Driver.Manage().Window.Maximize();
         }
 
         [TearDown]
@@ -74,24 +62,11 @@ namespace LDSUITest.utils
         {
             TestContext.Progress.WriteLine("TestCaseTearDown");
 
-            // Close browser
-            try
-            {
-                Driver?.Quit();
-                Driver?.Dispose();
-            }
-            catch (Exception ex)
-            {
-                TestContext.Progress.WriteLine($"Error closing driver: {ex.Message}");
-            }
-
             // Complete test results
             TestCaseFinish();
 
             // Close ExpectedResults
             ExpectedResults?.Close();
-
-            Thread.Sleep(5000);
         }
 
         [OneTimeTearDown]
@@ -103,7 +78,7 @@ namespace LDSUITest.utils
         /// <summary>
         /// Creates a WebDriver instance based on browser type
         /// </summary>
-        private IWebDriver CreateWebDriver(string browserType, bool headless)
+        internal IWebDriver CreateWebDriver(string browserType, bool headless)
         {
             IWebDriver driver;
 
@@ -152,6 +127,9 @@ namespace LDSUITest.utils
                     throw new ArgumentException($"Unsupported browser type: {browserType}");
             }
 
+            driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
+            driver.Manage().Window.Maximize();
+
             return driver;
         }
 
@@ -164,7 +142,7 @@ namespace LDSUITest.utils
             {
                 Assert.That(Results.HasFailures(), Is.False, 
                     $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
-                //TestRail.AddSuccessfulTestRailResult();
+                TestRail.AddSuccessfulTestRailResult();
             }
             catch (Exception)
             {

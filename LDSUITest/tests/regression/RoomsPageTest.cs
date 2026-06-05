@@ -2,17 +2,15 @@
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using System.Collections;
 
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)] // EditRoom() modifies the database, so it should not be run in parallel with other tests cases or tests.
-
+    [Parallelizable(ParallelScope.Children)] // Allow test methods to run in parallel
     public class RoomsPageTest : BaseTest
     {
-        private RoomsPage _roomsPage = null!;
-
         // Test data sources
         private static IEnumerable VerifyRoomsPageTestCases
         {
@@ -34,29 +32,34 @@ namespace LDSUITest.tests.regression
         }
 
         [SetUp]
-        public void Setup()  // Changed: removed async Task
+        public void Setup()
         {
-            _roomsPage = new RoomsPage();
-            _roomsPage.GoTo(Driver);  // Changed: Page → Driver, removed await
         }
 
+        [Test]
         [TestCaseSource(nameof(VerifyRoomsPageTestCases))]
-        public void VerifyRoomsPage(int testCaseId)  // Changed: removed async Task
+        public void VerifyRoomsPage(int testCaseId)
         {
-            BasePage.VerifyPage<RoomsPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            new RoomsPage().GoTo(driver);
+            BasePage.VerifyPage<RoomsPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
 
-        [NonParallelizable]
+        [Test]
+        [NonParallelizable] // This test must run alone because it modifies the database
         [TestCaseSource(nameof(EditRoomTestCases))]
-        public void EditRoom(int testCaseId, List<RoomsPage.Room> rooms)  // Changed: removed async Task
+        public void EditRoom(int testCaseId, List<RoomsPage.Room> rooms)
         {
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
             RoomsPage roomsPage = new RoomsPage();
-            roomsPage.EditRoomPrices(Driver, rooms);  // Changed: Page → Driver, removed await
+            roomsPage.GoTo(driver);
+            roomsPage.EditRoomPrices(driver, rooms);
 
             // Verify the entire table after all edits
-            BasePage.VerifyPage<RoomsPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
+            BasePage.VerifyPage<RoomsPageData>(driver, ExpectedResults, Results);
 
-            roomsPage.GoTo(Driver);  // Changed: Page → Driver, removed await
+            roomsPage.GoTo(driver);
 
             var originalRooms = new List<RoomsPage.Room>
             {
@@ -65,7 +68,9 @@ namespace LDSUITest.tests.regression
                 new() { RoomNumber = 105, Price = 85 }
             };
 
-            roomsPage.EditRoomPrices(Driver, originalRooms); // Changed: Page → Driver, removed await - Revert changes to original values
+            roomsPage.EditRoomPrices(driver, originalRooms); // Revert changes to original values
+            
+            driver?.Quit();
         }
     }
 }

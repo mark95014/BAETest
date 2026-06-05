@@ -23,7 +23,7 @@
     
     <!-- Selenium Configuration -->
     <Parameter name="browser" value="chrome" />
-    <Parameter name="headless" value="false" />
+    <Parameter name="headless" value="true" />
     
     <!-- Web base URL for dev environment -->
     <Parameter name="dev.webBaseURL" value="https://localhost:7031" />

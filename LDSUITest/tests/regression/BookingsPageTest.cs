@@ -2,11 +2,13 @@ using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using System.Collections;
 
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
+    [Parallelizable(ParallelScope.Children)]
     public class BookingsPageTest : BaseTest
     {
         private static IEnumerable BookingsPageTestCases
@@ -36,34 +38,38 @@ namespace LDSUITest.tests.regression
             }
         }
 
-        private BookingsPage NavigateToBookingsPage()
-        {
-            var bookingsPage = new BookingsPage();
-            bookingsPage.GoTo(Driver);  // No await!
-            return bookingsPage;
-        }
-
+        [Test]
         [TestCaseSource(nameof(BookingsPageTestCases))]
-        public void VerifyBookingsPage(int testCaseId)  // No async!
+        public void VerifyBookingsPage(int testCaseId)
         {
-            NavigateToBookingsPage();
-            BasePage.VerifyPage<BookingsPageData>(Driver, ExpectedResults, Results);
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            new BookingsPage().GoTo(driver);
+            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
 
+        [Test]
         [TestCaseSource(nameof(FilterByCustomerIdTestCases))]
-        public void FilterByCustomerId(int testCaseId, string customerId)  // No async!
+        public void FilterByCustomerId(int testCaseId, string customerId)
         {
-            var bookingsPage = NavigateToBookingsPage();
-            bookingsPage.FilterBookingsByCustomerId(Driver, customerId);
-            BasePage.VerifyPage<BookingsPageData>(Driver, ExpectedResults, Results);
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            var bookingsPage = new BookingsPage();
+            bookingsPage.GoTo(driver);
+            bookingsPage.FilterBookingsByCustomerId(driver, customerId);
+            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
 
+        [Test]
         [TestCaseSource(nameof(FilterByCustomerNameTestCases))]
-        public void FilterByCustomerName(int testCaseId, string customerName)  // No async!
+        public void FilterByCustomerName(int testCaseId, string customerName)
         {
-            var bookingsPage = NavigateToBookingsPage();
-            bookingsPage.FilterBookingsByCustomerName(Driver, customerName);
-            BasePage.VerifyPage<BookingsPageData>(Driver, ExpectedResults, Results);
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            var bookingsPage = new BookingsPage();
+            bookingsPage.GoTo(driver);
+            bookingsPage.FilterBookingsByCustomerName(driver, customerName);
+            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
     }
 }

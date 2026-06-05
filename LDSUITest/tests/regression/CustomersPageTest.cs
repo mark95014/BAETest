@@ -2,16 +2,15 @@
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
+using OpenQA.Selenium;
 using System.Collections;
 
 namespace LDSUITest.tests.regression
 {
     [TestFixture]
-    [Parallelizable(ParallelScope.None)]
+    [Parallelizable(ParallelScope.Children)] // Changed: Enable parallel execution of test methods
     public class CustomersPageTest : BaseTest
     {
-        private CustomersPage _customersPage = null!;
-
         // Test data sources
         private static IEnumerable VerifyCustomersPageTestCases
         {
@@ -31,28 +30,40 @@ namespace LDSUITest.tests.regression
         [SetUp]
         public void Setup()
         {
-            _customersPage = new CustomersPage();
-            _customersPage.GoTo(Driver);  // Changed: Page → Driver, removed await
         }
 
+        [Test]
         [TestCaseSource(nameof(VerifyCustomersPageTestCases))]
-        public void VerifyCustomersPage(int testCaseId)  // Changed: removed async Task
+        public void VerifyCustomersPage(int testCaseId)
         {
-            BasePage.VerifyPage<CustomersPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            new CustomersPage().GoTo(driver);
+            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
 
+        [Test]
         [TestCaseSource(nameof(VerifyCustomersFilterByIdTestCases))]
-        public void VerifyCustomersFilterById(int testCaseId, string customerId)  // Changed: removed async Task
+        public void VerifyCustomersFilterById(int testCaseId, string customerId)
         {
-            _customersPage.FilterCustomersById(Driver, customerId);  // Changed: Page → Driver, removed await
-            BasePage.VerifyPage<CustomersPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            var customersPage = new CustomersPage();
+            customersPage.GoTo(driver);
+            customersPage.FilterCustomersById(driver, customerId);
+            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
 
+        [Test]
         [TestCaseSource(nameof(VerifyCustomersFilterByNameTestCases))]
-        public void VerifyCustomersFilterByName(int testCaseId, string customerName)  // Changed: removed async Task
+        public void VerifyCustomersFilterByName(int testCaseId, string customerName)
         {
-            _customersPage.FilterCustomersByName(Driver, customerName);  // Changed: Page → Driver, removed await
-            BasePage.VerifyPage<CustomersPageData>(Driver, ExpectedResults, Results);  // Changed: Page → Driver, removed await
+            IWebDriver driver = CreateWebDriver(_browserType, _headless);
+            var customersPage = new CustomersPage();
+            customersPage.GoTo(driver);
+            customersPage.FilterCustomersByName(driver, customerName);
+            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
+            driver?.Quit();
         }
     }
 }
