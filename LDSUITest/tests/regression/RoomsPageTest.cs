@@ -43,7 +43,7 @@ namespace LDSUITest.tests.regression
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             new RoomsPage().GoTo(driver);
             BasePage.VerifyPage<RoomsPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
 
         [Test]
@@ -70,7 +70,7 @@ namespace LDSUITest.tests.regression
 
             roomsPage.EditRoomPrices(driver, originalRooms); // Revert changes to original values
             
-            driver?.Quit();
+            driver.Quit();
         }
     }
 }

@@ -39,7 +39,7 @@ namespace LDSUITest.tests.regression
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             new CustomersPage().GoTo(driver);
             BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
 
         [Test]
@@ -51,7 +51,7 @@ namespace LDSUITest.tests.regression
             customersPage.GoTo(driver);
             customersPage.FilterCustomersById(driver, customerId);
             BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
 
         [Test]
@@ -63,7 +63,7 @@ namespace LDSUITest.tests.regression
             customersPage.GoTo(driver);
             customersPage.FilterCustomersByName(driver, customerName);
             BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
     }
 }

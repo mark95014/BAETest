@@ -161,7 +161,7 @@ namespace LDSUITest.Hooks
         {
             try
             {
-                _driver?.Quit();
+                _driver.Quit();
                 _driver?.Dispose();
             }
             catch (Exception ex)

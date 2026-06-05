@@ -45,7 +45,7 @@ namespace LDSUITest.tests.regression
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             new BookingsPage().GoTo(driver);
             BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
 
         [Test]
@@ -57,7 +57,7 @@ namespace LDSUITest.tests.regression
             bookingsPage.GoTo(driver);
             bookingsPage.FilterBookingsByCustomerId(driver, customerId);
             BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
 
         [Test]
@@ -69,7 +69,7 @@ namespace LDSUITest.tests.regression
             bookingsPage.GoTo(driver);
             bookingsPage.FilterBookingsByCustomerName(driver, customerName);
             BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
-            driver?.Quit();
+            driver.Quit();
         }
     }
 }
