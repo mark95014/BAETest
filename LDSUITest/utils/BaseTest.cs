@@ -44,32 +44,16 @@ namespace LDSUITest.utils
             _headless = Boolean.Parse(TestContext.Parameters["headless"] ?? "false");
             TestName = TestNameProvider.GetTestName();
             TestRail = new TestRail();
-        }
-
-        [SetUp]
-        public virtual void TestCaseSetUp()
-        {
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
-        }
-
-        [TearDown]
-        public virtual void TestCaseTearDown()
-        {
-            TestContext.Progress.WriteLine("TestCaseTearDown");
-
-            // Complete test results
-            //TestCaseFinish();
-
-            // Close ExpectedResults
-            ExpectedResults?.Close();
         }
 
         [OneTimeTearDown]
         public virtual void TestTearDown()
         {
             TestContext.Progress.WriteLine("TestTearDown");
+            ExpectedResults?.Close();
         }
 
         /// <summary>

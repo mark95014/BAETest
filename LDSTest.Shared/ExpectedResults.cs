@@ -49,7 +49,7 @@ namespace LDSTest.Shared
                         Directory.CreateDirectory(directory);
                     }
                     File.WriteAllText(FileName, "{\n");
-                    //first = true; // Reset for this file
+                    first = true;
                 }
             }
         }
@@ -93,7 +93,7 @@ namespace LDSTest.Shared
                 if (!first) json = ",\n";
 
                 json += JsonConvert.SerializeObject(dataLabel) + ": ";
-                json += JsonConvert.SerializeObject(data, Formatting.Indented);
+                json += JsonConvert.SerializeObject(data, Formatting.None);
 
                 File.AppendAllText(FileName, json);
                 first = false;
