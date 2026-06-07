@@ -9,8 +9,12 @@ namespace LDSTest.Shared
     /// </summary>
     public class ExpectedResults
     {
+        // Static lock dictionary: one lock per file path to prevent concurrent access to the same file
+        private static readonly Dictionary<string, object> _fileLocks = new Dictionary<string, object>();
+        private static readonly object _dictionaryLock = new object(); // Lock for accessing the dictionary itself
+        
         private readonly List<string> labels = [];
-        private readonly object _lock = new object(); // Single lock for both file and list operations
+        private readonly object _fileLock; // Instance-specific lock reference
         private bool first = true;
         public string FileName { get; }
         public string TestName;
@@ -21,13 +25,23 @@ namespace LDSTest.Shared
             TestName = testName;
             GenerateExpectedResults = generateExpectedResults;
             FileName = Path.Combine(expectedResultsFolder, $"{testName}.json");
+            
+            // Get or create a lock for this specific file
+            lock (_dictionaryLock)
+            {
+                if (!_fileLocks.ContainsKey(FileName))
+                {
+                    _fileLocks[FileName] = new object();
+                }
+                _fileLock = _fileLocks[FileName];
+            }
         }
 
         public void Init()
         {
             if (GenerateExpectedResults)
             {
-                lock (_lock)
+                lock (_fileLock)
                 {
                     var directory = Path.GetDirectoryName(FileName);
                     if (!string.IsNullOrEmpty(directory) && !Directory.Exists(directory))
@@ -35,13 +49,14 @@ namespace LDSTest.Shared
                         Directory.CreateDirectory(directory);
                     }
                     File.WriteAllText(FileName, "{\n");
+                    //first = true; // Reset for this file
                 }
             }
         }
 
         public int Occurrences(string searchfor)
         {
-            lock (_lock)
+            lock (_fileLock)
             {
                 return labels.Count(label => label.StartsWith(searchfor));
             }
@@ -54,7 +69,7 @@ namespace LDSTest.Shared
 
         public string MakeDataLabel(string name)
         {
-            lock (_lock)
+            lock (_fileLock)
             {
                 string prefix = name + "." + TestCaseIdProvider.GetTestCaseId();
                 string label;
@@ -71,7 +86,7 @@ namespace LDSTest.Shared
 
         public void Append(object data, string dataLabel)
         {
-            lock (_lock)
+            lock (_fileLock)
             {
                 var json = "";
 
@@ -89,7 +104,7 @@ namespace LDSTest.Shared
         {
             if (GenerateExpectedResults)
             {
-                lock (_lock)
+                lock (_fileLock)
                 {
                     File.AppendAllText(FileName, "\n}");
                 }

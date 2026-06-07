@@ -1,4 +1,5 @@
-﻿using LDSUITest.pages;
+﻿using LDSTest.Shared;
+using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
 using NUnit.Framework;
@@ -36,9 +37,11 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(VerifyCustomersPageTestCases))]
         public void VerifyCustomersPage(int testCaseId)
         {
+            Results results = new Results();
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             new CustomersPage().GoTo(driver);
-            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
+            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, results);
+            TestCaseFinish(results);
             driver.Quit();
         }
 
@@ -46,11 +49,13 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(VerifyCustomersFilterByIdTestCases))]
         public void VerifyCustomersFilterById(int testCaseId, string customerId)
         {
+            Results results = new Results();
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             var customersPage = new CustomersPage();
             customersPage.GoTo(driver);
             customersPage.FilterCustomersById(driver, customerId);
-            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
+            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, results);
+            TestCaseFinish(results);
             driver.Quit();
         }
 
@@ -58,11 +63,13 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(VerifyCustomersFilterByNameTestCases))]
         public void VerifyCustomersFilterByName(int testCaseId, string customerName)
         {
+            Results results = new Results();
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             var customersPage = new CustomersPage();
             customersPage.GoTo(driver);
             customersPage.FilterCustomersByName(driver, customerName);
-            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, Results);
+            BasePage.VerifyPage<CustomersPageData>(driver, ExpectedResults, results);
+            TestCaseFinish(results);
             driver.Quit();
         }
     }

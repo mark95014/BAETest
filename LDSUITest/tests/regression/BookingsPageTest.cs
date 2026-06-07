@@ -1,3 +1,4 @@
+using LDSTest.Shared;
 using LDSUITest.pages;
 using LDSUITest.utils;
 using LDSUITest.utils.PageData;
@@ -42,21 +43,25 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(BookingsPageTestCases))]
         public void VerifyBookingsPage(int testCaseId)
         {
+            Results results = new Results();
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             new BookingsPage().GoTo(driver);
-            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
+            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, results);
             driver.Quit();
+            TestCaseFinish(results);
         }
 
         [Test]
         [TestCaseSource(nameof(FilterByCustomerIdTestCases))]
         public void FilterByCustomerId(int testCaseId, string customerId)
         {
+            Results results = new Results();
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             var bookingsPage = new BookingsPage();
             bookingsPage.GoTo(driver);
             bookingsPage.FilterBookingsByCustomerId(driver, customerId);
-            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
+            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, results);
+            TestCaseFinish(results);
             driver.Quit();
         }
 
@@ -64,11 +69,13 @@ namespace LDSUITest.tests.regression
         [TestCaseSource(nameof(FilterByCustomerNameTestCases))]
         public void FilterByCustomerName(int testCaseId, string customerName)
         {
+            Results results = new Results();
             IWebDriver driver = CreateWebDriver(_browserType, _headless);
             var bookingsPage = new BookingsPage();
             bookingsPage.GoTo(driver);
             bookingsPage.FilterBookingsByCustomerName(driver, customerName);
-            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, Results);
+            BasePage.VerifyPage<BookingsPageData>(driver, ExpectedResults, results);
+            TestCaseFinish(results);
             driver.Quit();
         }
     }

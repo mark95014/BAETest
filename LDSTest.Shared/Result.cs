@@ -13,7 +13,7 @@ namespace LDSTest.Shared
         {
             this.passed = passed;
             this.message = message;
-            this.testCaseId = TestCaseIdProvider.GetTestCaseId(); // Uses the provider
+            this.testCaseId = TestCaseIdProvider.GetTestCaseId();
 
             if (!passed)
             {

@@ -16,7 +16,6 @@ namespace LDSUITest.utils
     {
         // Instance fields - NUnit creates a new instance per test
         public ExpectedResults ExpectedResults = null!;
-        public Results Results = null!;
         public TestRail TestRail = null!;
         public DBServer DbServer = null!;
         
@@ -50,8 +49,6 @@ namespace LDSUITest.utils
         [SetUp]
         public virtual void TestCaseSetUp()
         {
-            Results = new Results();
-
             var expectedResultsFolder = TestContext.Parameters["expectedResultsFolder"] ?? "../../../data/expectedResults";
             ExpectedResults = new ExpectedResults(TestName, expectedResultsFolder, GenerateExpectedResults);
             ExpectedResults.Init();
@@ -63,7 +60,7 @@ namespace LDSUITest.utils
             TestContext.Progress.WriteLine("TestCaseTearDown");
 
             // Complete test results
-            TestCaseFinish();
+            //TestCaseFinish();
 
             // Close ExpectedResults
             ExpectedResults?.Close();
@@ -133,20 +130,20 @@ namespace LDSUITest.utils
             return driver;
         }
 
-        public void TestCaseFinish()
+        public void TestCaseFinish(Results results)
         {
-            Results.Display();
-            string errorMessages = Results.GetErrorMessages();
+            results.Display();
 
+            string errorMessages = results.GetErrorMessages();
             try
             {
-                Assert.That(Results.HasFailures(), Is.False, 
-                    $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
+                Assert.That(results.HasFailures(), Is.False, $"Test {TestContext.CurrentContext.Test.FullName} Failed.");
                 TestRail.AddSuccessfulTestRailResult();
             }
             catch (Exception)
             {
                 TestRail.AddUnSuccessfulTestRailResult(errorMessages);
+                throw new Exception($"Test {TestContext.CurrentContext.Test.FullName} Failed.\n{errorMessages}");
             }
         }
     }

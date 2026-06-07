@@ -1,28 +1,4 @@
 {
-"BookingsPageData.2": {
-  "Title": {
-    "Regex": null,
-    "Data": "All Bookings"
-  },
-  "BookingsTable": {
-    "Data": [
-      [
-        "Id",
-        "Cust Id",
-        "Customer Name",
-        "Room Number",
-        "Price"
-      ],
-      [
-        "7",
-        "7",
-        "George Miller",
-        "707",
-        "$235"
-      ]
-    ]
-  }
-},
 "BookingsPageData.3": {
   "Title": {
     "Regex": null,
@@ -60,6 +36,7 @@
       ]
     ]
   }
+}
 },
 "BookingsPageData.1": {
   "Title": {
