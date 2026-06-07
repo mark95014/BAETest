@@ -13,7 +13,7 @@
   
   <TestRunParameters>
     <Parameter name="verbose" value="false" />
-    <Parameter name="generateExpectedResults" value="true" />
+    <Parameter name="generateExpectedResults" value="false" />
     <Parameter name="expectedResultsFolder" value="../../../data/expectedResults" />
     <Parameter name="enableTestRail" value="false" />
     <Parameter name="testRailRunId" value="" />
